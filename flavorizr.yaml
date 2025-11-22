@@ -1,0 +1,16 @@
+flavors:
+  dev:
+    app:
+      name: "Dev"
+    android:
+      applicationId: "com.example.myapp.dev"
+    ios:
+      bundleId: "com.example.myapp.dev"
+
+  prod:
+    app:
+      name: "Prod"
+    android:
+      applicationId: "com.example.myapp"
+    ios:
+      bundleId: "com.example.myapp"
