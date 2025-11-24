@@ -1,6 +1,6 @@
 import 'package:dreamscape/core/util/logger.dart';
 import 'package:dreamscape/core/util/timer.dart';
-import 'package:dreamscape/feature/initialization/model/depend_container.dart';
+import 'package:dreamscape/features/initialization/model/depend_container.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // typedef OnError =

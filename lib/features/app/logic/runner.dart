@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:ui';
 
-import 'package:dreamscape/feature/app/widget/app_scope.dart';
-import 'package:dreamscape/feature/initialization/logic/composition_root.dart';
+import 'package:dreamscape/features/app/widget/app_scope.dart';
+import 'package:dreamscape/features/initialization/logic/composition_root.dart';
 import 'package:flutter/widgets.dart';
 import 'package:dreamscape/core/config/app_config.dart';
 import 'package:dreamscape/core/util/logger.dart';

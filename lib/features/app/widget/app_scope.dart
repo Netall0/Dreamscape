@@ -1,6 +1,6 @@
-import 'package:dreamscape/feature/app/widget/app_widget.dart';
-import 'package:dreamscape/feature/initialization/model/depend_container.dart';
-import 'package:dreamscape/feature/initialization/widget/depend_scope.dart';
+import 'package:dreamscape/features/app/widget/app_widget.dart';
+import 'package:dreamscape/features/initialization/model/depend_container.dart';
+import 'package:dreamscape/features/initialization/widget/depend_scope.dart';
 import 'package:flutter/widgets.dart';
 
 class AppScope extends StatelessWidget {
