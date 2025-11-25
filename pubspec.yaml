@@ -43,6 +43,10 @@ flutter_gen:
     outputs:
       class_name: AppFontFamily
 
+
+workspace:
+  - package/uikit
+
 flutter:
   uses-material-design: true
 
