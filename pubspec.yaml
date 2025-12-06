@@ -16,6 +16,11 @@ dependencies:
   flutter_bloc: ^9.1.1
   shared_preferences: ^2.5.3
   mason: ^0.1.1
+  audioplayers: ^6.5.1
+  uikit:
+    path: package/uikit
+  lottie: ^3.3.2
+
 
 dev_dependencies:
   flutter_test:
@@ -33,10 +38,6 @@ flutter_gen:
   integrations:
     lottie: true
 
-  assets:
-    enabled: true
-    outputs:
-      class_name: AppAssets
 
   fonts:
     enabled: true
@@ -52,6 +53,9 @@ flutter:
 
   assets:
     - assets/images/test.png
+    - assets/lottie/sleep.json
+    - assets/lottie/polar_bear.lottie
+    - assets/lottie/Sleeping Polar Bear.json
 
   fonts:
     - family: AppIcons  
