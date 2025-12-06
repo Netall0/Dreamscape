@@ -9,17 +9,18 @@ class CustomBottomNavigationBar extends StatelessWidget {
     required this.height,
     required this.borderValue,
     required this.items,
-    required this.currentIndex, required this.onTap,
+    required this.currentIndex,
+    required this.onTap,
+    required this.route,
   });
 
   final Color color;
   final double height;
   final double borderValue;
   final int currentIndex;
-
+  final String route;
 
   //typedef ValueChanged<T> = void Function(T value); => for callbacks that report that a value has been set.
-
 
   final ValueChanged<int> onTap;
 
@@ -27,8 +28,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: height,
+    return ConstrainedBox(
+      constraints: BoxConstraints.tightFor(height: height),
       child: ColoredBox(
         color: color,
         child: DecoratedBox(
@@ -38,10 +39,21 @@ class CustomBottomNavigationBar extends StatelessWidget {
               topRight: .circular(borderValue),
             ),
           ),
-          child: Row(
-            children: List.generate(items.length, (i) {
-              return _NavItem(index: i, currentIndex: currentIndex, onTap: onTap );
-            }),
+          child: SafeArea(
+            top: false,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: List.generate(items.length, (i) {
+                return _NavItem(
+                  icons: items[i].icons.icon ?? Icons.home,
+                  name: items[i].name,
+                  index: i,
+                  currentIndex: currentIndex,
+                  onTap: onTap,
+                );
+              }),
+            ),
           ),
         ),
       ),
@@ -54,8 +66,12 @@ class _NavItem extends StatelessWidget {
     required this.index,
     required this.currentIndex,
     required this.onTap,
+    required this.name,
+    required this.icons,
   });
 
+  final String name;
+  final IconData icons;
   final int index;
   final int currentIndex;
   final ValueChanged<int> onTap;
@@ -66,19 +82,7 @@ class _NavItem extends StatelessWidget {
 
     return GestureDetector(
       onTap: () => onTap(index),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: isActive ? Colors.white : Colors.transparent,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Icon(
-            Icons.circle,
-            color: isActive ? Colors.black : Colors.grey,
-          ),
-        ),
-      ),
+      child: Column(children: [Icon(icons), Text(name)]),
     );
   }
 }
@@ -86,6 +90,7 @@ class _NavItem extends StatelessWidget {
 final class CustomBottomNavigationBarItems {
   final String name;
   final Icon icons;
+  final String routes;
 
-  CustomBottomNavigationBarItems({required this.name, required this.icons});
+  CustomBottomNavigationBarItems({required this.name, required this.icons, required this.routes});
 }

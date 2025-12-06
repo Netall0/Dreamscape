@@ -34,28 +34,30 @@ class _ScreenState extends State<HomeScreen> {
   //TODO first running application
 
   final List<CustomBottomNavigationBarItems> items = [
-    CustomBottomNavigationBarItems(name: 'home', icons: Icon(Icons.home)),
+    CustomBottomNavigationBarItems(name: 'home', icons: Icon(Icons.home),routes: '/home'),
     CustomBottomNavigationBarItems(
       name: 'music',
       icons: Icon(Icons.music_note),
+      routes: '/home'
     ),
     CustomBottomNavigationBarItems(
+      routes: '/home',
       name: 'stats',
       icons: Icon(Icons.graphic_eq),
     ),
-    CustomBottomNavigationBarItems(name: 'profile', icons: Icon(Icons.person)),
+    CustomBottomNavigationBarItems(name: 'profile', icons: Icon(Icons.person),routes: '/home'),
   ];
   int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     final theme = context.appTheme;
-    final size = context.size!;
     return AnimatedBackground(
       child: Scaffold(
         bottomNavigationBar: CustomBottomNavigationBar(
+          route: '/home',
           color: Colors.transparent,
-          height: size.height * 0.1,
+          height: AppSizes.screenHeightOfContext(context) * 0.1,
           borderValue: AppSizes.radiusMedium,
           items: items,
           currentIndex: _currentIndex,
@@ -63,6 +65,10 @@ class _ScreenState extends State<HomeScreen> {
             setState(() {
               _currentIndex = index;
             });
+
+            final route = items[index].routes;
+
+            Navigator.pushNamed(context, route);
           },
         ),
         backgroundColor: Colors.transparent,
