@@ -1,8 +1,8 @@
 import 'dart:async';
-
-import 'package:dreamscape/common/gen/assets.gen.dart';
 import 'package:dreamscape/core/util/lottie_utils.dart';
 import 'package:dreamscape/core/gen/assets.gen.dart';
+import 'package:dreamscape/features/app/widget/app_scope.dart';
+import 'package:dreamscape/features/initialization/widget/depend_scope.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -11,6 +11,7 @@ import 'package:uikit/painter/gradient_background_painter.dart';
 import 'package:uikit/uikit.dart';
 import 'package:uikit/widget/custom_bottom_navigation_bar.dart';
 import 'package:uikit/widget/gradient_background.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -34,24 +35,35 @@ class _ScreenState extends State<HomeScreen> {
   //TODO first running application
 
   final List<CustomBottomNavigationBarItems> items = [
-    CustomBottomNavigationBarItems(name: 'home', icons: Icon(Icons.home),routes: '/home'),
+    CustomBottomNavigationBarItems(
+      name: 'home',
+      icons: Icon(Icons.home),
+      routes: '/home',
+    ),
     CustomBottomNavigationBarItems(
       name: 'music',
       icons: Icon(Icons.music_note),
-      routes: '/home'
+      routes: '/home',
     ),
     CustomBottomNavigationBarItems(
       routes: '/home',
       name: 'stats',
       icons: Icon(Icons.graphic_eq),
     ),
-    CustomBottomNavigationBarItems(name: 'profile', icons: Icon(Icons.person),routes: '/home'),
+    CustomBottomNavigationBarItems(
+      name: 'profile',
+      icons: Icon(Icons.person),
+      routes: '/home',
+    ),
   ];
   int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     final theme = context.appTheme;
+    final notificationSender = DependScope.of(
+      context,
+    ).dependModel.notificationsSender;
     return AnimatedBackground(
       child: Scaffold(
         bottomNavigationBar: CustomBottomNavigationBar(
@@ -75,7 +87,13 @@ class _ScreenState extends State<HomeScreen> {
         body: Center(
           child: Column(
             children: [
-              SizedBox(height: AppSizes.screenHeightOfContext(context) * 0.15),
+              SizedBox(height: AppSizes.screenHeightOfContext(context) * 0.12),
+              TextButton(
+                onPressed: () {
+                  notificationSender.showNotification(1, '212', '1212');
+                },
+                child: Text('test', style: theme.typography.h1),
+              ),
               Text(
                 'good ${DayTime.day.value} friend',
                 style: theme.typography.h3,

@@ -1,6 +1,6 @@
 import 'package:lottie/lottie.dart';
 import 'dart:collection';
-import "../extension/first_where_or_null.dart";
+import "extension/first_where_or_null.dart";
 
 
 class LottieUtils {

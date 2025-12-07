@@ -1,6 +1,11 @@
-import 'package:dreamscape/core/util/logger.dart';
-import 'package:dreamscape/core/util/timer.dart';
+import 'dart:io';
+
+import 'package:dreamscape/core/services/notifications_sender.dart';
+import 'package:dreamscape/core/util/logger/logger.dart';
+import 'package:dreamscape/core/util/timer_mixin.dart';
 import 'package:dreamscape/features/initialization/model/depend_container.dart';
+import 'package:dreamscape/features/initialization/model/platform_depend_container.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // typedef OnError =
@@ -16,6 +21,10 @@ final class InheritedResult {
 }
 
 class CompositionRoot with LoggerMixin, AppTimerMixin {
+  final PlatformDependContainer platformDependContainer;
+
+  CompositionRoot({required this.platformDependContainer});
+
   Future<InheritedResult> compose() async {
     logOnProgress('Старт инициализации');
 
@@ -35,20 +44,39 @@ class CompositionRoot with LoggerMixin, AppTimerMixin {
 
   Future<DependContainer> _initDepend() async {
     try {
-      logOnProgress('SharedPreferences');
       final sharedPreferences = await _initSharedPreference();
-      return DependContainer(sharedPreferences: sharedPreferences);
+      logOnComplete('sharedPreference init');
+      final notificationsSender = await _initNotificationsSender();
+      logOnComplete('notSender init');
+      return DependContainer(
+        sharedPreferences: sharedPreferences,
+        notificationsSender: notificationsSender,
+      );
     } catch (e, stackTrace) {
-      logError('Ошибка в _initDepend', e, stackTrace);
+      logger.error('Ошибка в _initDepend', error: e,stackTrace:  stackTrace);
+      rethrow;
+    }
+  }
+
+  Future<NotificationsSender> _initNotificationsSender() async {
+    try {
+      logOnProgress('SharedPreferences');
+      return NotificationsSender(
+        flutterLocalNotificationsPlugin:
+            platformDependContainer.flutterLocalNotificationsPlugin,
+      );
+    } on Object catch (e, stackTrace) {
+      logger.error('notif failed', error: e, stackTrace: stackTrace);
       rethrow;
     }
   }
 
   Future<SharedPreferences> _initSharedPreference() async {
     try {
+      logOnProgress('SharedPreferences');
       return await SharedPreferences.getInstance();
-    } on Object catch (e, st) {
-      logError('SharedPreferences.getInstance() failed', e, st);
+    } on Object catch (e, stackTrace) {
+      logger.error('shared preference init error', error: e, stackTrace: stackTrace);
       rethrow;
     }
   }
