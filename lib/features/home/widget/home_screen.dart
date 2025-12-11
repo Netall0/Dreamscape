@@ -58,12 +58,16 @@ class _ScreenState extends State<HomeScreen> {
   ];
   int _currentIndex = 0;
 
+  late final TimeOfDay _selectedTime;
+
   @override
   Widget build(BuildContext context) {
     final theme = context.appTheme;
+    final appService = DependScope.of(context).dependModel.notificationsSender;
     final notificationSender = DependScope.of(
       context,
     ).dependModel.notificationsSender;
+
     return AnimatedBackground(
       child: Scaffold(
         bottomNavigationBar: CustomBottomNavigationBar(
@@ -122,7 +126,23 @@ class _ScreenState extends State<HomeScreen> {
                   backgroundColor: ColorConstants.pastelIndigo,
                   child: Row(
                     mainAxisAlignment: .center,
-                    children: [Icon(Icons.notifications), Text('08:05')],
+                    children: [
+                      Icon(Icons.notifications),
+                      TextButton(
+                        onPressed: () async {
+                          final time = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay(hour: 7, minute: 0),
+                          );
+                          if (time != null) {
+                            setState(() {
+                              _selectedTime = time;
+                            });
+                          }
+                        },
+                        child: Text(_selectedTime.toString()),
+                      ),
+                    ],
                   ),
                 ),
               ),

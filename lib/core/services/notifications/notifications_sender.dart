@@ -1,4 +1,4 @@
-import 'package:dreamscape/core/services/i_notifications_sender.dart';
+import 'package:dreamscape/core/services/notifications/i_notifications_sender.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
@@ -13,8 +13,8 @@ final class NotificationsSender with LoggerMixin
   @override
   Future<void> showNotification(int id, String name, String description) async {
     const androidDetails = AndroidNotificationDetails(
-      '1',
-      '1',
+      'alarm_channel',
+      'alarms', //TODO swap to test channels
       channelDescription: 'Default notification channel',
       importance: Importance.high,
       priority: Priority.high,

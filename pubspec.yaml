@@ -21,6 +21,10 @@ dependencies:
     path: package/uikit
   lottie: ^3.3.2
   flutter_local_notifications: ^19.5.0
+  timezone: ^0.10.1
+  flutter_timezone: ^5.0.1
+  just_audio: ^0.10.5
+  android_alarm_manager_plus: ^5.0.0
 
 
 dev_dependencies:
@@ -31,6 +35,9 @@ dev_dependencies:
   flutter_gen_runner: ^5.12.0  
   flutter_flavorizr: ^2.4.1
   flutter_launcher_icons: ^0.14.4
+
+dependency_overrides:
+  web: 0.5.1
 
 
 flutter_gen:
@@ -53,6 +60,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/sound/audio.mp3
     - assets/images/test.png
     - assets/lottie/sleep.json
     - assets/lottie/polar_bear.lottie

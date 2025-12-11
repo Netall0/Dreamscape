@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:dreamscape/core/services/notifications_sender.dart';
+import 'package:dreamscape/core/services/notifications/notifications_sender.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:dreamscape/core/util/timer_mixin.dart';
 import 'package:dreamscape/features/initialization/model/depend_container.dart';
