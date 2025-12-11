@@ -1,16 +1,12 @@
-# dreamscape
+📌 Note about web dependency
 
-A new Flutter project.
+⚠️ Attention: This project uses Flutter 3.38.1.
+The package shared_preferences_web pulls in an incompatible version of web (1.1.1), which breaks Android/iOS builds.
+To fix this, we added an override in pubspec.yaml:
 
-## Getting Started
+dependency_overrides:
+  web: 0.5.1
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+This is a temporary workaround until a compatible version of the package is released.
+When updating dependencies, always check for web compatibility first.
