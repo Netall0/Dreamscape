@@ -5,8 +5,9 @@ import 'dart:ui';
 import 'package:dreamscape/core/config/app_config.dart';
 import 'package:dreamscape/core/services/alarm/alarm_service.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
-import 'package:dreamscape/core/util/timer_mixin.dart';
+// import 'package:dreamscape/core/util/timer_mixin.dart';
 import 'package:dreamscape/features/app/widget/app_scope.dart';
+import 'package:dreamscape/features/home/controller/notifier/clock_stream.dart';
 import 'package:dreamscape/features/initialization/logic/composition_root.dart';
 import 'package:dreamscape/features/initialization/model/platform_depend_container.dart';
 import 'package:flutter/widgets.dart';
@@ -15,7 +16,9 @@ import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
 
-final class AppRunner with LoggerMixin, AppTimerMixin {
+final class AppRunner with LoggerMixin
+//, AppTimerMixin
+{
   Future<void> run(AppEnv env) async {
     late final PlatformDependContainer platformDeps;
     late final WidgetsBinding bindings;
@@ -27,13 +30,17 @@ final class AppRunner with LoggerMixin, AppTimerMixin {
         _initErrorHandler();
 
         try {
-          logOnProgress('Инициализация платформы');
+          // logOnProgress('Инициализация платформы');
 
           platformDeps = await _initPlatformDependencies();
 
+          await _initTimezone();
+
           logger.debug('Platform dependencies initialized');
 
-          logOnProgress('Старт приложения');
+          logger.debug('clock started');
+
+          // logOnProgress('Старт приложения');
 
           logger.debug('show init notifications');
 
@@ -47,7 +54,7 @@ final class AppRunner with LoggerMixin, AppTimerMixin {
             ),
           );
 
-          logOnComplete('runner');
+          // logOnComplete('runner');
         } on Object catch (e, st) {
           logger.error('Ошибка в AppRunner', error: e, stackTrace: st);
         } finally {
@@ -65,24 +72,31 @@ final class AppRunner with LoggerMixin, AppTimerMixin {
   }
 
   Future<PlatformDependContainer> _initPlatformDependencies() async {
-    final timeZone = await _initTimezone();
-
-
-
     //TODO rotate logging here
 
     FlutterLocalNotificationsPlugin notificationsPlugin =
         await _intiLocalNotificaion();
 
+    final AlarmService alarmService = AlarmService(
+      localNotificationsPlugin: notificationsPlugin,
+    );
 
-        
-    final AlarmService alarmService = AlarmService(localNotificationsPlugin: notificationsPlugin);
-
+    final StreamClock clockNotifier = await _initClockNotifier();
     return PlatformDependContainer(
+      clockNoitifier: clockNotifier,
       alarmService: alarmService,
-      timeZone: timeZone,
       flutterLocalNotificationsPlugin: notificationsPlugin,
     );
+  }
+
+  Future<StreamClock> _initClockNotifier() async {
+    try {
+      final StreamClock clockNotifier = StreamClock();
+      return clockNotifier;
+    } on Object catch (e, stackTrace) {
+      logger.error('clock failed', error: e, stackTrace: stackTrace);
+      rethrow;
+    }
   }
 
   Future<FlutterLocalNotificationsPlugin> _intiLocalNotificaion() async {
@@ -109,21 +123,35 @@ final class AppRunner with LoggerMixin, AppTimerMixin {
       },
     );
 
+    const notificationChannel = AndroidNotificationChannel(
+      'Notificaion_channel',
+      'Notifications',
+      description: 'Default notification channel',
+      importance: Importance.high,
+      playSound: true,
+    );
 
     const alarmChannel = AndroidNotificationChannel(
-      'alarm_channel',
+      'Alarm_channel',
       'Alarms',
-      description: 'Alarm notifications',
-      importance: Importance.max,
       playSound: true,
+      description: 'channel for your alarm',
+      importance: Importance.max,
+      sound: RawResourceAndroidNotificationSound('alarm'),
+      enableLights: true,
       enableVibration: true,
     );
 
-    await notificationsPlugin
+    final androidImpl = notificationsPlugin
         .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin
-        >()
-        ?.createNotificationChannel(alarmChannel);
+        >();
+
+    await androidImpl?.createNotificationChannel(notificationChannel);
+    logger.debug('notification channel created');
+
+    await androidImpl?.createNotificationChannel(alarmChannel);
+    logger.debug('alarm channel created');
 
     if (Platform.isAndroid) {
       final androidImpl = notificationsPlugin
@@ -133,19 +161,21 @@ final class AppRunner with LoggerMixin, AppTimerMixin {
 
       final granted = await androidImpl?.requestNotificationsPermission();
       logger.debug('Android notification permission: $granted');
+
+      final exactAlarmGranted = await androidImpl
+          ?.requestExactAlarmsPermission();
+      logger.debug('Exact alarm permission: $exactAlarmGranted');
     }
     return notificationsPlugin;
   }
 
-  Future<TimeZoneString> _initTimezone() async {
+  Future<void> _initTimezone() async {
     try {
       tz.initializeTimeZones();
-      final timezoneName = await FlutterTimezone.getLocalTimezone();
-      final parsedTimeZone = parseWeirdTimezone(timezoneName.toString());
+      final currentTimeZone = await FlutterTimezone.getLocalTimezone();
 
-      tz.setLocalLocation(tz.getLocation(parsedTimeZone));
-      logger.debug('locaton set ($parsedTimeZone)');
-      return parsedTimeZone;
+      tz.setLocalLocation(tz.getLocation(currentTimeZone));
+      logger.debug('locaton set ($currentTimeZone)');
     } on Object catch (e, st) {
       logger.error('$e', stackTrace: st);
       rethrow;
@@ -167,19 +197,4 @@ final class AppRunner with LoggerMixin, AppTimerMixin {
       FlutterError.presentError(details);
     };
   }
-}
-
-//TODO update to switch case
-String parseWeirdTimezone(String input) {
-  final s = input.toLowerCase();
-
-  if (s.contains("greenwich")) return "UTC";
-  if (s.contains("gmt")) return "UTC";
-
-  if (s.contains("utc")) return "UTC";
-  final RegExp tzRegex = RegExp(r'[A-Za-z]+\/[A-Za-z_]+');
-  final match = tzRegex.firstMatch(input);
-  if (match != null) return match.group(0)!;
-
-  return "UTC";
 }

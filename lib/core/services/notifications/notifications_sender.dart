@@ -2,8 +2,9 @@ import 'package:dreamscape/core/services/notifications/i_notifications_sender.da
 import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-final class NotificationsSender with LoggerMixin
-    implements INotificationsSender  {
+final class NotificationsSender
+    with LoggerMixin
+    implements INotificationsSender {
   NotificationsSender({
     required FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
   }) : _flutterLocalNotificationsPlugin = flutterLocalNotificationsPlugin;
@@ -13,8 +14,8 @@ final class NotificationsSender with LoggerMixin
   @override
   Future<void> showNotification(int id, String name, String description) async {
     const androidDetails = AndroidNotificationDetails(
-      'alarm_channel',
-      'alarms', //TODO swap to test channels
+      'Notificaion_channel',
+      'Notifications',
       channelDescription: 'Default notification channel',
       importance: Importance.high,
       priority: Priority.high,
@@ -35,7 +36,7 @@ final class NotificationsSender with LoggerMixin
         description,
         details,
       );
-       logger.debug('notications shown');
+      logger.debug('notications shown');
     } on Object catch (e) {
       logger.debug(e.toString());
     }
