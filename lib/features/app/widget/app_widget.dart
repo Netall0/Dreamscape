@@ -6,7 +6,6 @@ class AppMaterial extends StatelessWidget {
   const AppMaterial({super.key});
 
   // only one theme in app
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -19,5 +18,7 @@ class AppMaterial extends StatelessWidget {
     );
   }
 }
+
+
 
 //TODO settings feature

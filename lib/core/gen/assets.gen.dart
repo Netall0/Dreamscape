@@ -40,11 +40,25 @@ class $AssetsLottieGen {
   List<LottieGenImage> get values => [sleepingPolarBear, polarBear, sleep];
 }
 
+class $AssetsSoundGen {
+  const $AssetsSoundGen();
+
+  /// File path: assets/sound/alarm.mp3
+  String get alarm => 'assets/sound/alarm.mp3';
+
+  /// File path: assets/sound/rain.mp3
+  String get rain => 'assets/sound/rain.mp3';
+
+  /// List of all assets
+  List<String> get values => [alarm, rain];
+}
+
 class Assets {
   const Assets._();
 
   static const $AssetsImagesGen images = $AssetsImagesGen();
   static const $AssetsLottieGen lottie = $AssetsLottieGen();
+  static const $AssetsSoundGen sound = $AssetsSoundGen();
 }
 
 class AssetGenImage {

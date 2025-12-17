@@ -1,11 +1,9 @@
-import 'dart:io';
-
+import 'package:dreamscape/core/services/alarm/alarm_service.dart';
 import 'package:dreamscape/core/services/notifications/notifications_sender.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:dreamscape/core/util/timer_mixin.dart';
 import 'package:dreamscape/features/initialization/model/depend_container.dart';
 import 'package:dreamscape/features/initialization/model/platform_depend_container.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // typedef OnError =
@@ -48,12 +46,30 @@ class CompositionRoot with LoggerMixin, AppTimerMixin {
       logOnComplete('sharedPreference init');
       final notificationsSender = await _initNotificationsSender();
       logOnComplete('notSender init');
+      final alarmService = await _initAlarmService();
+      logOnComplete('alarmService init');
       return DependContainer(
+        alarmService: alarmService,
         sharedPreferences: sharedPreferences,
         notificationsSender: notificationsSender,
       );
     } catch (e, stackTrace) {
-      logger.error('Ошибка в _initDepend', error: e,stackTrace:  stackTrace);
+      logger.error('Ошибка в _initDepend', error: e, stackTrace: stackTrace);
+      rethrow;
+    }
+  }
+
+
+
+  Future<AlarmService> _initAlarmService() async {
+    try {
+      logOnProgress('alarm sevice');
+      return AlarmService(
+        localNotificationsPlugin:
+            platformDependContainer.flutterLocalNotificationsPlugin,
+      );
+    } on Object catch (e, stackTrace) {
+      logger.error('alarm failde', error: e, stackTrace: stackTrace);
       rethrow;
     }
   }
@@ -76,7 +92,11 @@ class CompositionRoot with LoggerMixin, AppTimerMixin {
       logOnProgress('SharedPreferences');
       return await SharedPreferences.getInstance();
     } on Object catch (e, stackTrace) {
-      logger.error('shared preference init error', error: e, stackTrace: stackTrace);
+      logger.error(
+        'shared preference init error',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }

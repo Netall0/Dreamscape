@@ -1,17 +1,15 @@
-import 'dart:async';
-import 'package:dreamscape/core/util/lottie_utils.dart';
 import 'package:dreamscape/core/gen/assets.gen.dart';
-import 'package:dreamscape/features/app/widget/app_scope.dart';
+import 'package:dreamscape/core/util/logger/logger.dart';
+import 'package:dreamscape/features/home/controller/notifier/clock_stream.dart';
+import 'package:dreamscape/features/home/widget/clock_widget.dart';
+import 'package:dreamscape/features/home/widget/sleep_screen.dart';
 import 'package:dreamscape/features/initialization/widget/depend_scope.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:lottie/lottie.dart';
 import 'package:uikit/painter/gradient_background_painter.dart';
 import 'package:uikit/uikit.dart';
 import 'package:uikit/widget/custom_bottom_navigation_bar.dart';
 import 'package:uikit/widget/gradient_background.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,30 +17,13 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _ScreenState();
 }
 
-class _ScreenState extends State<HomeScreen> {
-  late final Stream<DateTime> _timeStream;
-
-  @override
-  void initState() {
-    super.initState();
-    // Stream создаётся один раз!
-    _timeStream = Stream.periodic(
-      const Duration(seconds: 1), // Обновляем каждую секунду для плавности
-      (_) => DateTime.now(),
-    );
-  }
-
+class _ScreenState extends State<HomeScreen> with LoggerMixin {
   //TODO first running application
 
   final List<CustomBottomNavigationBarItems> items = [
     CustomBottomNavigationBarItems(
       name: 'home',
       icons: Icon(Icons.home),
-      routes: '/home',
-    ),
-    CustomBottomNavigationBarItems(
-      name: 'music',
-      icons: Icon(Icons.music_note),
       routes: '/home',
     ),
     CustomBottomNavigationBarItems(
@@ -58,15 +39,18 @@ class _ScreenState extends State<HomeScreen> {
   ];
   int _currentIndex = 0;
 
-  late final TimeOfDay _selectedTime;
+  TimeOfDay _selectedTime = TimeOfDay(hour: 4, minute: 34);
 
   @override
   Widget build(BuildContext context) {
     final theme = context.appTheme;
-    final appService = DependScope.of(context).dependModel.notificationsSender;
     final notificationSender = DependScope.of(
       context,
     ).dependModel.notificationsSender;
+    final alarmService = DependScope.of(context).dependModel.alarmService;
+    final clockStream = DependScope.of(
+      context,
+    ).platformDependContainer.clockNoitifier;
 
     return AnimatedBackground(
       child: Scaffold(
@@ -91,32 +75,9 @@ class _ScreenState extends State<HomeScreen> {
         body: Center(
           child: Column(
             children: [
-              SizedBox(height: AppSizes.screenHeightOfContext(context) * 0.12),
-              TextButton(
-                onPressed: () {
-                  notificationSender.showNotification(1, '212', '1212');
-                },
-                child: Text('test', style: theme.typography.h1),
-              ),
-              Text(
-                'good ${DayTime.day.value} friend',
-                style: theme.typography.h3,
-              ),
-              StreamBuilder<DateTime>(
-                stream: _timeStream,
-                builder: (context, snapshot) {
-                  return switch (snapshot) {
-                    AsyncSnapshot(:final data?) => Text(
-                      '${data.hour.toString().padLeft(2, '0')}:${data.minute.toString().padLeft(2, '0')}',
-                      style: theme.typography.h1,
-                    ),
-                    AsyncSnapshot(hasError: true) => Text(
-                      'Error: ${snapshot.error}',
-                    ),
-                    _ => const CircularProgressIndicator(),
-                  };
-                },
-              ),
+              SizedBox(height: AppSizes.screenHeightOfContext(context) * 0.15),
+              Text('hello  friend', style: theme.typography.h1.copyWith()),
+              ClockWidget(clockStream: clockStream, theme: theme),
               SizedBox(height: 24),
               SizedBox(
                 width: 110,
@@ -132,15 +93,40 @@ class _ScreenState extends State<HomeScreen> {
                         onPressed: () async {
                           final time = await showTimePicker(
                             context: context,
-                            initialTime: TimeOfDay(hour: 7, minute: 0),
+                            initialTime: _selectedTime,
                           );
                           if (time != null) {
                             setState(() {
                               _selectedTime = time;
                             });
                           }
+
+                          int hour = time?.hour ?? _selectedTime.hour;
+                          int minute = time?.minute ?? _selectedTime.minute;
+
+                          await alarmService.setAlarm(
+                            title: 'title',
+                            body: 'body',
+                            hour: hour,
+                            minute: minute,
+                          );
+
+                          logger.debug('setalarm');
+
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Будильник установлене на $hour:${minute.toString().padLeft(2, '0')}',
+                                ),
+                              ),
+                            );
+                          }
                         },
-                        child: Text(_selectedTime.toString()),
+                        child: Text(
+                          '${_selectedTime.hour.toString()}:${_selectedTime.minute.toString()}',
+                          style: theme.typography.h6,
+                        ),
                       ),
                     ],
                   ),
@@ -151,12 +137,31 @@ class _ScreenState extends State<HomeScreen> {
               SizedBox(
                 width: 200,
                 height: 60,
-                child: AdaptiveCard(
-                  borderRadius: .all(.circular(24)),
-                  backgroundColor: ColorConstants.pastelIndigo,
-                  child: Row(
-                    mainAxisAlignment: .center,
-                    children: [Icon(Icons.notifications), Text('Начать сон')],
+                child: GestureDetector(
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return SleepScreen();
+                      },
+                    ),
+                  ),
+                  child: AdaptiveCard(
+                    borderRadius: .all(.circular(24)),
+                    backgroundColor: ColorConstants.pastelIndigo,
+                    child: Row(
+                      mainAxisAlignment: .center,
+                      children: [
+                        Icon(Icons.play_arrow),
+                        Text(
+                          ' Начать сон',
+                          style: theme.typography.h5.copyWith(
+                            color: Colors.black,
+                          ),
+                        ),
+                      
+                      ],
+                    ),
                   ),
                 ),
               ),

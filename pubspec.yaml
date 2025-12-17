@@ -1,7 +1,6 @@
 name: dreamscape
 description: "A new Flutter project."
 publish_to: 'none'
-
 version: 1.0.0+1
 
 environment:
@@ -12,61 +11,53 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
-  flutter_gen: ^5.12.0  # 
+  flutter_gen: ^5.12.0
   flutter_bloc: ^9.1.1
   shared_preferences: ^2.5.3
   mason: ^0.1.1
-  audioplayers: ^6.5.1
   uikit:
     path: package/uikit
   lottie: ^3.3.2
-  flutter_local_notifications: ^19.5.0
-  timezone: ^0.10.1
-  flutter_timezone: ^5.0.1
-  just_audio: ^0.10.5
-  android_alarm_manager_plus: ^5.0.0
-
+  
+  flutter_local_notifications: ^17.2.3
+  timezone: ^0.9.4
+  flutter_timezone: ^3.0.1
+  just_audio: ^0.9.40
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
   build_runner: ^2.10.4
-  flutter_gen_runner: ^5.12.0  
+  flutter_gen_runner: ^5.12.0
   flutter_flavorizr: ^2.4.1
   flutter_launcher_icons: ^0.14.4
 
-dependency_overrides:
-  web: 0.5.1
-
+# dependency_overrides:
+#   web: ^1.0.0
 
 flutter_gen:
   output: lib/core/gen
-
   integrations:
     lottie: true
-
-
   fonts:
     enabled: true
     outputs:
       class_name: AppFontFamily
-
 
 workspace:
   - package/uikit
 
 flutter:
   uses-material-design: true
-
   assets:
-    - assets/sound/audio.mp3
     - assets/images/test.png
     - assets/lottie/sleep.json
     - assets/lottie/polar_bear.lottie
     - assets/lottie/Sleeping Polar Bear.json
-
+    - assets/sound/alarm.mp3
+    - assets/sound/rain.mp3
   fonts:
-    - family: AppIcons  
+    - family: AppIcons
       fonts:
-        - asset: assets/fonts/icomoon.ttf  
+        - asset: assets/fonts/icomoon.ttf
