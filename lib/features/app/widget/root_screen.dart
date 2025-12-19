@@ -18,17 +18,14 @@ class _RootScreenState extends State<RootScreen> {
     CustomBottomNavigationBarItems(
       name: 'home',
       icons: Icon(Icons.home),
-      routes: '/home',
     ),
     CustomBottomNavigationBarItems(
-      routes: '/home',
       name: 'stats',
       icons: Icon(Icons.graphic_eq),
     ),
     CustomBottomNavigationBarItems(
       name: 'profile',
       icons: Icon(Icons.person),
-      routes: '/home',
     ),
   ];
 

@@ -27,6 +27,8 @@ final class AppRunner with LoggerMixin
       () async {
         bindings = WidgetsFlutterBinding.ensureInitialized()..deferFirstFrame();
 
+        final timer = Stopwatch()..start();
+
         _initErrorHandler();
 
         try {
@@ -54,7 +56,9 @@ final class AppRunner with LoggerMixin
             ),
           );
 
-          // logOnComplete('runner');
+          timer.stop();
+
+          logger.debug('runner initialized ${timer.elapsedMilliseconds}ms');
         } on Object catch (e, st) {
           logger.error('Ошибка в AppRunner', error: e, stackTrace: st);
         } finally {

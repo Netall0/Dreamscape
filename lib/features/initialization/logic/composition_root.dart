@@ -1,7 +1,6 @@
 import 'package:dreamscape/core/services/alarm/alarm_service.dart';
 import 'package:dreamscape/core/services/notifications/notifications_sender.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
-import 'package:dreamscape/core/util/timer_mixin.dart';
 import 'package:dreamscape/features/initialization/model/depend_container.dart';
 import 'package:dreamscape/features/initialization/model/platform_depend_container.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,13 +17,13 @@ final class InheritedResult {
   const InheritedResult({required this.ms, required this.dependModel});
 }
 
-class CompositionRoot with LoggerMixin, AppTimerMixin {
+class CompositionRoot with LoggerMixin {
   final PlatformDependContainer platformDependContainer;
 
   CompositionRoot({required this.platformDependContainer});
 
   Future<InheritedResult> compose() async {
-    logOnProgress('Старт инициализации');
+    logger.debug('initialization start');
 
     final stopwatch = Stopwatch()..start();
 
@@ -32,7 +31,7 @@ class CompositionRoot with LoggerMixin, AppTimerMixin {
 
     stopwatch.stop();
 
-    logOnComplete('Dependencies');
+    logger.debug('initialized depend ${stopwatch.elapsedMilliseconds}ms');
 
     return InheritedResult(
       ms: stopwatch.elapsedMilliseconds,
@@ -43,11 +42,11 @@ class CompositionRoot with LoggerMixin, AppTimerMixin {
   Future<DependContainer> _initDepend() async {
     try {
       final sharedPreferences = await _initSharedPreference();
-      logOnComplete('sharedPreference init');
+      logger.debug('sharedPreference init');
       final notificationsSender = await _initNotificationsSender();
-      logOnComplete('notSender init');
+      logger.debug('notSender init');
       final alarmService = await _initAlarmService();
-      logOnComplete('alarmService init');
+      logger.debug('alarmService init');
       return DependContainer(
         alarmService: alarmService,
         sharedPreferences: sharedPreferences,
@@ -59,11 +58,9 @@ class CompositionRoot with LoggerMixin, AppTimerMixin {
     }
   }
 
-
-
   Future<AlarmService> _initAlarmService() async {
     try {
-      logOnProgress('alarm sevice');
+      logger.debug('alarm sevice');
       return AlarmService(
         localNotificationsPlugin:
             platformDependContainer.flutterLocalNotificationsPlugin,
@@ -76,7 +73,7 @@ class CompositionRoot with LoggerMixin, AppTimerMixin {
 
   Future<NotificationsSender> _initNotificationsSender() async {
     try {
-      logOnProgress('SharedPreferences');
+      logger.debug('SharedPreferences');
       return NotificationsSender(
         flutterLocalNotificationsPlugin:
             platformDependContainer.flutterLocalNotificationsPlugin,
@@ -89,7 +86,7 @@ class CompositionRoot with LoggerMixin, AppTimerMixin {
 
   Future<SharedPreferences> _initSharedPreference() async {
     try {
-      logOnProgress('SharedPreferences');
+      logger.debug('SharedPreferences');
       return await SharedPreferences.getInstance();
     } on Object catch (e, stackTrace) {
       logger.error(

@@ -104,11 +104,9 @@ class _NavItem extends StatelessWidget {
 final class CustomBottomNavigationBarItems {
   final String name;
   final Icon icons;
-  final String routes;
 
   CustomBottomNavigationBarItems({
     required this.name,
     required this.icons,
-    required this.routes,
   });
 }

@@ -1,3 +1,4 @@
+import 'package:dreamscape/core/router/navigator_observer.dart';
 import 'package:dreamscape/core/router/router.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -15,7 +16,11 @@ class _AppMaterialState extends State<AppMaterial> {
 
   @override
   void initState() {
-    _router = GoRouter(routes: $appRoutes, initialLocation: '/home');
+    _router = GoRouter(
+      routes: $appRoutes,
+      initialLocation: '/home',
+      observers: [NavObserver()],
+    );
     super.initState();
   }
 

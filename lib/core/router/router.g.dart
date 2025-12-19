@@ -14,11 +14,11 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
     StatefulShellBranchData.$branch(
       routes: [
         GoRouteData.$route(
-          path: '/home',
+          path: '/',
           factory: $HomeRouteDate._fromState,
           routes: [
             GoRouteData.$route(
-              path: '/home/sleep',
+              path: '/sleep',
               factory: $SleepScreenData._fromState,
             ),
           ],
@@ -49,7 +49,7 @@ mixin $HomeRouteDate on GoRouteData {
   static HomeRouteDate _fromState(GoRouterState state) => const HomeRouteDate();
 
   @override
-  String get location => GoRouteData.$location('/home');
+  String get location => GoRouteData.$location('/');
 
   @override
   void go(BuildContext context) => context.go(location);
@@ -70,7 +70,7 @@ mixin $SleepScreenData on GoRouteData {
       const SleepScreenData();
 
   @override
-  String get location => GoRouteData.$location('/home/sleep');
+  String get location => GoRouteData.$location('/sleep');
 
   @override
   void go(BuildContext context) => context.go(location);

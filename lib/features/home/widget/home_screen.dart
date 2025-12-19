@@ -1,4 +1,5 @@
 import 'package:dreamscape/core/gen/assets.gen.dart';
+import 'package:dreamscape/core/router/router.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:dreamscape/extension/app_context_extension.dart';
 
@@ -6,6 +7,7 @@ import 'package:dreamscape/features/home/widget/clock_widget.dart';
 import 'package:dreamscape/features/home/widget/sleep_screen.dart';
 import 'package:dreamscape/features/initialization/widget/depend_scope.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:uikit/uikit.dart';
 
@@ -98,14 +100,7 @@ class _ScreenState extends State<HomeScreen> with LoggerMixin {
               width: 200,
               height: 60,
               child: GestureDetector(
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return SleepScreen();
-                    },
-                  ),
-                ),
+                onTap: () => SleepScreenData().go(context),
                 child: AdaptiveCard(
                   borderRadius: .all(.circular(24)),
                   backgroundColor: ColorConstants.pastelIndigo,

@@ -7,7 +7,7 @@ class CustomRoundMusicBar extends StatefulWidget {
   const CustomRoundMusicBar({
     super.key,
     required this.isPlaying,
-    this.animationDuration = const Duration(milliseconds: 300),
+    this.animationDuration = const Duration(milliseconds: 800),
   });
 
   final Duration animationDuration;
