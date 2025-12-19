@@ -5,7 +5,7 @@ import 'package:dreamscape/features/initialization/widget/depend_scope.dart';
 import 'package:flutter/widgets.dart';
 import 'package:uikit/uikit.dart';
 
-class AppScope extends StatefulWidget {
+class AppScope extends StatelessWidget {
   const AppScope({
     super.key,
     required this.dependContainer,
@@ -16,21 +16,11 @@ class AppScope extends StatefulWidget {
   final PlatformDependContainer platformDependContainer;
 
   @override
-  State<AppScope> createState() => _AppScopeState();
-}
-
-class _AppScopeState extends State<AppScope> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return LayoutScope(
       child: DependScope(
-        dependModel: widget.dependContainer,
-        platformDependContainer: widget.platformDependContainer,
+        dependModel: dependContainer,
+        platformDependContainer: platformDependContainer,
         child: AppMaterial(),
       ),
     );

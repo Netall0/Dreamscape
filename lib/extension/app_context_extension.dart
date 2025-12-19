@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:uikit/uikit.dart';
 
-extension on BuildContext {
-  LayoutInherited get layoutInherited => LayoutInherited.of(this);
-
+extension AppThemeBuildContextProps on BuildContext {
   AppTheme get appTheme => Theme.of(this).extension<AppTheme>()!;
+  AppColors get colors => appTheme.colors;
+  AppFonts get typography => appTheme.typography;
 }
-

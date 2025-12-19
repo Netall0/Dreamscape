@@ -12,6 +12,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
     required this.currentIndex,
     required this.onTap,
     required this.route,
+    required this.activeColor,
+    required this.inactiveColor,
   });
 
   final Color color;
@@ -19,6 +21,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
   final double borderValue;
   final int currentIndex;
   final String route;
+  final Color activeColor;
+  final Color inactiveColor;
 
   //typedef ValueChanged<T> = void Function(T value); => for callbacks that report that a value has been set.
 
@@ -46,6 +50,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: List.generate(items.length, (i) {
                 return _NavItem(
+                  activeColor: activeColor,
+                  inactiveColor: inactiveColor,
                   icons: items[i].icons.icon ?? Icons.home,
                   name: items[i].name,
                   index: i,
@@ -63,13 +69,16 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
 class _NavItem extends StatelessWidget {
   const _NavItem({
+    required this.inactiveColor,
+    required this.activeColor,
     required this.index,
     required this.currentIndex,
     required this.onTap,
     required this.name,
     required this.icons,
   });
-
+  final Color activeColor;
+  final Color inactiveColor;
   final String name;
   final IconData icons;
   final int index;
@@ -82,7 +91,12 @@ class _NavItem extends StatelessWidget {
 
     return GestureDetector(
       onTap: () => onTap(index),
-      child: Column(children: [Icon(icons), Text(name)]),
+      child: Column(
+        children: [
+          Icon(icons, color: isActive ? activeColor : inactiveColor),
+          Text(name),
+        ],
+      ),
     );
   }
 }
@@ -92,5 +106,9 @@ final class CustomBottomNavigationBarItems {
   final Icon icons;
   final String routes;
 
-  CustomBottomNavigationBarItems({required this.name, required this.icons, required this.routes});
+  CustomBottomNavigationBarItems({
+    required this.name,
+    required this.icons,
+    required this.routes,
+  });
 }
