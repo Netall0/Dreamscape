@@ -1,11 +1,12 @@
 import 'package:dreamscape/core/gen/assets.gen.dart';
+import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:dreamscape/extension/app_context_extension.dart';
+import 'package:dreamscape/features/home/widget/alarm_time_picker_widget.dart';
 import 'package:dreamscape/features/home/widget/clock_widget.dart';
 import 'package:dreamscape/features/initialization/widget/depend_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:uikit/colors/color_constant.dart';
-import 'package:uikit/layout/app_size.dart';
+import 'package:uikit/uikit.dart';
 import 'package:uikit/widget/custom_round_music_bar.dart';
 
 class SleepScreen extends StatefulWidget {
@@ -16,21 +17,27 @@ class SleepScreen extends StatefulWidget {
 }
 
 class _SleepScreenState extends State<SleepScreen>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, LoggerMixin {
   late final AudioPlayer _player;
+  bool _isInitialized = false;
 
   @override
   void initState() {
     super.initState();
-
-    // audio player
     _player = AudioPlayer();
-    initPlayer();
+    _initPlayer();
   }
 
-  Future<void> initPlayer() async {
-    await _player.setAsset(Assets.sound.rain);
-    await _player.setLoopMode(LoopMode.one);
+  Future<void> _initPlayer() async {
+    try {
+      await _player.setAsset(Assets.sound.rain);
+      await _player.setLoopMode(LoopMode.one);
+      if (mounted) {
+        setState(() => _isInitialized = true);
+      }
+    } on Object catch (e, stackTrace) {
+      logger.error('audio', error: e, stackTrace: stackTrace);
+    }
   }
 
   @override
@@ -45,9 +52,11 @@ class _SleepScreenState extends State<SleepScreen>
     final size = MediaQuery.of(context).size;
     final clockStream = DependScope.of(
       context,
-    ).platformDependContainer.clockNoitifier;
+    ).platformDependContainer.clockNotifier;
+    final alarmService = DependScope.of(context).platformDependContainer.alarmService;
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         automaticallyImplyActions: true,
       ), //TODO testing delete after
       backgroundColor: Colors.transparent,
@@ -57,17 +66,16 @@ class _SleepScreenState extends State<SleepScreen>
           mainAxisAlignment: .center,
           children: [
             ClockWidget(clockStream: clockStream, theme: theme),
+            SizedBox(height: 24),
+            AlarmTimePickerWidget(alarmService: alarmService),
             SizedBox(height: AppSizes.double20),
-    
             Stack(
               alignment: .center,
               children: [
                 SizedBox(
-                  height: size.height * 0.6,
+                  height: size.height * 0.3,
                   width: size.width * 0.6,
-                  child: CustomRoundMusicBar(
-                    isPlaying: _player.playingStream,
-                  ),
+                  child: CustomRoundMusicBar(isPlaying: _player.playingStream),
                 ),
                 SizedBox(
                   height: size.height * 0.4,
@@ -95,7 +103,7 @@ class _SleepScreenState extends State<SleepScreen>
                     ),
                   ),
                 ),
-    
+
                 SizedBox(
                   height: size.height * 0.1,
                   width: size.width * 0.1,
@@ -110,14 +118,14 @@ class _SleepScreenState extends State<SleepScreen>
                         stream: _player.playerStateStream,
                         builder: (context, snapshot) {
                           final state = snapshot.data;
-    
+
                           final isPlaying = state?.playing ?? false;
                           final isLoading =
                               state?.processingState ==
                                   ProcessingState.loading ||
                               state?.processingState ==
                                   ProcessingState.buffering;
-    
+
                           return IconButton(
                             alignment: .center,
                             onPressed: isLoading
@@ -142,8 +150,23 @@ class _SleepScreenState extends State<SleepScreen>
                 ),
               ],
             ),
-            SizedBox(height: size.height * 0.1),
-            Text('rain.mp3'),
+            SizedBox(
+              height: size.height * 0.1,
+              child: AdaptiveCard(child: Column()),
+            ),
+
+            SizedBox(
+              height: size.height * 0.05,
+              width: size.width * 0.5,
+              child: AdaptiveButton.primary(
+                onPressed: () {},
+                color: ColorConstants.nightViolet,
+                child: Text(
+                  'Начать сон',
+                  style: theme.typography.h5.copyWith(color: Colors.white),
+                ),
+              ),
+            ),
           ],
         ),
       ),

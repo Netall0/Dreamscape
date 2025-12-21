@@ -9,6 +9,7 @@ import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:dreamscape/features/app/widget/app_scope.dart';
 import 'package:dreamscape/features/home/controller/notifier/clock_stream.dart';
 import 'package:dreamscape/features/initialization/logic/composition_root.dart';
+import 'package:dreamscape/features/initialization/model/depend_container.dart';
 import 'package:dreamscape/features/initialization/model/platform_depend_container.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -87,9 +88,8 @@ final class AppRunner with LoggerMixin
 
     final StreamClock clockNotifier = await _initClockNotifier();
     return PlatformDependContainer(
-      clockNoitifier: clockNotifier,
       alarmService: alarmService,
-      flutterLocalNotificationsPlugin: notificationsPlugin,
+      clockNotifier: clockNotifier,
     );
   }
 

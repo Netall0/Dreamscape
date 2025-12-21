@@ -1,5 +1,3 @@
-import 'package:dreamscape/core/services/alarm/alarm_service.dart';
-import 'package:dreamscape/core/services/notifications/notifications_sender.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:dreamscape/features/initialization/model/depend_container.dart';
 import 'package:dreamscape/features/initialization/model/platform_depend_container.dart';
@@ -10,12 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 // typedef OnProgress = void Function(String name);
 // typedef OnComplete = void Function(String message);
 
-final class InheritedResult {
-  final int ms;
-  final DependContainer dependModel;
 
-  const InheritedResult({required this.ms, required this.dependModel});
-}
 
 class CompositionRoot with LoggerMixin {
   final PlatformDependContainer platformDependContainer;
@@ -43,14 +36,9 @@ class CompositionRoot with LoggerMixin {
     try {
       final sharedPreferences = await _initSharedPreference();
       logger.debug('sharedPreference init');
-      final notificationsSender = await _initNotificationsSender();
-      logger.debug('notSender init');
-      final alarmService = await _initAlarmService();
       logger.debug('alarmService init');
       return DependContainer(
-        alarmService: alarmService,
         sharedPreferences: sharedPreferences,
-        notificationsSender: notificationsSender,
       );
     } catch (e, stackTrace) {
       logger.error('Ошибка в _initDepend', error: e, stackTrace: stackTrace);
@@ -58,31 +46,7 @@ class CompositionRoot with LoggerMixin {
     }
   }
 
-  Future<AlarmService> _initAlarmService() async {
-    try {
-      logger.debug('alarm sevice');
-      return AlarmService(
-        localNotificationsPlugin:
-            platformDependContainer.flutterLocalNotificationsPlugin,
-      );
-    } on Object catch (e, stackTrace) {
-      logger.error('alarm failde', error: e, stackTrace: stackTrace);
-      rethrow;
-    }
-  }
 
-  Future<NotificationsSender> _initNotificationsSender() async {
-    try {
-      logger.debug('SharedPreferences');
-      return NotificationsSender(
-        flutterLocalNotificationsPlugin:
-            platformDependContainer.flutterLocalNotificationsPlugin,
-      );
-    } on Object catch (e, stackTrace) {
-      logger.error('notif failed', error: e, stackTrace: stackTrace);
-      rethrow;
-    }
-  }
 
   Future<SharedPreferences> _initSharedPreference() async {
     try {

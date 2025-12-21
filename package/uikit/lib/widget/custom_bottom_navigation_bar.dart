@@ -43,23 +43,20 @@ class CustomBottomNavigationBar extends StatelessWidget {
               topRight: .circular(borderValue),
             ),
           ),
-          child: SafeArea(
-            top: false,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: List.generate(items.length, (i) {
-                return _NavItem(
-                  activeColor: activeColor,
-                  inactiveColor: inactiveColor,
-                  icons: items[i].icons.icon ?? Icons.home,
-                  name: items[i].name,
-                  index: i,
-                  currentIndex: currentIndex,
-                  onTap: onTap,
-                );
-              }),
-            ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: List.generate(items.length, (i) {
+              return _NavItem(
+                activeColor: activeColor,
+                inactiveColor: inactiveColor,
+                icons: items[i].icons.icon ?? Icons.home,
+                name: items[i].name,
+                index: i,
+                currentIndex: currentIndex,
+                onTap: onTap,
+              );
+            }),
           ),
         ),
       ),
@@ -105,8 +102,5 @@ final class CustomBottomNavigationBarItems {
   final String name;
   final Icon icons;
 
-  CustomBottomNavigationBarItems({
-    required this.name,
-    required this.icons,
-  });
+  CustomBottomNavigationBarItems({required this.name, required this.icons});
 }

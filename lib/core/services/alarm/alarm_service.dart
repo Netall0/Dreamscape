@@ -1,9 +1,9 @@
 // import 'package:just_audio/just_audio.dart';
 // import 'package:dreamscape/core/gen/assets.gen.dart';
-import 'package:dreamscape/core/gen/assets.gen.dart';
 import 'package:dreamscape/core/services/alarm/i_alarm_service.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/standalone.dart';
 import 'package:timezone/timezone.dart' as tz;
 // import 'dart:developer';
 
@@ -13,6 +13,8 @@ final class AlarmService with LoggerMixin implements IAlarmService {
   AlarmService({
     required FlutterLocalNotificationsPlugin localNotificationsPlugin,
   }) : _localNotificationsPlugin = localNotificationsPlugin;
+
+  TZDateTime? _alarmTime;
 
   // @pragma('vm:entry-point')
   // static Future<void> alarmCallback(int id, Map<String, dynamic> params) async {
@@ -73,9 +75,8 @@ final class AlarmService with LoggerMixin implements IAlarmService {
     required int minute,
   }) async {
     try {
-      final now = tz.TZDateTime.now(tz.local);
-
-      var alarmTime = tz.TZDateTime(
+      final now = DateTime.now();
+      _alarmTime = tz.TZDateTime(
         tz.local,
         now.year,
         now.month,
@@ -83,18 +84,19 @@ final class AlarmService with LoggerMixin implements IAlarmService {
         hour,
         minute,
       );
-      if (!alarmTime.isAfter(DateTime.now())) {
-        alarmTime = alarmTime.add(const Duration(days: 1));
+
+      if (!_alarmTime!.isAfter(DateTime.now())) {
+        _alarmTime = _alarmTime!.add(const Duration(days: 1));
       }
 
       logger.debug('NOW        : $now');
-      logger.debug('ALARM FINAL: $alarmTime');
+      logger.debug('ALARM FINAL: $_alarmTime');
 
       await _localNotificationsPlugin.zonedSchedule(
         id,
         title,
         body,
-        alarmTime,
+        _alarmTime!,
         NotificationDetails(
           android: AndroidNotificationDetails(
             'Alarm_channel',
@@ -120,7 +122,7 @@ final class AlarmService with LoggerMixin implements IAlarmService {
             UILocalNotificationDateInterpretation.absoluteTime,
       );
 
-        final before = await _localNotificationsPlugin
+      final before = await _localNotificationsPlugin
           .pendingNotificationRequests();
       logger.debug('🔔 Pending before: ${before.length}');
 
@@ -149,7 +151,7 @@ final class AlarmService with LoggerMixin implements IAlarmService {
         logger.debug(' - ID: ${pending.id}, Title: ${pending.title}');
       }
 
-      final diff = alarmTime.difference(now);
+      final diff = _alarmTime!.difference(now);
       logger.debug(
         ' Alarm set for: (${diff.inHours}h ${diff.inMinutes.remainder(60)}m)',
       );
@@ -160,5 +162,10 @@ final class AlarmService with LoggerMixin implements IAlarmService {
       logger.error('error in setAlarm method', error: e, stackTrace: st);
       rethrow;
     }
+  }
+
+  @override
+  TZDateTime? getAlarmTime() {
+    return _alarmTime;
   }
 }
