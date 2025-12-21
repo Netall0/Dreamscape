@@ -13,7 +13,7 @@ part 'router.g.dart';
       routes: <TypedRoute<RouteData>>[
         TypedGoRoute<HomeRouteDate>(
           path: '/home',
-          routes: [TypedGoRoute<SleepScreenData>(path: '/sleep')],
+          routes: [TypedGoRoute<SleepScreenData>(path: 'home/sleep')],
         ),
       ],
     ),
