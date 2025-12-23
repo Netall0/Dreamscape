@@ -20,6 +20,7 @@ class _SleepScreenState extends State<SleepScreen>
     with SingleTickerProviderStateMixin, LoggerMixin {
   late final AudioPlayer _player;
   bool _isInitialized = false;
+  bool _isVisibleOverlay = false;
 
   @override
   void initState() {
@@ -62,6 +63,7 @@ class _SleepScreenState extends State<SleepScreen>
     ).platformDependContainer.alarmService;
     return Scaffold(
       appBar: AppBar(
+        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.mood))],
         backgroundColor: Colors.transparent,
         automaticallyImplyActions: true,
       ),
@@ -156,20 +158,27 @@ class _SleepScreenState extends State<SleepScreen>
                 ),
               ],
             ),
-            SizedBox(
-              height: size.height * 0.1,
-              child: AdaptiveCard(child: Column()),
-            ),
 
             SizedBox(
-              height: size.height * 0.05,
-              width: size.width * 0.5,
-              child: AdaptiveButton.primary(
-                onPressed: () {},
-                color: ColorConstants.nightViolet,
-                child: Text(
-                  'Начать сон',
-                  style: theme.typography.h5.copyWith(color: Colors.white),
+              width: 200,
+              height: 60,
+              child: GestureDetector(
+                onTap: () {},
+                child: AdaptiveCard(
+                  borderRadius: .all(.circular(24)),
+                  backgroundColor: ColorConstants.pastelIndigo,
+                  child: Row(
+                    mainAxisAlignment: .center,
+                    children: [
+                      Icon(Icons.play_arrow),
+                      Text(
+                        'остановить сон',
+                        style: theme.typography.h5.copyWith(
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
