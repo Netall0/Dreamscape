@@ -31,17 +31,21 @@ class _SleepScreenState extends State<SleepScreen>
   Future<void> _initPlayer() async {
     try {
       await _player.setAsset(Assets.sound.rain);
+      if (!mounted) return;
+
       await _player.setLoopMode(LoopMode.one);
-      if (mounted) {
-        setState(() => _isInitialized = true);
-      }
-    } on Object catch (e, stackTrace) {
+      if (!mounted) return;
+
+      setState(() => _isInitialized = true);
+    } catch (e, stackTrace) {
       logger.error('audio', error: e, stackTrace: stackTrace);
     }
   }
 
   @override
   void dispose() {
+    _player.pause();
+    _player.stop();
     _player.dispose();
     super.dispose();
   }
@@ -53,12 +57,14 @@ class _SleepScreenState extends State<SleepScreen>
     final clockStream = DependScope.of(
       context,
     ).platformDependContainer.clockNotifier;
-    final alarmService = DependScope.of(context).platformDependContainer.alarmService;
+    final alarmService = DependScope.of(
+      context,
+    ).platformDependContainer.alarmService;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         automaticallyImplyActions: true,
-      ), //TODO testing delete after
+      ),
       backgroundColor: Colors.transparent,
       body: Align(
         alignment: .center,

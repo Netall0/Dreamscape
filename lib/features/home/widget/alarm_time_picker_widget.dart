@@ -1,4 +1,6 @@
-import 'package:dreamscape/core/services/alarm/alarm_service.dart';
+import 'dart:async';
+
+import 'package:dreamscape/features/alarm/services/alarm_service.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:dreamscape/extension/app_context_extension.dart';
 import 'package:dreamscape/features/initialization/widget/depend_scope.dart';
@@ -19,13 +21,33 @@ class _AlarmTimePickerWidgetState extends State<AlarmTimePickerWidget>
     with LoggerMixin {
   TZDateTime? _tzDateTime;
   TimeOfDay? _selectedTime;
+
+  late final StreamSubscription<TZDateTime?>? _streamSubscription;
+
+  @override
+  void initState() {
+    _streamSubscription = widget.alarmService.alarmStreamController.listen((
+      data,
+    ) {
+      if (mounted) {
+        setState(() {
+          _tzDateTime = data; 
+          _selectedTime = data != null
+              ? TimeOfDay(hour: data.hour, minute: data.minute)
+              : null;
+        });
+
+        logger.debug('update UI ');
+      }
+    });
+    super.initState();
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    _tzDateTime = DependScope.of(
-      context,
-    ).platformDependContainer.alarmService.getAlarmTime();
+    _tzDateTime = widget.alarmService.getAlarmTime();
 
     if (_tzDateTime != null) {
       _selectedTime = TimeOfDay(
@@ -33,6 +55,12 @@ class _AlarmTimePickerWidgetState extends State<AlarmTimePickerWidget>
         minute: _tzDateTime!.minute,
       );
     }
+  }
+
+  @override
+  void dispose() {
+    _streamSubscription?.cancel();
+    super.dispose();
   }
 
   void _setTime() async {
@@ -71,24 +99,26 @@ class _AlarmTimePickerWidgetState extends State<AlarmTimePickerWidget>
   Widget build(BuildContext context) {
     final theme = context.appTheme;
     return AdaptiveCard(
-      margin: .symmetric(horizontal: 70),
-
+      padding: .symmetric(horizontal: 16),
       borderRadius: .all(.circular(24)),
       backgroundColor: ColorConstants.pastelIndigo,
-      child: Row(
-        mainAxisAlignment: .center,
-        children: [
-          Icon(Icons.notifications),
-          TextButton(
-            onPressed: () => _setTime(),
-            child: Text(
-              _selectedTime == null
-                  ? 'set your time'
-                  : '${_selectedTime!.hour}:${_selectedTime!.minute}',
-              style: theme.typography.h6,
+      child: IntrinsicWidth(
+        child: Row(
+          mainAxisAlignment: .center,
+          children: [
+            Icon(Icons.notifications),
+            TextButton(
+              onPressed: () => _setTime(),
+              child: Text(
+                _selectedTime == null
+                    ? 'set your time'
+                    : '${_selectedTime!.hour}:${_selectedTime!.minute}',
+                // : 'set your time',
+                style: theme.typography.h6,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -1,12 +1,4 @@
-
-import 'package:shared_preferences/shared_preferences.dart';
-
 final class DependContainer {
-  DependContainer({
-    required this.sharedPreferences,
-  });
-
-  final SharedPreferences sharedPreferences;
 }
 
 final class InheritedResult {

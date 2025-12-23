@@ -3,9 +3,9 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:dreamscape/core/config/app_config.dart';
-import 'package:dreamscape/core/services/alarm/alarm_service.dart';
+import 'package:dreamscape/features/alarm/datasource/alarm_datasource.dart';
+import 'package:dreamscape/features/alarm/services/alarm_service.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
-// import 'package:dreamscape/core/util/timer_mixin.dart';
 import 'package:dreamscape/features/app/widget/app_scope.dart';
 import 'package:dreamscape/features/home/controller/notifier/clock_stream.dart';
 import 'package:dreamscape/features/initialization/logic/composition_root.dart';
@@ -14,12 +14,11 @@ import 'package:dreamscape/features/initialization/model/platform_depend_contain
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
 
-final class AppRunner with LoggerMixin
-//, AppTimerMixin
-{
+final class AppRunner with LoggerMixin {
   Future<void> run(AppEnv env) async {
     late final PlatformDependContainer platformDeps;
     late final WidgetsBinding bindings;
@@ -38,6 +37,8 @@ final class AppRunner with LoggerMixin
           platformDeps = await _initPlatformDependencies();
 
           await _initTimezone();
+
+          await platformDeps.alarmService.initAlarmService();
 
           logger.debug('Platform dependencies initialized');
 
@@ -77,20 +78,40 @@ final class AppRunner with LoggerMixin
   }
 
   Future<PlatformDependContainer> _initPlatformDependencies() async {
-    //TODO rotate logging here
+    late final AlarmService alarmService;
 
     FlutterLocalNotificationsPlugin notificationsPlugin =
-        await _intiLocalNotificaion();
+        await _intiLocalNotificaion(
+          onAlarmTap: () async => await alarmService.cancelAlarm(1),
+        );
 
-    final AlarmService alarmService = AlarmService(
-      localNotificationsPlugin: notificationsPlugin,
-    );
+    final SharedPreferences sharedPreferences =
+        await SharedPreferences.getInstance();
+
+    alarmService = _initAlarmService(notificationsPlugin, sharedPreferences);
 
     final StreamClock clockNotifier = await _initClockNotifier();
     return PlatformDependContainer(
       alarmService: alarmService,
       clockNotifier: clockNotifier,
     );
+  }
+
+  AlarmService _initAlarmService(
+    FlutterLocalNotificationsPlugin notificationsPlugin,
+    SharedPreferences sharedPreferences,
+  ) {
+    try {
+      final AlarmService alarmService = AlarmService(
+        localNotificationsPlugin: notificationsPlugin,
+        alarmDatasource: AlarmDatasource(sharedPreferences: sharedPreferences),
+        // repeatDaily: false,
+      );
+      return alarmService;
+    } on Object catch (e, stackTrace) {
+      logger.error('alarm_service', error: e, stackTrace: stackTrace);
+      rethrow;
+    }
   }
 
   Future<StreamClock> _initClockNotifier() async {
@@ -103,7 +124,9 @@ final class AppRunner with LoggerMixin
     }
   }
 
-  Future<FlutterLocalNotificationsPlugin> _intiLocalNotificaion() async {
+  Future<FlutterLocalNotificationsPlugin> _intiLocalNotificaion({
+    required Future<void> Function() onAlarmTap,
+  }) async {
     final notificationsPlugin = FlutterLocalNotificationsPlugin();
 
     const androidSettings = AndroidInitializationSettings(
@@ -122,8 +145,19 @@ final class AppRunner with LoggerMixin
 
     await notificationsPlugin.initialize(
       initSettings,
-      onDidReceiveNotificationResponse: (details) {
-        logger.error(details.toString());
+      onDidReceiveNotificationResponse: (NotificationResponse response) async {
+        try {
+          if (response.payload != null && response.id == 1) {
+            await onAlarmTap();
+          }
+          logger.debug(response.toString());
+        } on Object catch (e, stackTrace) {
+          logger.error(
+            'ReceiveNotificationsResponse',
+            error: e,
+            stackTrace: stackTrace,
+          );
+        }
       },
     );
 

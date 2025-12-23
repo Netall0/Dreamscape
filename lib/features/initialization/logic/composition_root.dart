@@ -1,14 +1,11 @@
 import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:dreamscape/features/initialization/model/depend_container.dart';
 import 'package:dreamscape/features/initialization/model/platform_depend_container.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 // typedef OnError =
 //     void Function(String message, Object error, [StackTrace? stackTrace]);
 // typedef OnProgress = void Function(String name);
 // typedef OnComplete = void Function(String message);
-
-
 
 class CompositionRoot with LoggerMixin {
   final PlatformDependContainer platformDependContainer;
@@ -34,34 +31,14 @@ class CompositionRoot with LoggerMixin {
 
   Future<DependContainer> _initDepend() async {
     try {
-      final sharedPreferences = await _initSharedPreference();
-      logger.debug('sharedPreference init');
-      logger.debug('alarmService init');
-      return DependContainer(
-        sharedPreferences: sharedPreferences,
-      );
+      return DependContainer();
     } catch (e, stackTrace) {
       logger.error('Ошибка в _initDepend', error: e, stackTrace: stackTrace);
       rethrow;
     }
   }
-
-
-
-  Future<SharedPreferences> _initSharedPreference() async {
-    try {
-      logger.debug('SharedPreferences');
-      return await SharedPreferences.getInstance();
-    } on Object catch (e, stackTrace) {
-      logger.error(
-        'shared preference init error',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      rethrow;
-    }
-  }
 }
+
 
 
 //_________________________________________________________________________________________________________
@@ -96,3 +73,4 @@ class CompositionRoot with LoggerMixin {
 ///   
 ///   print('Initialized in ${result.ms}ms');
 /// }
+/// 

@@ -1,6 +1,8 @@
-// import 'package:just_audio/just_audio.dart';
-// import 'package:dreamscape/core/gen/assets.gen.dart';
-import 'package:dreamscape/core/services/alarm/i_alarm_service.dart';
+import 'dart:async';
+
+import 'package:dreamscape/features/alarm/datasource/alarm_datasource.dart';
+import 'package:dreamscape/features/alarm/datasource/datasource_model.dart';
+import 'package:dreamscape/features/alarm/services/i_alarm_service.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/standalone.dart';
@@ -9,10 +11,12 @@ import 'package:timezone/timezone.dart' as tz;
 
 final class AlarmService with LoggerMixin implements IAlarmService {
   final FlutterLocalNotificationsPlugin _localNotificationsPlugin;
-
+  final AlarmDatasource _alarmDatasource;
   AlarmService({
     required FlutterLocalNotificationsPlugin localNotificationsPlugin,
-  }) : _localNotificationsPlugin = localNotificationsPlugin;
+    required AlarmDatasource alarmDatasource,
+  }) : _localNotificationsPlugin = localNotificationsPlugin,
+       _alarmDatasource = alarmDatasource;
 
   TZDateTime? _alarmTime;
 
@@ -60,19 +64,44 @@ final class AlarmService with LoggerMixin implements IAlarmService {
   //   }
   // }
 
+  final StreamController<TZDateTime?> _streamController =
+      StreamController<TZDateTime?>.broadcast();
+
+  Stream<TZDateTime?> get alarmStreamController => _streamController.stream;
+
+  Future<void> initAlarmService() async {
+    final dataAlarm = await _alarmDatasource.load();
+    dataAlarm != null
+        ? _alarmTime = TZDateTime(
+            tz.local,
+            dataAlarm.year,
+            dataAlarm.month,
+            dataAlarm.day,
+            dataAlarm.hour,
+            dataAlarm.minute,
+          )
+        : logger.debug('no saved alarm');
+
+    _streamController.add(_alarmTime);
+  }
+
   @override
   Future<void> cancelAlarm(int id) async {
     await _localNotificationsPlugin.cancel(id);
+    _alarmDatasource.clear();
+    _alarmTime = null;
+    _streamController.add(null);
     logger.debug('$id alarm canceled');
   }
 
   @override
   Future<void> setAlarm({
-    int id = 1,
+    int id = 1, //TODO id
     required String title,
     required String body,
     required int hour,
     required int minute,
+    bool repeatDaily = false,
   }) async {
     try {
       final now = DateTime.now();
@@ -110,6 +139,14 @@ final class AlarmService with LoggerMixin implements IAlarmService {
             enableLights: true,
             enableVibration: true,
             category: AndroidNotificationCategory.alarm,
+            actions: [
+              AndroidNotificationAction(
+                'dismiss_alarm',
+                'отключить',
+                cancelNotification: true,
+                showsUserInterface: true,
+              ),
+            ],
           ),
           iOS: DarwinNotificationDetails(
             presentAlert: true,
@@ -117,38 +154,39 @@ final class AlarmService with LoggerMixin implements IAlarmService {
             sound: 'alarm.aiff',
           ),
         ),
+
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
+
+        matchDateTimeComponents: repeatDaily ? DateTimeComponents.time : null,
       );
 
       final before = await _localNotificationsPlugin
           .pendingNotificationRequests();
       logger.debug('🔔 Pending before: ${before.length}');
 
-      // final timeString = model.formattedTime;
+      //datasource
 
-      // return AndroidAlarmManager.oneShotAt(
-      //   alarmTime,
-      //   model.id,
-      //   alarmCallback,
-      //   alarmClock: true,
-      //   exact: true,
-      //   rescheduleOnReboot: true,
-      //   allowWhileIdle: true,
-      //   params: {
-      //     'id': model.id,
-      //     'label': model.label,
-      //     'hour': model.hour,
-      //     'minute': model.minute,
-      //   },
-      // );
+      _alarmDatasource.save(
+        DatasourceModel(
+          year: now.year,
+          month: now.month,
+          day: now.day,
+          hour: hour,
+          minute: minute,
+          id: id,
+        ),
+      );
+
+      _streamController.add(_alarmTime);
+      logger.debug('datasource saved alarmtime');
 
       final after = await _localNotificationsPlugin
           .pendingNotificationRequests();
       logger.debug('Pending after: ${after.length}');
       for (var pending in after) {
-        logger.debug(' - ID: ${pending.id}, Title: ${pending.title}');
+        logger.debug(' -  : ${pending.id}, Title: ${pending.title}');
       }
 
       final diff = _alarmTime!.difference(now);
@@ -167,5 +205,9 @@ final class AlarmService with LoggerMixin implements IAlarmService {
   @override
   TZDateTime? getAlarmTime() {
     return _alarmTime;
+  }
+
+  void dispose() {
+    _streamController.close();
   }
 }
