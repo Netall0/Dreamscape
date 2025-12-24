@@ -19,17 +19,24 @@ class SleepScreen extends StatefulWidget {
 class _SleepScreenState extends State<SleepScreen>
     with SingleTickerProviderStateMixin, LoggerMixin {
   late final AudioPlayer _player;
-  bool _isInitialized = false;
-  bool _isVisibleOverlay = false;
 
   @override
   void initState() {
     super.initState();
-    _player = AudioPlayer();
+    logger.debug('initState called');
+
+    _player = DependScope.of(context).dependModel.audioPlayer;
     _initPlayer();
   }
 
   Future<void> _initPlayer() async {
+    if (_player.audioSource != null) {
+      logger.debug('player already initialized, skipping');
+      return;
+    }
+
+    logger.debug('initializing player for the first time');
+
     try {
       await _player.setAsset(Assets.sound.rain);
       if (!mounted) return;
@@ -37,17 +44,16 @@ class _SleepScreenState extends State<SleepScreen>
       await _player.setLoopMode(LoopMode.one);
       if (!mounted) return;
 
-      setState(() => _isInitialized = true);
+      logger.debug('player initialized successfully');
     } catch (e, stackTrace) {
-      logger.error('audio', error: e, stackTrace: stackTrace);
+      logger.error('audio init failed', error: e, stackTrace: stackTrace);
     }
   }
 
   @override
   void dispose() {
     _player.pause();
-    _player.stop();
-    _player.dispose();
+    logger.debug('dispose: paused player');
     super.dispose();
   }
 

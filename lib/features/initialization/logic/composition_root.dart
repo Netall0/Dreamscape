@@ -1,6 +1,7 @@
 import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:dreamscape/features/initialization/model/depend_container.dart';
 import 'package:dreamscape/features/initialization/model/platform_depend_container.dart';
+import 'package:just_audio/just_audio.dart';
 
 // typedef OnError =
 //     void Function(String message, Object error, [StackTrace? stackTrace]);
@@ -30,14 +31,27 @@ class CompositionRoot with LoggerMixin {
   }
 
   Future<DependContainer> _initDepend() async {
+    final AudioPlayer audioPlayer = await _initAudioPlayer();
     try {
-      return DependContainer();
+      return DependContainer(audioPlayer: audioPlayer);
     } catch (e, stackTrace) {
       logger.error('Ошибка в _initDepend', error: e, stackTrace: stackTrace);
       rethrow;
     }
   }
+
+  Future<AudioPlayer> _initAudioPlayer() async {
+    try {
+      final player = AudioPlayer();
+      return player;
+    } on Object catch (e, stackTrace) {
+      logger.error('just audio initialized', error: e, stackTrace: stackTrace);
+      rethrow;
+    }
+  }
 }
+
+
 
 
 

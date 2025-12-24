@@ -1,4 +1,9 @@
+import 'package:just_audio/just_audio.dart';
+
 final class DependContainer {
+  final AudioPlayer audioPlayer;
+
+  DependContainer({required this.audioPlayer});
 }
 
 final class InheritedResult {

@@ -161,6 +161,7 @@ final class AppRunner with LoggerMixin {
       },
     );
 
+
     const notificationChannel = AndroidNotificationChannel(
       'Notificaion_channel',
       'Notifications',
@@ -179,6 +180,9 @@ final class AppRunner with LoggerMixin {
       enableLights: true,
       enableVibration: true,
     );
+
+
+
 
     final androidImpl = notificationsPlugin
         .resolvePlatformSpecificImplementation<

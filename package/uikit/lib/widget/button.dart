@@ -15,14 +15,14 @@ abstract class AdaptiveButton extends StatelessWidget {
   final IconData? icon;
 
   const AdaptiveButton._({
-    Key? key,
+    super.key,
     required this.onPressed,
     required this.child,
     this.padding,
     this.minWidth,
     this.color,
     this.icon,
-  }) : super(key: key);
+  });
 
   const factory AdaptiveButton.primary({
     Key? key,
@@ -127,18 +127,12 @@ class _AdaptiveButtonSecondary extends AdaptiveButton {
 
 class _AdaptiveButtonText extends AdaptiveButton {
   const _AdaptiveButtonText({
-    Key? key,
-    required VoidCallback? onPressed,
-    required Widget child,
-    EdgeInsetsGeometry? padding,
-    Color? color,
-  }) : super._(
-         key: key,
-         onPressed: onPressed,
-         child: child,
-         padding: padding,
-         color: color,
-       );
+    super.key,
+    required super.onPressed,
+    required super.child,
+    super.padding,
+    super.color,
+  }) : super._();
 
   @override
   Widget build(BuildContext context) => PlatformExtension.when<Widget>(

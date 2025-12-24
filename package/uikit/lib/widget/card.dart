@@ -258,8 +258,8 @@ class _CupertinoCard extends StatelessWidget {
         boxShadow: withShadow
             ? [
                 BoxShadow(
-                  color: CupertinoColors.systemGrey.withOpacity(
-                    elevation != null ? elevation! / 10 : 0.2,
+                  color: CupertinoColors.systemGrey.withValues(
+                    alpha: elevation != null ? elevation! / 10 : 0.2,
                   ),
                   blurRadius: elevation ?? 10,
                   offset: const Offset(0, 2),

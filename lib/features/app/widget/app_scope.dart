@@ -40,6 +40,7 @@ class _AppScopeState extends State<AppScope> with WidgetsBindingObserver {
         dependModel: widget.dependContainer,
         platformDependContainer: widget.platformDependContainer,
         child: AppMaterial(),
+  
       ),
     );
   }

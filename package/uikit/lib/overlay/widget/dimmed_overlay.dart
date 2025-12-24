@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:uikit/overlay/dimmed_overlay_level.dart';
+import 'package:uikit/overlay/utils/dimmed_overlay_level.dart';
 
 class DimmedOverlay extends StatelessWidget {
   const DimmedOverlay(this.level, {super.key});
@@ -24,9 +24,9 @@ class DimmedOverlay extends StatelessWidget {
     return IgnorePointer(
       ignoring: true,
       child: AnimatedOpacity(
-        curve: Curves.bounceIn,
+        curve: Curves.easeInOut,
         opacity: _getOpacity(level),
-        duration: Duration(seconds: 5),
+        duration: Duration(seconds: 2),
         child: Container(color: Colors.black.withValues(alpha: 0.4)),
       ),
     );

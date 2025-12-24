@@ -1,6 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   const CustomBottomNavigationBar({
@@ -91,7 +90,10 @@ class _NavItem extends StatelessWidget {
       child: Column(
         children: [
           Icon(icons, color: isActive ? activeColor : inactiveColor),
-          Text(name),
+          Text(
+            name,
+            style: TextStyle(color: isActive ? activeColor : inactiveColor),
+          ),
         ],
       ),
     );
