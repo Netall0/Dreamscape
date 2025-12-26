@@ -23,18 +23,22 @@ final class AppRunner with LoggerMixin {
     late final PlatformDependContainer platformDeps;
     late final WidgetsBinding bindings;
     late final InheritedResult compositionRoot;
+    late final SharedPreferences sharedPreferences;
+    late final Stopwatch timer;
     runZonedGuarded(
       () async {
         bindings = WidgetsFlutterBinding.ensureInitialized()..deferFirstFrame();
 
-        final timer = Stopwatch()..start();
+        timer = Stopwatch()..start();
 
         _initErrorHandler();
 
         try {
           // logOnProgress('Инициализация платформы');
 
-          platformDeps = await _initPlatformDependencies();
+          sharedPreferences = await SharedPreferences.getInstance();
+
+          platformDeps = await _initPlatformDependencies(sharedPreferences);
 
           await _initTimezone();
 
@@ -49,6 +53,7 @@ final class AppRunner with LoggerMixin {
           logger.debug('show init notifications');
 
           compositionRoot = await CompositionRoot(
+            sharedPreferences: sharedPreferences,
             platformDependContainer: platformDeps,
           ).compose();
           runApp(
@@ -77,16 +82,15 @@ final class AppRunner with LoggerMixin {
     );
   }
 
-  Future<PlatformDependContainer> _initPlatformDependencies() async {
+  Future<PlatformDependContainer> _initPlatformDependencies(
+    SharedPreferences sharedPreferences,
+  ) async {
     late final AlarmService alarmService;
 
     FlutterLocalNotificationsPlugin notificationsPlugin =
         await _intiLocalNotificaion(
           onAlarmTap: () async => await alarmService.cancelAlarm(1),
         );
-
-    final SharedPreferences sharedPreferences =
-        await SharedPreferences.getInstance();
 
     alarmService = _initAlarmService(notificationsPlugin, sharedPreferences);
 
@@ -161,7 +165,6 @@ final class AppRunner with LoggerMixin {
       },
     );
 
-
     const notificationChannel = AndroidNotificationChannel(
       'Notificaion_channel',
       'Notifications',
@@ -180,9 +183,6 @@ final class AppRunner with LoggerMixin {
       enableLights: true,
       enableVibration: true,
     );
-
-
-
 
     final androidImpl = notificationsPlugin
         .resolvePlatformSpecificImplementation<

@@ -1,9 +1,12 @@
+import 'package:dreamscape/features/home/service/home_sleep_service.dart';
 import 'package:just_audio/just_audio.dart';
 
 final class DependContainer {
   final AudioPlayer audioPlayer;
 
-  DependContainer({required this.audioPlayer});
+  final HomeSleepService homeSleepService;
+
+  DependContainer({required this.audioPlayer, required this.homeSleepService});
 }
 
 final class InheritedResult {

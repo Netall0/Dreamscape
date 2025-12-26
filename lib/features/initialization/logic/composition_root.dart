@@ -1,7 +1,10 @@
 import 'package:dreamscape/core/util/logger/logger.dart';
+import 'package:dreamscape/features/home/datasource/home_sleep_datasource.dart';
+import 'package:dreamscape/features/home/service/home_sleep_service.dart';
 import 'package:dreamscape/features/initialization/model/depend_container.dart';
 import 'package:dreamscape/features/initialization/model/platform_depend_container.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // typedef OnError =
 //     void Function(String message, Object error, [StackTrace? stackTrace]);
@@ -10,8 +13,12 @@ import 'package:just_audio/just_audio.dart';
 
 class CompositionRoot with LoggerMixin {
   final PlatformDependContainer platformDependContainer;
+  final SharedPreferences sharedPreferences;
 
-  CompositionRoot({required this.platformDependContainer});
+  CompositionRoot({
+    required this.platformDependContainer,
+    required this.sharedPreferences,
+  });
 
   Future<InheritedResult> compose() async {
     logger.debug('initialization start');
@@ -32,10 +39,26 @@ class CompositionRoot with LoggerMixin {
 
   Future<DependContainer> _initDepend() async {
     final AudioPlayer audioPlayer = await _initAudioPlayer();
+    final HomeSleepService homeSleepService = _initHomeSleepService();
     try {
-      return DependContainer(audioPlayer: audioPlayer);
+      return DependContainer(
+        audioPlayer: audioPlayer,
+        homeSleepService: homeSleepService,
+      );
     } catch (e, stackTrace) {
       logger.error('Ошибка в _initDepend', error: e, stackTrace: stackTrace);
+      rethrow;
+    }
+  }
+
+  HomeSleepService _initHomeSleepService() {
+    try {
+      final datasource = HomeSleepDatasource(
+        sharedPreferences: sharedPreferences,
+      );
+      return HomeSleepService(datasource: datasource);
+    } on Object catch (e, stackTrace) {
+      logger.error('home sleep service', error: e, stackTrace: stackTrace);
       rethrow;
     }
   }

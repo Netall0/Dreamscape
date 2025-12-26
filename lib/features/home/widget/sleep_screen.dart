@@ -5,6 +5,7 @@ import 'package:dreamscape/features/home/widget/alarm_time_picker_widget.dart';
 import 'package:dreamscape/features/home/widget/clock_widget.dart';
 import 'package:dreamscape/features/initialization/widget/depend_scope.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:uikit/uikit.dart';
 import 'package:uikit/widget/custom_round_music_bar.dart';
@@ -57,6 +58,7 @@ class _SleepScreenState extends State<SleepScreen>
     super.dispose();
   }
 
+  final time = TimeOfDay.now();
   @override
   Widget build(BuildContext context) {
     final theme = context.appTheme;
@@ -67,11 +69,19 @@ class _SleepScreenState extends State<SleepScreen>
     final alarmService = DependScope.of(
       context,
     ).platformDependContainer.alarmService;
+    final homeService = DependScope.of(context).dependModel.homeSleepService;
     return Scaffold(
       appBar: AppBar(
         actions: [IconButton(onPressed: () {}, icon: Icon(Icons.mood))],
+        leading: IconButton(
+          onPressed: () {
+            homeService.clear();
+            logger.debug('clear times');
+            context.pop();
+          },
+          icon: Icon(Icons.arrow_back_ios),
+        ),
         backgroundColor: Colors.transparent,
-        automaticallyImplyActions: true,
       ),
       backgroundColor: Colors.transparent,
       body: Align(
@@ -177,10 +187,28 @@ class _SleepScreenState extends State<SleepScreen>
                     mainAxisAlignment: .center,
                     children: [
                       Icon(Icons.play_arrow),
-                      Text(
-                        'остановить сон',
-                        style: theme.typography.h5.copyWith(
-                          color: Colors.black,
+                      GestureDetector(
+                        onTap: () async {
+                          homeService.endSleeping(
+                            TimeOfDay(hour: time.hour, minute: time.minute),
+                          );
+                          logger.debug('time rise ${time.hour}:${time.minute}');
+                          final calculateTime = await homeService
+                              .calculateSleepTime();
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(calculateTime.toString())),
+                            );
+                            logger.debug(
+                              homeService.calculateSleepTime().toString(),
+                            );
+                          }
+                        },
+                        child: Text(
+                          'остановить сон',
+                          style: theme.typography.h5.copyWith(
+                            color: Colors.black,
+                          ),
                         ),
                       ),
                     ],

@@ -18,16 +18,21 @@ class HomeScreen extends StatefulWidget {
 class _ScreenState extends State<HomeScreen> with LoggerMixin {
   //TODO first running application
 
+  final time = TimeOfDay.now();
+
   @override
   Widget build(BuildContext context) {
     final theme = context.appTheme;
     // final notificationSender = DependScope.of(
     //   context,
     // ).dependModel.notificationsSender;
-    final alarmService = DependScope.of(context).platformDependContainer.alarmService;
+    final alarmService = DependScope.of(
+      context,
+    ).platformDependContainer.alarmService;
     final clockStream = DependScope.of(
       context,
     ).platformDependContainer.clockNotifier;
+    final homeService = DependScope.of(context).dependModel.homeSleepService;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -45,7 +50,22 @@ class _ScreenState extends State<HomeScreen> with LoggerMixin {
               width: 200,
               height: 60,
               child: GestureDetector(
-                onTap: () => SleepScreenData().go(context),
+                onTap: () async {
+                  SleepScreenData().go(context);
+                  await homeService.startSleeping(
+                    TimeOfDay(
+                      hour: time.hour, //TODO
+                      minute: time.minute,
+                    ),
+                  );
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('bedTime: ${time.hour} : ${time.minute}'),
+                      ),
+                    );
+                  }
+                },
                 child: AdaptiveCard(
                   borderRadius: .all(.circular(24)),
                   backgroundColor: ColorConstants.pastelIndigo,
@@ -56,7 +76,7 @@ class _ScreenState extends State<HomeScreen> with LoggerMixin {
                       Text(
                         ' Начать сон',
                         style: theme.typography.h5.copyWith(
-                          color: Colors.black,
+                          color: const Color.fromRGBO(0, 0, 0, 1),
                         ),
                       ),
                     ],
@@ -70,5 +90,3 @@ class _ScreenState extends State<HomeScreen> with LoggerMixin {
     );
   }
 }
-
-

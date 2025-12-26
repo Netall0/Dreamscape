@@ -25,6 +25,9 @@ extension TimeOfDayExtension on TimeOfDay {
 
 extension TimeOfDayIntExtension on int {
   TimeOfDay toTimeOfDayToMiutes() {
-    return TimeOfDay(hour: this ~/ 60, minute: this % 60);
+      final hours = (this ~/ 60) % 24;
+      final minutes = this % 60;
+      return TimeOfDay(hour: hours, minute: minutes);
+  
   }
 }
