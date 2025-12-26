@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:dreamscape/features/alarm/services/alarm_service.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
-import 'package:dreamscape/extension/app_context_extension.dart';
+import 'package:dreamscape/core/util/extension/app_context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:timezone/standalone.dart';
 import 'package:uikit/colors/color_constant.dart';

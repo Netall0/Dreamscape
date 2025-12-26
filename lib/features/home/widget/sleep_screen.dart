@@ -1,6 +1,6 @@
 import 'package:dreamscape/core/gen/assets.gen.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
-import 'package:dreamscape/extension/app_context_extension.dart';
+import 'package:dreamscape/core/util/extension/app_context_extension.dart';
 import 'package:dreamscape/features/home/widget/alarm_time_picker_widget.dart';
 import 'package:dreamscape/features/home/widget/clock_widget.dart';
 import 'package:dreamscape/features/initialization/widget/depend_scope.dart';
