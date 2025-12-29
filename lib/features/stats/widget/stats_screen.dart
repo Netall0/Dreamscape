@@ -2,8 +2,10 @@ import 'package:dreamscape/core/util/extension/app_context_extension.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:dreamscape/features/home/model/sleep_model.dart';
 import 'package:dreamscape/features/initialization/widget/depend_scope.dart';
+import 'package:dreamscape/features/stats/controller/stats_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:uikit/uikit.dart';
 
 class StatsScreen extends StatefulWidget {
   const StatsScreen({super.key});
@@ -13,13 +15,11 @@ class StatsScreen extends StatefulWidget {
 }
 
 class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
-  late Future<List<SleepModel>> _sleepModels;
-
+  late final StatsController _statsController;
   @override
   void initState() {
-    _sleepModels = DependScope.of(
-      context,
-    ).dependModel.homeSleepRepository.getSleepModel();
+    _statsController = DependScope.of(context).dependModel.statsController;
+
     super.initState();
     logger.debug('sleepModel is initialized');
   }
@@ -29,37 +29,54 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
     final theme = context.appTheme;
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: FutureBuilder(
-        future: _sleepModels,
-        builder: (context, snapshot) {
-          if (snapshot.hasData || snapshot.data != null) {
-            return ListView.builder(
-              itemBuilder: (context, index) => ListTile(
-                title: Text(snapshot.data![index].sleepTime.toString()),
-                subtitle: Text(
-                  "you sleep at ${snapshot.data![index].bedTime} and wake up at ${snapshot.data![index].riseTime}",
-                ),
-              ),
-              itemCount: snapshot.data!.length,
-            );
-          } else if (snapshot.hasError) {
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text('Stats', style: theme.typography.h1),
+        backgroundColor: Colors.transparent,
+      ),
+      body: Padding(
+        padding: .symmetric(horizontal: 16),
+        child: StreamBuilder<List<SleepModel>>(
+          stream: _statsController.sleepModelsStream,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting &&
+                !snapshot.hasData) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
+
+            final sleepModels = snapshot.data ?? [];
+
+            if (sleepModels.isEmpty) {
+              return const Center(child: Text('No sleep models found'));
+            }
+
             return Center(
-              child: Text(
-                'Error: ${snapshot.error}',
-                style: theme.typography.h6,
+              child: ListView.builder(
+                itemBuilder: (context, index) {
+                  final model = sleepModels[index];
+                  return Card(
+                    color: ColorConstants.midnightBlue,
+                    child: ListTile(
+                      title: Text(
+                        'you sleep time was ${model.sleepTime.hour}:${model.sleepTime.minute}',
+                        style: theme.typography.h4,
+                      ),
+                      subtitle: Text(
+                        'you go to sleep at ${model.bedTime.hour} : ${model.bedTime.minute} and wake up at ${model.riseTime.hour} : ${model.riseTime.minute}',
+                        style: theme.typography.h6,
+                      ),
+                    ),
+                  );
+                },
+                itemCount: sleepModels.length,
               ),
             );
-          } else if (snapshot.hasData || snapshot.data == null) {
-            return Center(
-              child: Text(
-                'No sleep data available',
-                style: theme.typography.h6,
-              ),
-            );
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        },
+          },
+        ),
       ),
     );
   }

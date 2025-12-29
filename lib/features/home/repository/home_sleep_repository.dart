@@ -179,4 +179,20 @@ final class HomeSleepRepository
       rethrow;
     }
   }
+
+  @override
+  Stream<List<SleepModel>> watchSleepModel() {
+    try {
+      return _appDatabase.sleepDao.watchAllSleepInfo().asyncMap((rows) async {
+        if (rows.isEmpty) {
+          final initial = await _appDatabase.sleepDao.getAllSleepInfo();
+          return initial.map((e) => SleepModel.fromDriftRow(e)).toList();
+        }
+        return rows.map((e) => SleepModel.fromDriftRow(e)).toList();
+      });
+    } on Object catch (e, st) {
+      logger.error('Error watching sleep models: $e', stackTrace: st);
+      return Stream.value([]);
+    }
+  }
 }

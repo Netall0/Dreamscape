@@ -3,6 +3,7 @@ import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:dreamscape/features/home/repository/home_sleep_repository.dart';
 import 'package:dreamscape/features/initialization/model/depend_container.dart';
 import 'package:dreamscape/features/initialization/model/platform_depend_container.dart';
+import 'package:dreamscape/features/stats/controller/stats_controller.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -47,6 +48,9 @@ class CompositionRoot with LoggerMixin {
 
     try {
       return DependContainer(
+        statsController: StatsController(
+          homeSleepRepository: homeSleepRepository,
+        ),
         appDatabase: appDatabase,
         audioPlayer: audioPlayer,
         homeSleepRepository: homeSleepRepository,

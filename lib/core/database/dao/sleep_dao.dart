@@ -30,4 +30,8 @@ class SleepDao extends DatabaseAccessor<AppDatabase> with _$SleepDaoMixin {
   Future<int> clearAll() {
     return delete(sleepInfoTable).go();
   }
+
+  Stream<List<SleepInfoTableData>> watchAllSleepInfo() {
+    return select(sleepInfoTable).watch();
+  }
 }

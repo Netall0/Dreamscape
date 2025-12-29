@@ -1,5 +1,6 @@
 import 'package:dreamscape/core/database/database.dart';
 import 'package:dreamscape/features/home/repository/home_sleep_repository.dart';
+import 'package:dreamscape/features/stats/controller/stats_controller.dart';
 import 'package:just_audio/just_audio.dart';
 
 final class DependContainer {
@@ -7,8 +8,10 @@ final class DependContainer {
 
   final AppDatabase appDatabase;
   final HomeSleepRepository homeSleepRepository;
+  final StatsController statsController;
 
   DependContainer({
+    required this.statsController,
     required this.audioPlayer,
     required this.appDatabase,
     required this.homeSleepRepository,

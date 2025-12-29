@@ -7,7 +7,7 @@ import 'package:dreamscape/features/alarm/datasource/alarm_datasource.dart';
 import 'package:dreamscape/features/alarm/services/alarm_service.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:dreamscape/features/app/widget/app_scope.dart';
-import 'package:dreamscape/features/home/controller/stream/clock_stream.dart';
+import 'package:dreamscape/features/home/controller/clock_stream_controller.dart';
 import 'package:dreamscape/features/initialization/logic/composition_root.dart';
 import 'package:dreamscape/features/initialization/model/depend_container.dart';
 import 'package:dreamscape/features/initialization/model/platform_depend_container.dart';
@@ -104,7 +104,7 @@ final class AppRunner with LoggerMixin {
 
     alarmService = _initAlarmService(notificationsPlugin, sharedPreferences);
 
-    final StreamClock clockNotifier = await _initClockNotifier();
+    final StreamClockController clockNotifier = await _initClockNotifier();
     return PlatformDependContainer(
       alarmService: alarmService,
       clockNotifier: clockNotifier,
@@ -128,9 +128,9 @@ final class AppRunner with LoggerMixin {
     }
   }
 
-  Future<StreamClock> _initClockNotifier() async {
+  Future<StreamClockController> _initClockNotifier() async {
     try {
-      final StreamClock clockNotifier = StreamClock();
+      final StreamClockController clockNotifier = StreamClockController();
       return clockNotifier;
     } on Object catch (e, stackTrace) {
       logger.error('clock failed', error: e, stackTrace: stackTrace);

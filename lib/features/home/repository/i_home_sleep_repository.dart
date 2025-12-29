@@ -2,10 +2,10 @@ import 'package:dreamscape/features/home/model/sleep_model.dart';
 import 'package:flutter/material.dart';
 
 abstract interface class IHomeSleepRepository {
-  Future<List<SleepModel>> getSleepModel();
   Future<void> addSleepModel(SleepModel sleepModel);
   Future<void> deleteSleepModel(SleepModel sleepModel);
   Future<void> clearAll();
+  Stream<List<SleepModel>> watchSleepModel();
 
   // temp
 
