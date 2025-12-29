@@ -77,7 +77,7 @@ analyze:
 upgrade:
 	$(FLUTTER) pub upgrade
 generate:
-	$(DART) run build_runner build --delete-conflicting-outputs
+	$(DART) build_runner build --dart-jit-vm-arg=--observe --dart-jit-vm-arg=--pause-isolates-on-start
 icons:
 	$(DART) run flutter_launcher_icons
 l10n:

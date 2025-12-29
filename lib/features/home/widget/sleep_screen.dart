@@ -1,6 +1,8 @@
 import 'package:dreamscape/core/gen/assets.gen.dart';
+import 'package:dreamscape/core/util/extension/time_of_day_extension.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:dreamscape/core/util/extension/app_context_extension.dart';
+import 'package:dreamscape/features/home/model/sleep_model.dart';
 import 'package:dreamscape/features/home/widget/alarm_time_picker_widget.dart';
 import 'package:dreamscape/features/home/widget/clock_widget.dart';
 import 'package:dreamscape/features/initialization/widget/depend_scope.dart';
@@ -58,7 +60,6 @@ class _SleepScreenState extends State<SleepScreen>
     super.dispose();
   }
 
-  final time = TimeOfDay.now();
   @override
   Widget build(BuildContext context) {
     final theme = context.appTheme;
@@ -69,13 +70,13 @@ class _SleepScreenState extends State<SleepScreen>
     final alarmService = DependScope.of(
       context,
     ).platformDependContainer.alarmService;
-    final homeService = DependScope.of(context).dependModel.homeSleepService;
+    final homeRep = DependScope.of(context).dependModel.homeSleepRepository;
     return Scaffold(
       appBar: AppBar(
         actions: [IconButton(onPressed: () {}, icon: Icon(Icons.mood))],
         leading: IconButton(
           onPressed: () {
-            homeService.clear();
+            homeRep.clearTempData();
             logger.debug('clear times');
             context.pop();
           },
@@ -179,7 +180,26 @@ class _SleepScreenState extends State<SleepScreen>
               width: 200,
               height: 60,
               child: GestureDetector(
-                onTap: () {},
+                onTap: () async {
+                  final time = TimeOfDay.now(); //TODO
+                  await homeRep.saveRiseTime(
+                    TimeOfDay(hour: time.hour, minute: time.minute),
+                  );
+                  await homeRep.createSleepModelFromTemp(
+                    quality: SleepQuality.normal,
+                    notes: 'good sleep',
+                  );
+                  logger.debug('time rise ${time.hour}:${time.minute}');
+                  await homeRep.clearTempData();
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('congratulations!!!, sleep added '),
+                      ),
+                    );
+                    context.pop();
+                  }
+                },
                 child: AdaptiveCard(
                   borderRadius: .all(.circular(24)),
                   backgroundColor: ColorConstants.pastelIndigo,
@@ -187,28 +207,10 @@ class _SleepScreenState extends State<SleepScreen>
                     mainAxisAlignment: .center,
                     children: [
                       Icon(Icons.play_arrow),
-                      GestureDetector(
-                        onTap: () async {
-                          homeService.endSleeping(
-                            TimeOfDay(hour: time.hour, minute: time.minute),
-                          );
-                          logger.debug('time rise ${time.hour}:${time.minute}');
-                          final calculateTime = await homeService
-                              .calculateSleepTime();
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(calculateTime.toString())),
-                            );
-                            logger.debug(
-                              homeService.calculateSleepTime().toString(),
-                            );
-                          }
-                        },
-                        child: Text(
-                          'остановить сон',
-                          style: theme.typography.h5.copyWith(
-                            color: Colors.black,
-                          ),
+                      Text(
+                        'остановить сон',
+                        style: theme.typography.h5.copyWith(
+                          color: Colors.black,
                         ),
                       ),
                     ],

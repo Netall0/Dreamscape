@@ -7,7 +7,7 @@ import 'package:dreamscape/features/alarm/datasource/alarm_datasource.dart';
 import 'package:dreamscape/features/alarm/services/alarm_service.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:dreamscape/features/app/widget/app_scope.dart';
-import 'package:dreamscape/features/home/controller/notifier/clock_stream.dart';
+import 'package:dreamscape/features/home/controller/stream/clock_stream.dart';
 import 'package:dreamscape/features/initialization/logic/composition_root.dart';
 import 'package:dreamscape/features/initialization/model/depend_container.dart';
 import 'package:dreamscape/features/initialization/model/platform_depend_container.dart';
@@ -33,10 +33,10 @@ final class AppRunner with LoggerMixin {
 
         _initErrorHandler();
 
-        try {
-          // logOnProgress('Инициализация платформы');
+        logger.debug('clock started');
 
-          sharedPreferences = await SharedPreferences.getInstance();
+        try {
+          sharedPreferences = await _initSharedPreferences();
 
           platformDeps = await _initPlatformDependencies(sharedPreferences);
 
@@ -45,10 +45,6 @@ final class AppRunner with LoggerMixin {
           await platformDeps.alarmService.initAlarmService();
 
           logger.debug('Platform dependencies initialized');
-
-          logger.debug('clock started');
-
-          // logOnProgress('Старт приложения');
 
           logger.debug('show init notifications');
 
@@ -80,6 +76,20 @@ final class AppRunner with LoggerMixin {
         );
       },
     );
+  }
+
+  Future<SharedPreferences> _initSharedPreferences() async {
+    try {
+      final sharedPreferences = await SharedPreferences.getInstance();
+      return sharedPreferences;
+    } on Object catch (e, stackTrace) {
+      logger.error(
+        'SharedPreferences init failed',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      rethrow;
+    }
   }
 
   Future<PlatformDependContainer> _initPlatformDependencies(

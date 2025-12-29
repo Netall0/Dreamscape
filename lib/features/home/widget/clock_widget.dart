@@ -1,4 +1,4 @@
-import 'package:dreamscape/features/home/controller/notifier/clock_stream.dart';
+import 'package:dreamscape/features/home/controller/stream/clock_stream.dart';
 import 'package:flutter/material.dart';
 import 'package:uikit/theme/app_theme.dart';
 

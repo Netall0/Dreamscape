@@ -18,8 +18,6 @@ class HomeScreen extends StatefulWidget {
 class _ScreenState extends State<HomeScreen> with LoggerMixin {
   //TODO first running application
 
-  final time = TimeOfDay.now();
-
   @override
   Widget build(BuildContext context) {
     final theme = context.appTheme;
@@ -32,7 +30,7 @@ class _ScreenState extends State<HomeScreen> with LoggerMixin {
     final clockStream = DependScope.of(
       context,
     ).platformDependContainer.clockNotifier;
-    final homeService = DependScope.of(context).dependModel.homeSleepService;
+    final homeRep = DependScope.of(context).dependModel.homeSleepRepository;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -51,8 +49,9 @@ class _ScreenState extends State<HomeScreen> with LoggerMixin {
               height: 60,
               child: GestureDetector(
                 onTap: () async {
+                  final time = TimeOfDay.now();
                   SleepScreenData().go(context);
-                  await homeService.startSleeping(
+                  await homeRep.saveBedTime(
                     TimeOfDay(
                       hour: time.hour, //TODO
                       minute: time.minute,

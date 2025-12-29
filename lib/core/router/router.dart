@@ -1,5 +1,6 @@
 import 'package:dreamscape/features/app/widget/root_screen.dart';
 import 'package:dreamscape/features/home/widget/home_screen.dart';
+import 'package:dreamscape/features/stats/widget/stats_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:dreamscape/features/home/widget/sleep_screen.dart';
@@ -97,14 +98,5 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(backgroundColor: Colors.green);
-  }
-}
-
-class StatsScreen extends StatelessWidget {
-  const StatsScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: Colors.redAccent);
   }
 }
