@@ -39,25 +39,26 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
         child: StreamBuilder<List<SleepModel>>(
           stream: _statsController.sleepModelsStream,
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting &&
-                !snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
             if (snapshot.hasError) {
+              logger.debug('Error loading sleep models: ${snapshot.error}');
               return Center(child: Text('Error: ${snapshot.error}'));
             }
-
-            final sleepModels = snapshot.data ?? [];
-
-            if (sleepModels.isEmpty) {
-              return const Center(child: Text('No sleep models found'));
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator.adaptive());
+            }
+            if (snapshot.data!.isEmpty) {
+              return Center(
+                child: Text(
+                  'No sleep data available.',
+                  style: theme.typography.h2,
+                ),
+              );
             }
 
             return Center(
               child: ListView.builder(
                 itemBuilder: (context, index) {
-                  final model = sleepModels[index];
+                  final model = snapshot.data![index];
                   return Card(
                     color: ColorConstants.midnightBlue,
                     child: ListTile(
@@ -72,7 +73,7 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
                     ),
                   );
                 },
-                itemCount: sleepModels.length,
+                itemCount: snapshot.data!.length,
               ),
             );
           },

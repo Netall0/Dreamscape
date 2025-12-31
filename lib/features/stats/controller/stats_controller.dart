@@ -15,7 +15,7 @@ final class StatsController with LoggerMixin {
     : _homeSleepRepository = homeSleepRepository {
     _init();
   }
-
+  
   Future<void> _init() async {
     try {
       final sleepModels = await _homeSleepRepository.getSleepModel();
