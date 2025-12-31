@@ -39,46 +39,86 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
         child: StreamBuilder<List<SleepModel>>(
           stream: _statsController.sleepModelsStream,
           builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              logger.debug('Error loading sleep models: ${snapshot.error}');
-              return Center(child: Text('Error: ${snapshot.error}'));
-            }
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator.adaptive());
-            }
-            if (snapshot.data!.isEmpty) {
+            if (snapshot.hasData) {
+              logger.debug(
+                'sleep models data received: ${snapshot.data!.length} items',
+              );
               return Center(
-                child: Text(
-                  'No sleep data available.',
-                  style: theme.typography.h2,
+                child: ListView.builder(
+                  itemBuilder: (context, index) {
+                    final model = snapshot.data![index];
+                    return Card(
+                      color: ColorConstants.midnightBlue,
+                      child: ListTile(
+                        title: Text(
+                          'You slept at ${model.sleepTime.hour}:${model.sleepTime.minute}',
+                          style: theme.typography.h4,
+                        ),
+                        subtitle: Text(
+                          'You went to sleep at ${model.bedTime.hour}:${model.bedTime.minute} and woke up at ${model.riseTime.hour}:${model.riseTime.minute}',
+                          style: theme.typography.h6,
+                        ),
+                      ),
+                    );
+                  },
+                  itemCount: snapshot.data!.length,
                 ),
               );
             }
-
-            return Center(
-              child: ListView.builder(
-                itemBuilder: (context, index) {
-                  final model = snapshot.data![index];
-                  return Card(
-                    color: ColorConstants.midnightBlue,
-                    child: ListTile(
-                      title: Text(
-                        'you sleep time was ${model.sleepTime.hour}:${model.sleepTime.minute}',
-                        style: theme.typography.h4,
-                      ),
-                      subtitle: Text(
-                        'you go to sleep at ${model.bedTime.hour} : ${model.bedTime.minute} and wake up at ${model.riseTime.hour} : ${model.riseTime.minute}',
-                        style: theme.typography.h6,
-                      ),
-                    ),
-                  );
-                },
-                itemCount: snapshot.data!.length,
-              ),
-            );
+            final sleepModels = snapshot.data ?? [];
+            if (sleepModels == []) {
+              return const Center(child: Text('No sleep models found'));
+            } else if (snapshot.hasError) {
+              logger.debug('Error loading sleep models: ${snapshot.error}');
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
+            return const Center(child: CircularProgressIndicator.adaptive());
           },
         ),
       ),
     );
   }
 }
+
+
+// child: StreamBuilder<List<SleepModel>>(
+//           stream: _statsController.sleepModelsStream,
+//           builder: (context, snapshot) {
+//             if (snapshot.hasData) {
+//               logger.debug('Waiting for sleep models data...');
+//               return Center(
+//                 child: ListView.builder(
+//                   itemBuilder: (context, index) {
+//                     final model = snapshot.data![index];
+//                     return Card(
+//                       color: ColorConstants.midnightBlue,
+//                       child: ListTile(
+//                         title: Text(
+//                           'you sleep time was ${model.sleepTime.hour}:${model.sleepTime.minute}',
+//                           style: theme.typography.h4,
+//                         ),
+//                         subtitle: Text(
+//                           'you go to sleep at ${model.bedTime.hour} : ${model.bedTime.minute} and wake up at ${model.riseTime.hour} : ${model.riseTime.minute}',
+//                           style: theme.typography.h6,
+//                         ),
+//                       ),
+//                     );
+//                   },
+//                   itemCount: snapshot.data!.length,
+//                 ),
+//               );
+//             }
+//             if (snapshot.hasError) {
+//               logger.debug('Error loading sleep models: ${snapshot.error}');
+//               return Center(child: Text('Error: ${snapshot.error}'));
+//             }
+//             final sleepModels = snapshot.data ?? [];
+//             if (sleepModels.isEmpty) {
+//               logger.debug('No sleep models found');
+//               return const Center(child: Text('No sleep models found'));
+//             }
+//             return const Center(child: CircularProgressIndicator.adaptive());
+//           },
+//         ),
+//       ),
+//     );

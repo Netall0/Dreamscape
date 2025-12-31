@@ -25,6 +25,8 @@ class AppDatabase extends _$AppDatabase {
   @override
   int get schemaVersion => 2;
 
+  //TODO: Add migration logic when changing the database schema - https://drift.simonbinder.eu/migrations/
+
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) async {

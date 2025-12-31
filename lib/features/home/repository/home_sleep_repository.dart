@@ -183,9 +183,10 @@ final class HomeSleepRepository
   @override
   Stream<List<SleepModel>> watchSleepModel() {
     try {
-      return _appDatabase.sleepDao.watchAllSleepInfo().map(
+      final stream = _appDatabase.sleepDao.watchAllSleepInfo().map(
         (rows) => rows.map((e) => SleepModel.fromDriftRow(e)).toList(),
       );
+      return stream;
     } on Object catch (e, st) {
       logger.error('Error watching sleep models: $e', stackTrace: st);
       return Stream.value([]);
