@@ -2,7 +2,7 @@ import 'package:dreamscape/core/gen/assets.gen.dart';
 import 'package:dreamscape/core/util/extension/time_of_day_extension.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:dreamscape/core/util/extension/app_context_extension.dart';
-import 'package:dreamscape/features/home/model/sleep_model.dart';
+import 'package:dreamscape/features/stats/model/stats_model.dart';
 import 'package:dreamscape/features/home/widget/alarm_time_picker_widget.dart';
 import 'package:dreamscape/features/home/widget/clock_widget.dart';
 import 'package:dreamscape/features/initialization/widget/depend_scope.dart';
@@ -70,13 +70,13 @@ class _SleepScreenState extends State<SleepScreen>
     final alarmService = DependScope.of(
       context,
     ).platformDependContainer.alarmService;
-    final homeRep = DependScope.of(context).dependModel.homeSleepRepository;
+    final tempRep = DependScope.of(context).dependModel.tempRepository;
     return Scaffold(
       appBar: AppBar(
         actions: [IconButton(onPressed: () {}, icon: Icon(Icons.mood))],
         leading: IconButton(
           onPressed: () {
-            homeRep.clearTempData();
+            tempRep.clearTempData();
             logger.debug('clear times');
             context.pop();
           },
@@ -182,22 +182,19 @@ class _SleepScreenState extends State<SleepScreen>
               child: GestureDetector(
                 onTap: () async {
                   final time = TimeOfDay.now(); //TODO
-                  await homeRep.saveRiseTime(
+                  await tempRep.saveRiseTime(
                     TimeOfDay(hour: time.hour, minute: time.minute),
                   );
-                  await homeRep.createSleepModelFromTemp(
-                    quality: SleepQuality.normal,
-                    notes: 'good sleep',
-                  );
+
                   logger.debug('time rise ${time.hour}:${time.minute}');
-                  await homeRep.clearTempData();
+                  await tempRep.clearTempData();
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text('congratulations!!!, sleep added '),
                       ),
                     );
-                    context.pop();
+                    context.go('/stats');
                   }
                 },
                 child: AdaptiveCard(

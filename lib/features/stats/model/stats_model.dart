@@ -5,7 +5,11 @@ import 'package:flutter/material.dart';
 
 enum SleepQuality { happy, tired, normal }
 
-final class SleepModel {
+
+
+//TODO recomposition 
+
+final class StatsModel {
   final int? id;
   final SleepQuality sleepQuality;
   final TimeOfDay bedTime;
@@ -13,7 +17,7 @@ final class SleepModel {
   final TimeOfDay sleepTime;
   final String sleepNotes;
 
-  SleepModel({
+  StatsModel({
     this.id,
     required this.sleepQuality,
     required this.sleepTime,
@@ -22,7 +26,7 @@ final class SleepModel {
     required this.sleepNotes,
   });
 
-  factory SleepModel.fromDriftRow(SleepInfoTableData row) => SleepModel(
+  factory StatsModel.fromDriftRow(SleepInfoTableData row) => StatsModel(
     id: row.id,
     sleepQuality: SleepQuality.values.firstWhere(
       (element) => element.name == row.sleepQuality,
@@ -38,7 +42,7 @@ final class SleepModel {
     return time.hour * 60 + time.minute;
   }
 
-  SleepInfoTableCompanion toSleepInfoTableCompanion(SleepModel sleepModel) =>
+  SleepInfoTableCompanion toSleepInfoTableCompanion(StatsModel sleepModel) =>
       SleepInfoTableCompanion(
         id: id != null ? Value(sleepModel.id!) : const Value.absent(),
         sleepQuality: Value(sleepModel.sleepQuality.name),
@@ -48,7 +52,7 @@ final class SleepModel {
         notes: Value(sleepModel.sleepNotes),
       );
 
-  SleepModel copyWith({
+  StatsModel copyWith({
     int? id,
     SleepQuality? sleepQuality,
     TimeOfDay? sleepTime,
@@ -56,7 +60,7 @@ final class SleepModel {
     TimeOfDay? riseTime,
     String? sleepNotes,
   }) {
-    return SleepModel(
+    return StatsModel(
       id: id ?? this.id,
       sleepQuality: sleepQuality ?? this.sleepQuality,
       sleepTime: sleepTime ?? this.sleepTime,

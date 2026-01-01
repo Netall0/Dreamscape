@@ -30,7 +30,7 @@ class _ScreenState extends State<HomeScreen> with LoggerMixin {
     final clockStream = DependScope.of(
       context,
     ).platformDependContainer.clockNotifier;
-    final homeRep = DependScope.of(context).dependModel.homeSleepRepository;
+    final tempRep = DependScope.of(context).dependModel.tempRepository;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -51,7 +51,7 @@ class _ScreenState extends State<HomeScreen> with LoggerMixin {
                 onTap: () async {
                   final time = TimeOfDay.now();
                   SleepScreenData().go(context);
-                  await homeRep.saveBedTime(
+                  await tempRep.saveBedTime(
                     TimeOfDay(
                       hour: time.hour, //TODO
                       minute: time.minute,

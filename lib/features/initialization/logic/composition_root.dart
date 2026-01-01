@@ -1,9 +1,11 @@
 import 'package:dreamscape/core/database/database.dart';
+import 'package:dreamscape/core/repository/temp_repository.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
-import 'package:dreamscape/features/home/repository/home_sleep_repository.dart';
+import 'package:dreamscape/features/stats/app/build_stats_from_temp.dart';
+import 'package:dreamscape/features/stats/repository/stats_repository.dart';
 import 'package:dreamscape/features/initialization/model/depend_container.dart';
 import 'package:dreamscape/features/initialization/model/platform_depend_container.dart';
-import 'package:dreamscape/features/stats/controller/stats_controller.dart';
+import 'package:dreamscape/features/stats/bloc/stats_bloc.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -41,22 +43,41 @@ class CompositionRoot with LoggerMixin {
   Future<DependContainer> _initDepend() async {
     final AudioPlayer audioPlayer = await _initAudioPlayer();
     final AppDatabase appDatabase = _initAppDatabase();
-    final HomeSleepRepository homeSleepRepository = _initHomeSleepRepository(
+    final StatsRepository statsRepository = _initStatsRepository(
       sharedPreferences,
       appDatabase,
+    );
+    final TempRepository tempRepository = _initTempRepository(
+      sharedPreferences,
     );
 
     try {
       return DependContainer(
-        statsController: StatsController(
-          homeSleepRepository: homeSleepRepository,
+        tempRepository: tempRepository,
+        statsBloc: StatsBloc(
+          buildStatsFromTemp: BuildStatsFromTemp(
+            tempRepository,
+            statsRepository,
+          ),
         ),
         appDatabase: appDatabase,
         audioPlayer: audioPlayer,
-        homeSleepRepository: homeSleepRepository,
+        statsRepository: statsRepository,
       );
     } catch (e, stackTrace) {
       logger.error('Ошибка в _initDepend', error: e, stackTrace: stackTrace);
+      rethrow;
+    }
+  }
+
+  TempRepository _initTempRepository(SharedPreferences sharedPreferences) {
+    try {
+      final tempRepository = TempRepository(
+        sharedPreferences: sharedPreferences,
+      );
+      return tempRepository;
+    } on Object catch (e, stackTrace) {
+      logger.error('temp repository', error: e, stackTrace: stackTrace);
       rethrow;
     }
   }
@@ -71,12 +92,12 @@ class CompositionRoot with LoggerMixin {
     }
   }
 
-  HomeSleepRepository _initHomeSleepRepository(
+  StatsRepository _initStatsRepository(
     SharedPreferences sharedPreferences,
     AppDatabase appDatabase,
   ) {
     try {
-      final homeSleepRepository = HomeSleepRepository(
+      final homeSleepRepository = StatsRepository(
         sharedPreferences: sharedPreferences,
         appDatabase: appDatabase,
       );
