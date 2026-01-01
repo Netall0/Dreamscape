@@ -30,6 +30,7 @@ dependencies:
   path: ^1.9.1
   sqlite3_flutter_libs: ^0.5.41
   drift_flutter: ^0.2.8
+  flutter_slidable: ^4.0.3
 
 
 dev_dependencies:

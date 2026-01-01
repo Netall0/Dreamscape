@@ -12,6 +12,7 @@ final class StatsRepository with LoggerMixin implements IStatsRepository {
     required SharedPreferences sharedPreferences,
   }) : _appDatabase = appDatabase;
 
+  @override
   Future<List<StatsModel>> getSleepModel() async {
     try {
       final listSleepModels = await _appDatabase.sleepDao.getAllSleepInfo();
@@ -52,9 +53,9 @@ final class StatsRepository with LoggerMixin implements IStatsRepository {
   }
 
   @override
-  Future<void> deleteSleepModel(StatsModel sleepModel) async {
+  Future<void> deleteSleepModel(int id) async {
     try {
-      await _appDatabase.sleepDao.deleteSleepInfo(sleepModel.id!);
+      await _appDatabase.sleepDao.deleteSleepInfo(id);
       logger.info('Sleep model deleted successfully');
     } on Object catch (e, st) {
       logger.error('Error deleting sleep model: $e', stackTrace: st);

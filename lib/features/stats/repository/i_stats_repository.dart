@@ -4,10 +4,12 @@ abstract interface class IStatsRepository {
   //stats methods
 
   // Fetches all sleep models from the database.
+  Future<List<StatsModel>> getSleepModel();
   Future<void> addSleepModel(StatsModel sleepModel);
-  Future<void> deleteSleepModel(StatsModel sleepModel);
+  Future<void> deleteSleepModel(int id);
   Future<void> clearAll();
   Stream<List<StatsModel>> watchSleepModel();
 
   /// Creates a new SleepModel based on temporary data.
+  
 }

@@ -1,5 +1,7 @@
 import 'package:dreamscape/core/router/navigator_observer.dart';
 import 'package:dreamscape/core/router/router.dart';
+import 'package:dreamscape/features/initialization/widget/depend_scope.dart';
+import 'package:dreamscape/features/stats/bloc/stats_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uikit/overlay/controller/dimmer_overlay_notifier.dart';
@@ -33,6 +35,12 @@ class _AppMaterialState extends State<AppMaterial> {
       ],
     );
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    DependScope.of(context).dependModel.statsBloc.add(StatsEventLoadStats());
+    super.didChangeDependencies();
   }
 
   @override

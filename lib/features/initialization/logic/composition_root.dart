@@ -1,7 +1,6 @@
 import 'package:dreamscape/core/database/database.dart';
 import 'package:dreamscape/core/repository/temp_repository.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
-import 'package:dreamscape/features/stats/app/build_stats_from_temp.dart';
 import 'package:dreamscape/features/stats/repository/stats_repository.dart';
 import 'package:dreamscape/features/initialization/model/depend_container.dart';
 import 'package:dreamscape/features/initialization/model/platform_depend_container.dart';
@@ -54,12 +53,7 @@ class CompositionRoot with LoggerMixin {
     try {
       return DependContainer(
         tempRepository: tempRepository,
-        statsBloc: StatsBloc(
-          buildStatsFromTemp: BuildStatsFromTemp(
-            tempRepository,
-            statsRepository,
-          ),
-        ),
+        statsBloc: StatsBloc(statsRepository: statsRepository),
         appDatabase: appDatabase,
         audioPlayer: audioPlayer,
         statsRepository: statsRepository,

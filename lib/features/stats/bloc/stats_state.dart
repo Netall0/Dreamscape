@@ -1,6 +1,5 @@
 part of 'stats_bloc.dart';
 
-@immutable
 sealed class StatsState {}
 
 final class StatsInitial extends StatsState {}
@@ -18,4 +17,3 @@ final class StatsError extends StatsState {
 final class StatsLoading extends StatsState {}
 
 final class StatsEmpty extends StatsState {}
-

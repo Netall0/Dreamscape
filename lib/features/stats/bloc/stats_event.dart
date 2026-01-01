@@ -1,9 +1,8 @@
 part of 'stats_bloc.dart';
 
-@immutable
 sealed class StatsEvent {}
 
-final class StatsEventCreateFromTemp extends StatsEvent {}
+final class StatsEventLoadStats extends StatsEvent {}
 
 final class StatsEventClearAll extends StatsEvent {}
 
@@ -18,6 +17,6 @@ final class StatsEventUpdateStats extends StatsEvent {
 }
 
 final class StatsEventAddStats extends StatsEvent {
-  StatsEventAddStats(this.statsModel);
+  StatsEventAddStats({required this.statsModel});
   final StatsModel statsModel;
 }
