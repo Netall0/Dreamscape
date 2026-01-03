@@ -1,10 +1,11 @@
 import 'package:dreamscape/core/database/database.dart';
 import 'package:dreamscape/core/repository/temp_repository.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
+import 'package:dreamscape/features/stats/controller/notifier/stats_notifier.dart';
 import 'package:dreamscape/features/stats/repository/stats_repository.dart';
 import 'package:dreamscape/features/initialization/model/depend_container.dart';
 import 'package:dreamscape/features/initialization/model/platform_depend_container.dart';
-import 'package:dreamscape/features/stats/bloc/stats_bloc.dart';
+import 'package:dreamscape/features/stats/controller/bloc/stats_bloc.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -40,7 +41,8 @@ class CompositionRoot with LoggerMixin {
   }
 
   Future<DependContainer> _initDepend() async {
-    final AudioPlayer audioPlayer = await _initAudioPlayer();
+    final AudioPlayer audioPlayer =
+        await _initAudioPlayer(); //TODO audio player di flow
     final AppDatabase appDatabase = _initAppDatabase();
     final StatsRepository statsRepository = _initStatsRepository(
       sharedPreferences,
@@ -49,17 +51,39 @@ class CompositionRoot with LoggerMixin {
     final TempRepository tempRepository = _initTempRepository(
       sharedPreferences,
     );
+    final StatsNotifier statsNotifier = _initStatsNotifier(statsRepository);
+    final StatsBloc statsBloc = _initStatsBloc(statsRepository);
 
     try {
       return DependContainer(
+        statsNotifier: statsNotifier,
         tempRepository: tempRepository,
-        statsBloc: StatsBloc(statsRepository: statsRepository),
+        statsBloc: statsBloc,
         appDatabase: appDatabase,
         audioPlayer: audioPlayer,
-        statsRepository: statsRepository,
       );
     } catch (e, stackTrace) {
       logger.error('Ошибка в _initDepend', error: e, stackTrace: stackTrace);
+      rethrow;
+    }
+  }
+
+  StatsBloc _initStatsBloc(StatsRepository statsRepository) {
+    try {
+      final statsBloc = StatsBloc(statsRepository: statsRepository);
+      return statsBloc;
+    } on Object catch (e, stackTrace) {
+      logger.error('stats bloc', error: e, stackTrace: stackTrace);
+      rethrow;
+    }
+  }
+
+  StatsNotifier _initStatsNotifier(StatsRepository statsRepository) {
+    try {
+      final statsNotifier = StatsNotifier(statsRepository: statsRepository);
+      return statsNotifier;
+    } on Object catch (e, stackTrace) {
+      logger.error('stats notifier', error: e, stackTrace: stackTrace);
       rethrow;
     }
   }
@@ -91,10 +115,7 @@ class CompositionRoot with LoggerMixin {
     AppDatabase appDatabase,
   ) {
     try {
-      final homeSleepRepository = StatsRepository(
-        sharedPreferences: sharedPreferences,
-        appDatabase: appDatabase,
-      );
+      final homeSleepRepository = StatsRepository(appDatabase: appDatabase);
       return homeSleepRepository;
     } on Object catch (e, stackTrace) {
       logger.error('home sleep service', error: e, stackTrace: stackTrace);

@@ -34,17 +34,17 @@ final class TempRepository with LoggerMixin implements ITempRepository {
     }
   }
 
-  @override
-  Future<TimeOfDay?> getRiseTime() async {
-    try {
-      final minutes = _sharedPreferences.getInt(_riseTimeKey);
-      if (minutes == null) return null;
-      return TimeOfDay(hour: minutes ~/ 60, minute: minutes % 60);
-    } on Object catch (e, st) {
-      logger.error('Error getting rise time: $e', stackTrace: st);
-      return null;
-    }
-  }
+  // @override
+  // Future<TimeOfDay?> getRiseTime() async {
+  //   try {
+  //     final minutes = _sharedPreferences.getInt(_riseTimeKey);
+  //     if (minutes == null) return null;
+  //     return TimeOfDay(hour: minutes ~/ 60, minute: minutes % 60);
+  //   } on Object catch (e, st) {
+  //     logger.error('Error getting rise time: $e', stackTrace: st);
+  //     return null;
+  //   }
+  // }
 
   @override
   Future<void> saveBedTime(TimeOfDay bedTime) async {
@@ -57,14 +57,14 @@ final class TempRepository with LoggerMixin implements ITempRepository {
     }
   }
 
-  @override
-  Future<void> saveRiseTime(TimeOfDay riseTime) async {
-    try {
-      final minutes = riseTime.hour * 60 + riseTime.minute;
-      _sharedPreferences.setInt(_riseTimeKey, minutes);
-      logger.info('Rise time saved successfully');
-    } on Object catch (e, st) {
-      logger.error('Error saving rise time: $e', stackTrace: st);
-    }
-  }
+  // @override
+  // Future<void> saveRiseTime(TimeOfDay riseTime) async {
+  //   try {
+  //     final minutes = riseTime.hour * 60 + riseTime.minute;
+  //     _sharedPreferences.setInt(_riseTimeKey, minutes);
+  //     logger.info('Rise time saved successfully');
+  //   } on Object catch (e, st) {
+  //     logger.error('Error saving rise time: $e', stackTrace: st);
+  //   }
+  // }
 }

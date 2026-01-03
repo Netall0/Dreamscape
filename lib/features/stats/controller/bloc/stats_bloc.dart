@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:dreamscape/core/repository/temp_repository.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:dreamscape/features/stats/model/stats_model.dart';
 import 'package:dreamscape/features/stats/repository/stats_repository.dart';
@@ -9,10 +8,9 @@ part 'stats_state.dart';
 
 class StatsBloc extends Bloc<StatsEvent, StatsState> with LoggerMixin {
   final StatsRepository _statsRepository;
-  StatsBloc({
-    required StatsRepository statsRepository,
-  }) : _statsRepository = statsRepository,
-       super(StatsInitial()) {
+  StatsBloc({required StatsRepository statsRepository})
+    : _statsRepository = statsRepository,
+      super(StatsInitial()) {
     on<StatsEvent>(
       (event, emit) => switch (event) {
         StatsEventLoadStats() => _onLoadStats(event, emit),
@@ -32,6 +30,12 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> with LoggerMixin {
     try {
       await _statsRepository.deleteSleepModel(event.id);
       logger.debug('StatsModel deleted with id: ${event.id}');
+      final list = await _statsRepository.getSleepModel();
+      if (list.isEmpty) {
+        emit(StatsEmpty());
+      } else {
+        emit(StatsLoaded(list));
+      }
     } on Object catch (e, st) {
       emit(StatsError(e.toString()));
       logger.error('Error in _onDeleteById: $e', stackTrace: st);

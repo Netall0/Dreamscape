@@ -3,7 +3,8 @@ import 'package:dreamscape/core/repository/temp_repository.dart';
 import 'package:dreamscape/core/util/extension/time_of_day_extension.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:dreamscape/core/util/extension/app_context_extension.dart';
-import 'package:dreamscape/features/stats/bloc/stats_bloc.dart';
+import 'package:dreamscape/features/stats/controller/bloc/stats_bloc.dart';
+import 'package:dreamscape/features/stats/controller/notifier/stats_notifier.dart';
 import 'package:dreamscape/features/stats/model/stats_model.dart';
 import 'package:dreamscape/features/home/widget/alarm_time_picker_widget.dart';
 import 'package:dreamscape/features/home/widget/clock_widget.dart';
@@ -74,6 +75,10 @@ class _SleepScreenState extends State<SleepScreen>
       context,
     ).platformDependContainer.alarmService;
     final tempRep = DependScope.of(context).dependModel.tempRepository;
+    final statsNotifier = DependScope.of(context).dependModel.statsNotifier;
+
+    //TODO i know
+
     return Scaffold(
       appBar: AppBar(
         actions: [IconButton(onPressed: () {}, icon: Icon(Icons.mood))],
@@ -184,7 +189,12 @@ class _SleepScreenState extends State<SleepScreen>
               height: 60,
               child: GestureDetector(
                 onTap: () async {
-                  await _onTapAdding(tempRep, bloc, context);
+                  await _onTapAdding(
+                    tempRep: tempRep,
+                    bloc: bloc,
+                    context: context,
+                    statsNotifier: statsNotifier,
+                  );
                 },
                 child: AdaptiveCard(
                   borderRadius: .all(.circular(24)),
@@ -210,28 +220,32 @@ class _SleepScreenState extends State<SleepScreen>
     );
   }
 
-  Future<void> _onTapAdding(
-    TempRepository tempRep,
-    StatsBloc bloc,
-    BuildContext context,
-  ) async {
+  
+
+  Future<void> _onTapAdding({
+    required TempRepository tempRep,
+    required StatsNotifier statsNotifier,
+    required StatsBloc bloc,
+    required BuildContext context,
+  }) async {
     final riseTime = TimeOfDay.now(); //TODO
-    await tempRep.saveRiseTime(
-      TimeOfDay(hour: riseTime.hour, minute: riseTime.minute),
-    );
 
     logger.debug('time rise ${riseTime.hour}:${riseTime.minute}');
     final bedTime =
         await tempRep.getBedTime() ??
         TimeOfDay(hour: riseTime.hour, minute: riseTime.minute);
 
+    final sleepDuration = bedTime.calculationSleepTime(riseTime);
+
+    statsNotifier.setStats();
+
     bloc.add(
       StatsEventAddStats(
         statsModel: StatsModel(
-          bedTime: await tempRep.getBedTime() ?? riseTime,
+          bedTime: bedTime,
           riseTime: TimeOfDay(hour: riseTime.hour, minute: riseTime.minute),
           sleepQuality: SleepQuality.normal,
-          sleepTime: bedTime.calculationSleepTime(riseTime),
+          sleepTime: sleepDuration,
           sleepNotes: 'хахахахахахахааххах',
         ),
       ),
@@ -240,8 +254,10 @@ class _SleepScreenState extends State<SleepScreen>
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('congratulations!!!, sleep added ')),
       );
-      context.go('/stats');
-      await tempRep.clearTempData();
+
+      context.pop();
     }
+    await statsNotifier.setStats();
+    await tempRep.clearTempData();
   }
 }

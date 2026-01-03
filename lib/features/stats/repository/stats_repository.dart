@@ -2,15 +2,63 @@ import 'package:dreamscape/core/database/database.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:dreamscape/features/stats/model/stats_model.dart';
 import 'package:dreamscape/features/stats/repository/i_stats_repository.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/material.dart';
 
 final class StatsRepository with LoggerMixin implements IStatsRepository {
   final AppDatabase _appDatabase;
 
-  StatsRepository({
-    required AppDatabase appDatabase,
-    required SharedPreferences sharedPreferences,
-  }) : _appDatabase = appDatabase;
+  StatsRepository({required AppDatabase appDatabase})
+    : _appDatabase = appDatabase;
+
+  //stats methods
+
+
+  @override
+  Future<double> getTotalSleepHours() async {
+    try {
+      final allModels = await _appDatabase.sleepDao.getAllSleepInfo();
+
+      if (allModels.isEmpty) return 0.0;
+
+      double total = 0.0;
+      for (var model in allModels) {
+        final sleepModel = StatsModel.fromDriftRow(model);
+        final hours =
+            sleepModel.sleepTime.hour + (sleepModel.sleepTime.minute / 60.0);
+        total += hours;
+      }
+
+      logger.info('Total sleep hours calculated: $total');
+      return total;
+    } on Object catch (e, st) {
+      logger.error('Error calculating total sleep hours: $e', stackTrace: st);
+      return 0.0;
+    }
+  }
+
+  @override
+  Future<double> getAverageSleepHours() async {
+    try {
+      final allModels = await _appDatabase.sleepDao.getAllSleepInfo();
+
+      if (allModels.isEmpty) return 0.0;
+
+      double total = 0.0;
+      for (var model in allModels) {
+        final sleepModel = StatsModel.fromDriftRow(model);
+        final hours =
+            sleepModel.sleepTime.hour + (sleepModel.sleepTime.minute / 60.0);
+        total += hours;
+      }
+
+      final average = total / allModels.length;
+      logger.info('Average sleep hours calculated: $average');
+      return average;
+    } on Object catch (e, st) {
+      logger.error('Error calculating average sleep hours: $e', stackTrace: st);
+      return 0.0;
+    }
+  }
 
   @override
   Future<List<StatsModel>> getSleepModel() async {
@@ -69,21 +117,6 @@ final class StatsRepository with LoggerMixin implements IStatsRepository {
       logger.info('All sleep models cleared successfully');
     } on Object catch (e, st) {
       logger.error('Error clearing all sleep models: $e', stackTrace: st);
-    }
-  }
-
-  // temp data
-
-  @override
-  Stream<List<StatsModel>> watchSleepModel() {
-    try {
-      final stream = _appDatabase.sleepDao.watchAllSleepInfo().map(
-        (rows) => rows.map((e) => StatsModel.fromDriftRow(e)).toList(),
-      );
-      return stream;
-    } on Object catch (e, st) {
-      logger.error('Error watching sleep models: $e', stackTrace: st);
-      return Stream.value([]);
     }
   }
 }
