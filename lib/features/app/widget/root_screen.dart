@@ -41,7 +41,7 @@ class _RootScreenState extends State<RootScreen> {
           inactiveColor: ColorConstants.backgroundLight,
           route: '/home',
           color: Colors.transparent,
-          height: AppSizes.screenHeightOfContext(context) * 0.1,
+          height: AppSizes.screenHeightOfContext(context) * 0.07,
           borderValue: AppSizes.radiusMedium,
           items: items,
           currentIndex: widget._navigationShell.currentIndex,

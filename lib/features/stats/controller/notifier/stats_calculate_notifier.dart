@@ -1,10 +1,10 @@
 import 'package:dreamscape/features/stats/repository/stats_repository.dart';
 import 'package:flutter/material.dart';
 
-final class StatsNotifier extends ChangeNotifier {
+final class StatsCalculateNotifier extends ChangeNotifier {
   final StatsRepository _statsRepository;
 
-  StatsNotifier({required StatsRepository statsRepository})
+  StatsCalculateNotifier({required StatsRepository statsRepository})
     : _statsRepository = statsRepository;
 
   double get totalSleepHours => _totalSleepHours;

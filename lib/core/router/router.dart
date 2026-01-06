@@ -1,4 +1,5 @@
 import 'package:dreamscape/features/app/widget/root_screen.dart';
+import 'package:dreamscape/features/auth/widget/profile_screen.dart';
 import 'package:dreamscape/features/home/widget/home_screen.dart';
 import 'package:dreamscape/features/stats/widget/stats_screen.dart';
 import 'package:flutter/material.dart';
@@ -87,16 +88,5 @@ class ProfileScreenData extends GoRouteData with $ProfileScreenData {
   Widget build(BuildContext context, GoRouterState state) {
     // TODO: implement build
     return ProfileScreen();
-  }
-}
-
-//TODO Delete when  finish the corresponding features
-
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: Colors.green);
   }
 }

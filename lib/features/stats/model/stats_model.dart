@@ -3,11 +3,28 @@ import 'package:dreamscape/core/util/extension/time_of_day_extension.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 
-enum SleepQuality { happy, tired, normal }
+enum SleepQuality {
+  bad('bad', Icon(Icons.sentiment_very_dissatisfied)),
+  normal('normal', Icon(Icons.sentiment_neutral)),
+  good('good', Icon(Icons.sentiment_very_satisfied));
 
+  final String name;
+  final Icon icon;
 
+  const SleepQuality(this.name, this.icon);
+}
 
-//TODO recomposition 
+enum AuthException {
+  invalidEmail('Invalid email address', 101),
+  emailAlreadyInUse('Email is already in use', 102),
+  weakPassword('Password is too weak', 103),
+  wrongPassword('Wrong password provided', 104);
+
+  final String message;
+  final int code;
+
+  const AuthException(this.message, this.code);
+}
 
 final class StatsModel {
   final int? id;

@@ -2,7 +2,6 @@ import 'package:dreamscape/core/database/database.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:dreamscape/features/stats/model/stats_model.dart';
 import 'package:dreamscape/features/stats/repository/i_stats_repository.dart';
-import 'package:flutter/material.dart';
 
 final class StatsRepository with LoggerMixin implements IStatsRepository {
   final AppDatabase _appDatabase;

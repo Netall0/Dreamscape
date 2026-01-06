@@ -1,4 +1,4 @@
-part of 'stats_bloc.dart';
+part of 'stats_list_bloc.dart';
 
 sealed class StatsState {}
 

@@ -1,18 +1,21 @@
 import 'package:dreamscape/core/database/database.dart';
 import 'package:dreamscape/core/repository/temp_repository.dart';
-import 'package:dreamscape/features/stats/controller/notifier/stats_notifier.dart';
-import 'package:dreamscape/features/stats/controller/bloc/stats_bloc.dart';
+import 'package:dreamscape/features/auth/controller/notifier/load_avatar_notifier.dart';
+import 'package:dreamscape/features/stats/controller/notifier/stats_calculate_notifier.dart';
+import 'package:dreamscape/features/stats/controller/bloc/stats_list_bloc.dart';
 import 'package:just_audio/just_audio.dart';
 
 final class DependContainer {
   final AudioPlayer audioPlayer;
 
   final AppDatabase appDatabase;
-  final StatsBloc statsBloc;
+  final StatsListBloc statsBloc;
   final TempRepository tempRepository;
-  final StatsNotifier statsNotifier;
+  final StatsCalculateNotifier statsNotifier;
+  final AvatarNotifier avatarNotifier;
 
   DependContainer({
+    required this.avatarNotifier,
     required this.statsNotifier,
     required this.statsBloc,
     required this.audioPlayer,

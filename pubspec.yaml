@@ -31,6 +31,9 @@ dependencies:
   sqlite3_flutter_libs: ^0.5.41
   drift_flutter: ^0.2.8
   flutter_slidable: ^4.0.3
+  flutter_popup: ^3.3.9
+  supabase_flutter: ^2.12.0
+  image_picker: ^1.2.1
 
 
 dev_dependencies:

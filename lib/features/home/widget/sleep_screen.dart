@@ -3,8 +3,8 @@ import 'package:dreamscape/core/repository/temp_repository.dart';
 import 'package:dreamscape/core/util/extension/time_of_day_extension.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:dreamscape/core/util/extension/app_context_extension.dart';
-import 'package:dreamscape/features/stats/controller/bloc/stats_bloc.dart';
-import 'package:dreamscape/features/stats/controller/notifier/stats_notifier.dart';
+import 'package:dreamscape/features/stats/controller/bloc/stats_list_bloc.dart';
+import 'package:dreamscape/features/stats/controller/notifier/stats_calculate_notifier.dart';
 import 'package:dreamscape/features/stats/model/stats_model.dart';
 import 'package:dreamscape/features/home/widget/alarm_time_picker_widget.dart';
 import 'package:dreamscape/features/home/widget/clock_widget.dart';
@@ -50,7 +50,9 @@ class _SleepScreenState extends State<SleepScreen>
       await _player.setLoopMode(LoopMode.one);
       if (!mounted) return;
 
-      logger.debug('player initialized successfully');
+      _player.play();
+
+      logger.debug('player initialized successfully and played');
     } catch (e, stackTrace) {
       logger.error('audio init failed', error: e, stackTrace: stackTrace);
     }
@@ -66,7 +68,7 @@ class _SleepScreenState extends State<SleepScreen>
   @override
   Widget build(BuildContext context) {
     final theme = context.appTheme;
-    final size = MediaQuery.of(context).size;
+    final size = MediaQuery.sizeOf(context);
     final bloc = DependScope.of(context).dependModel.statsBloc;
     final clockStream = DependScope.of(
       context,
@@ -106,7 +108,7 @@ class _SleepScreenState extends State<SleepScreen>
               alignment: .center,
               children: [
                 SizedBox(
-                  height: size.height * 0.3,
+                  height: size.height * 0.2,
                   width: size.width * 0.6,
                   child: CustomRoundMusicBar(isPlaying: _player.playingStream),
                 ),
@@ -186,7 +188,7 @@ class _SleepScreenState extends State<SleepScreen>
 
             SizedBox(
               width: 200,
-              height: 60,
+              height: size.height * 0.1,
               child: GestureDetector(
                 onTap: () async {
                   await _onTapAdding(
@@ -220,15 +222,43 @@ class _SleepScreenState extends State<SleepScreen>
     );
   }
 
-  
-
   Future<void> _onTapAdding({
     required TempRepository tempRep,
-    required StatsNotifier statsNotifier,
-    required StatsBloc bloc,
+    required StatsCalculateNotifier statsNotifier,
+    required StatsListBloc bloc,
     required BuildContext context,
   }) async {
     final riseTime = TimeOfDay.now(); //TODO
+    SleepQuality sleepQuality = SleepQuality.good;
+
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog.adaptive(
+          title: Text('chose your sleep quality'),
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: SleepQuality.values.map((e) {
+              return AdaptiveCard(
+                onTap: () {
+                  sleepQuality = e;
+                  context.pop();
+                },
+                padding: .all(16),
+                margin: .all(4),
+                child: SizedBox(
+                  height: MediaQuery.sizeOf(context).height * 0.1,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [e.icon, Text(e.name)],
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        );
+      },
+    );
 
     logger.debug('time rise ${riseTime.hour}:${riseTime.minute}');
     final bedTime =
@@ -244,7 +274,7 @@ class _SleepScreenState extends State<SleepScreen>
         statsModel: StatsModel(
           bedTime: bedTime,
           riseTime: TimeOfDay(hour: riseTime.hour, minute: riseTime.minute),
-          sleepQuality: SleepQuality.normal,
+          sleepQuality: sleepQuality,
           sleepTime: sleepDuration,
           sleepNotes: 'хахахахахахахааххах',
         ),
@@ -252,7 +282,7 @@ class _SleepScreenState extends State<SleepScreen>
     );
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('congratulations!!!, sleep added ')),
+        SnackBar(content: Text('congratulations!!!, sleep added')),
       );
 
       context.pop();

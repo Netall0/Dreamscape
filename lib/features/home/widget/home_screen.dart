@@ -21,6 +21,7 @@ class _ScreenState extends State<HomeScreen> with LoggerMixin {
   @override
   Widget build(BuildContext context) {
     final theme = context.appTheme;
+    final size = MediaQuery.sizeOf(context);
     // final notificationSender = DependScope.of(
     //   context,
     // ).dependModel.notificationsSender;
@@ -37,16 +38,19 @@ class _ScreenState extends State<HomeScreen> with LoggerMixin {
       body: Center(
         child: Column(
           children: [
-            SizedBox(height: AppSizes.screenHeightOfContext(context) * 0.15),
+            SizedBox(height: size.height * .13),
             Text('hello  friend', style: theme.typography.h1.copyWith()),
             ClockWidget(clockStream: clockStream, theme: theme),
             SizedBox(height: 24),
             AlarmTimePickerWidget(alarmService: alarmService),
             SizedBox(height: 24),
-            Lottie.asset(Assets.lottie.sleepingPolarBear.path),
+            Lottie.asset(
+              Assets.lottie.sleepingPolarBear.path,
+              height: (size.width < 500) ? size.height * .4 : size.height * .3,
+            ),
             SizedBox(
               width: 200,
-              height: 60,
+              height: size.height * .1,
               child: GestureDetector(
                 onTap: () async {
                   final time = TimeOfDay.now();
@@ -65,20 +69,24 @@ class _ScreenState extends State<HomeScreen> with LoggerMixin {
                     );
                   }
                 },
-                child: AdaptiveCard(
-                  borderRadius: .all(.circular(24)),
-                  backgroundColor: ColorConstants.pastelIndigo,
-                  child: Row(
-                    mainAxisAlignment: .center,
-                    children: [
-                      Icon(Icons.play_arrow),
-                      Text(
-                        ' Начать сон',
-                        style: theme.typography.h5.copyWith(
-                          color: const Color.fromRGBO(0, 0, 0, 1),
+                child: SizedBox(
+                  height: 40,
+                  width: 200,
+                  child: AdaptiveCard(
+                    borderRadius: .all(.circular(24)),
+                    backgroundColor: ColorConstants.pastelIndigo,
+                    child: Row(
+                      mainAxisAlignment: .center,
+                      children: [
+                        Icon(Icons.play_arrow),
+                        Text(
+                          ' Начать сон',
+                          style: theme.typography.h5.copyWith(
+                            color: const Color.fromRGBO(0, 0, 0, 1),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),

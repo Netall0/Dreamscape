@@ -1,11 +1,13 @@
 import 'package:dreamscape/core/database/database.dart';
 import 'package:dreamscape/core/repository/temp_repository.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
-import 'package:dreamscape/features/stats/controller/notifier/stats_notifier.dart';
+import 'package:dreamscape/features/auth/controller/notifier/load_avatar_notifier.dart';
+import 'package:dreamscape/features/auth/repository/auth_repository.dart';
+import 'package:dreamscape/features/stats/controller/notifier/stats_calculate_notifier.dart';
 import 'package:dreamscape/features/stats/repository/stats_repository.dart';
 import 'package:dreamscape/features/initialization/model/depend_container.dart';
 import 'package:dreamscape/features/initialization/model/platform_depend_container.dart';
-import 'package:dreamscape/features/stats/controller/bloc/stats_bloc.dart';
+import 'package:dreamscape/features/stats/controller/bloc/stats_list_bloc.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -42,35 +44,54 @@ class CompositionRoot with LoggerMixin {
 
   Future<DependContainer> _initDepend() async {
     final AudioPlayer audioPlayer =
-        await _initAudioPlayer(); //TODO audio player di flow
+        await _initAudioPlayer(); //AudioPlayer()..setReleaseMode(ReleaseMode.STOP);
     final AppDatabase appDatabase = _initAppDatabase();
     final StatsRepository statsRepository = _initStatsRepository(
       sharedPreferences,
       appDatabase,
     );
+    final AuthRepository authRepository = AuthRepository();
+
     final TempRepository tempRepository = _initTempRepository(
       sharedPreferences,
     );
-    final StatsNotifier statsNotifier = _initStatsNotifier(statsRepository);
-    final StatsBloc statsBloc = _initStatsBloc(statsRepository);
+    final StatsCalculateNotifier statsNotifier = _initStatsNotifier(
+      statsRepository,
+    );
+    final StatsListBloc statsBloc = _initStatsBloc(statsRepository);
+
+    final AvatarNotifier avatarNotifier = _initAvatarNotiifer(authRepository);
 
     try {
       return DependContainer(
+        avatarNotifier: avatarNotifier,
         statsNotifier: statsNotifier,
         tempRepository: tempRepository,
         statsBloc: statsBloc,
         appDatabase: appDatabase,
         audioPlayer: audioPlayer,
       );
-    } catch (e, stackTrace) {
+    } on Object catch (e, stackTrace) {
       logger.error('Ошибка в _initDepend', error: e, stackTrace: stackTrace);
       rethrow;
     }
   }
 
-  StatsBloc _initStatsBloc(StatsRepository statsRepository) {
+  AvatarNotifier _initAvatarNotiifer(AuthRepository authRepository) {
     try {
-      final statsBloc = StatsBloc(statsRepository: statsRepository);
+      final avatarNotifier = AvatarNotifier(
+        authRepository: authRepository,
+      );
+      return avatarNotifier;
+    } on Object catch (e, stackTrace) {
+      logger.error('avatar notifier', error: e, stackTrace: stackTrace);
+      rethrow;
+    }
+  }
+
+  StatsListBloc _initStatsBloc(StatsRepository statsRepository) {
+    try {
+      final statsBloc = StatsListBloc(statsRepository: statsRepository);
       return statsBloc;
     } on Object catch (e, stackTrace) {
       logger.error('stats bloc', error: e, stackTrace: stackTrace);
@@ -78,9 +99,11 @@ class CompositionRoot with LoggerMixin {
     }
   }
 
-  StatsNotifier _initStatsNotifier(StatsRepository statsRepository) {
+  StatsCalculateNotifier _initStatsNotifier(StatsRepository statsRepository) {
     try {
-      final statsNotifier = StatsNotifier(statsRepository: statsRepository);
+      final statsNotifier = StatsCalculateNotifier(
+        statsRepository: statsRepository,
+      );
       return statsNotifier;
     } on Object catch (e, stackTrace) {
       logger.error('stats notifier', error: e, stackTrace: stackTrace);

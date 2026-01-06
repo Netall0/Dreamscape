@@ -3,12 +3,12 @@ import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:dreamscape/features/stats/model/stats_model.dart';
 import 'package:dreamscape/features/stats/repository/stats_repository.dart';
 
-part 'stats_event.dart';
-part 'stats_state.dart';
+part 'stats_list_event.dart';
+part 'stats_list_state.dart';
 
-class StatsBloc extends Bloc<StatsEvent, StatsState> with LoggerMixin {
+class StatsListBloc extends Bloc<StatsEvent, StatsState> with LoggerMixin {
   final StatsRepository _statsRepository;
-  StatsBloc({required StatsRepository statsRepository})
+  StatsListBloc({required StatsRepository statsRepository})
     : _statsRepository = statsRepository,
       super(StatsInitial()) {
     on<StatsEvent>(

@@ -1,12 +1,9 @@
-import 'package:dreamscape/core/database/database.dart';
 import 'package:dreamscape/core/util/extension/app_context_extension.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:dreamscape/features/initialization/widget/depend_scope.dart';
-import 'package:dreamscape/features/stats/controller/bloc/stats_bloc.dart';
-import 'package:dreamscape/features/stats/repository/stats_repository.dart';
+import 'package:dreamscape/features/stats/controller/bloc/stats_list_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uikit/uikit.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -125,6 +122,12 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
                         color: ColorConstants.midnightBlue,
                         margin: .symmetric(horizontal: 16, vertical: 8),
                         child: ListTile(
+                          leading: Column(
+                            children: [
+                              model.sleepQuality.icon,
+                              Text(model.sleepQuality.name),
+                            ],
+                          ),
                           title: Text(
                             'You slept at ${model.sleepTime.hour.toString().padLeft(2, '0')}:${model.sleepTime.minute.toString().padLeft(2, '0')}',
                             style: theme.typography.h4,

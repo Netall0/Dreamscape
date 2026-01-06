@@ -15,6 +15,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
 
@@ -27,6 +28,13 @@ final class AppRunner with LoggerMixin {
     late final Stopwatch timer;
     runZonedGuarded(
       () async {
+        logger.info(
+          '____________________________________________________________________ ${AppConfig.supabaseAnonKey.toString()}',
+        );
+
+        logger.info(
+          '${AppConfig.supabaseUrl.toString()} ________________________________________________',
+        );
         bindings = WidgetsFlutterBinding.ensureInitialized()..deferFirstFrame();
 
         timer = Stopwatch()..start();
@@ -34,16 +42,17 @@ final class AppRunner with LoggerMixin {
         _initErrorHandler();
 
         logger.debug('clock started');
+        sharedPreferences = await _initSharedPreferences();
+
+        platformDeps = await _initPlatformDependencies(sharedPreferences);
+
+        await _initTimezone();
+
+        await platformDeps.alarmService.initAlarmService();
+
+        await _initSupabase();
 
         try {
-          sharedPreferences = await _initSharedPreferences();
-
-          platformDeps = await _initPlatformDependencies(sharedPreferences);
-
-          await _initTimezone();
-
-          await platformDeps.alarmService.initAlarmService();
-
           logger.debug('Platform dependencies initialized');
 
           logger.debug('show init notifications');
@@ -76,6 +85,18 @@ final class AppRunner with LoggerMixin {
         );
       },
     );
+  }
+
+  Future<void> _initSupabase() async {
+    try {
+      await Supabase.initialize(
+        url: AppConfig.supabaseUrl,
+        anonKey: AppConfig.supabaseAnonKey,
+      );
+    } on Object catch (e, stackTrace) {
+      logger.error('supbase init failed', error: e, stackTrace: stackTrace);
+      rethrow;
+    }
   }
 
   Future<SharedPreferences> _initSharedPreferences() async {
