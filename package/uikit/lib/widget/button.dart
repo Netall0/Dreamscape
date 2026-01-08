@@ -3,9 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:uikit/extension/platform_extension.dart';
 import 'package:uikit/theme/app_theme.dart';
 
-
-
-
 abstract class AdaptiveButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final Widget child;
@@ -13,8 +10,10 @@ abstract class AdaptiveButton extends StatelessWidget {
   final double? minWidth;
   final Color? color;
   final IconData? icon;
+  final Color? sideColor;
 
   const AdaptiveButton._({
+    required this.sideColor,
     super.key,
     required this.onPressed,
     required this.child,
@@ -31,6 +30,7 @@ abstract class AdaptiveButton extends StatelessWidget {
     EdgeInsetsGeometry? padding,
     double? minWidth,
     Color? color,
+    Color? sideColor,
   }) = _AdaptiveButtonPrimary;
 
   const factory AdaptiveButton.secondary({
@@ -40,6 +40,7 @@ abstract class AdaptiveButton extends StatelessWidget {
     EdgeInsetsGeometry? padding,
     double? minWidth,
     Color? color,
+    Color? sideColor,
   }) = _AdaptiveButtonSecondary;
 
   const factory AdaptiveButton.text({
@@ -77,6 +78,7 @@ class _AdaptiveButtonPrimary extends AdaptiveButton {
     super.padding,
     super.minWidth,
     super.color,
+    super.sideColor,
   }) : super._();
 
   @override
@@ -92,6 +94,7 @@ class _AdaptiveButtonPrimary extends AdaptiveButton {
       padding: padding,
       minWidth: minWidth,
       color: color,
+      sideColor: sideColor,
       child: child,
     ),
   );
@@ -105,6 +108,7 @@ class _AdaptiveButtonSecondary extends AdaptiveButton {
     super.padding,
     super.minWidth,
     super.color,
+    super.sideColor,
   }) : super._();
 
   @override
@@ -120,6 +124,7 @@ class _AdaptiveButtonSecondary extends AdaptiveButton {
       padding: padding,
       minWidth: minWidth,
       color: color,
+      sideColor: sideColor,
       child: child,
     ),
   );
@@ -132,6 +137,7 @@ class _AdaptiveButtonText extends AdaptiveButton {
     required super.child,
     super.padding,
     super.color,
+    super.sideColor,
   }) : super._();
 
   @override
@@ -156,6 +162,7 @@ class _AdaptiveButtonDestructive extends AdaptiveButton {
     required super.onPressed,
     required super.child,
     super.padding,
+    super.sideColor,
     super.minWidth,
   }) : super._();
 
@@ -183,9 +190,8 @@ class _AdaptiveButtonIcon extends AdaptiveButton {
     required Widget label,
     super.padding,
     super.color,
-  }) : super._(
-         child: label,
-       );
+    super.sideColor,
+  }) : super._(child: label);
 
   @override
   Widget build(BuildContext context) => PlatformExtension.when<Widget>(
@@ -223,6 +229,7 @@ class _CupertinoButtonPrimary extends StatelessWidget {
     return CupertinoButton.filled(
       onPressed: onPressed,
       borderRadius: BorderRadius.circular(10),
+
       padding:
           padding ?? const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       child: child,
@@ -235,12 +242,14 @@ class _CupertinoButtonSecondary extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry? padding;
   final Color? color;
+  final Color? sideColor;
 
   const _CupertinoButtonSecondary({
     required this.onPressed,
     required this.child,
     this.padding,
     this.color,
+    this.sideColor,
   });
 
   @override
@@ -341,6 +350,7 @@ class _MaterialButtonPrimary extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final double? minWidth;
   final Color? color;
+  final Color? sideColor;
 
   const _MaterialButtonPrimary({
     required this.onPressed,
@@ -348,6 +358,7 @@ class _MaterialButtonPrimary extends StatelessWidget {
     this.padding,
     this.minWidth,
     this.color,
+    this.sideColor,
   });
 
   @override
@@ -359,7 +370,8 @@ class _MaterialButtonPrimary extends StatelessWidget {
         padding:
             padding ?? const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
         minimumSize: minWidth != null ? Size(minWidth!, 44) : null,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        side: BorderSide(color: sideColor ?? Colors.transparent),
+        shape: RoundedRectangleBorder(borderRadius: .all(.circular(10))),
       ),
       child: child,
     );
@@ -372,6 +384,7 @@ class _MaterialButtonSecondary extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final double? minWidth;
   final Color? color;
+  final Color? sideColor;
 
   const _MaterialButtonSecondary({
     required this.onPressed,
@@ -379,6 +392,7 @@ class _MaterialButtonSecondary extends StatelessWidget {
     this.padding,
     this.minWidth,
     this.color,
+    this.sideColor,
   });
 
   @override
@@ -391,9 +405,7 @@ class _MaterialButtonSecondary extends StatelessWidget {
         padding:
             padding ?? const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
         minimumSize: minWidth != null ? Size(minWidth!, 44) : null,
-        side: color != null
-            ? BorderSide(color: color ?? theme.colors.onSecondary)
-            : null,
+        side: BorderSide(width: 2, color: sideColor ?? theme.colors.secondary),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
       child: child,
