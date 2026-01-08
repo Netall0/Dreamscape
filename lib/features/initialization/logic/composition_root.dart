@@ -1,7 +1,8 @@
 import 'package:dreamscape/core/database/database.dart';
 import 'package:dreamscape/core/repository/temp_repository.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
-import 'package:dreamscape/features/auth/controller/notifier/load_avatar_notifier.dart';
+import 'package:dreamscape/features/auth/controller/bloc/auth_bloc.dart';
+import 'package:dreamscape/features/auth/controller/notifier/load_user_info_notifier.dart';
 import 'package:dreamscape/features/auth/repository/auth_repository.dart';
 import 'package:dreamscape/features/stats/controller/notifier/stats_calculate_notifier.dart';
 import 'package:dreamscape/features/stats/repository/stats_repository.dart';
@@ -60,11 +61,14 @@ class CompositionRoot with LoggerMixin {
     );
     final StatsListBloc statsBloc = _initStatsBloc(statsRepository);
 
-    final AvatarNotifier avatarNotifier = _initAvatarNotiifer(authRepository);
+    final LoadInfoNotifier avatarNotifier = _initAvatarNotiifer(authRepository);
+
+    final AuthBloc authBloc = _initAuthBloc(authRepository);
 
     try {
       return DependContainer(
-        avatarNotifier: avatarNotifier,
+        authBloc: authBloc,
+        userInfoNotifier: avatarNotifier,
         statsNotifier: statsNotifier,
         tempRepository: tempRepository,
         statsBloc: statsBloc,
@@ -77,11 +81,19 @@ class CompositionRoot with LoggerMixin {
     }
   }
 
-  AvatarNotifier _initAvatarNotiifer(AuthRepository authRepository) {
+  AuthBloc _initAuthBloc(AuthRepository authRepository) {
     try {
-      final avatarNotifier = AvatarNotifier(
-        authRepository: authRepository,
-      );
+      final authBloc = AuthBloc(authRepository: authRepository);
+      return authBloc;
+    } on Object catch (e, stackTrace) {
+      logger.error('auth bloc', error: e, stackTrace: stackTrace);
+      rethrow;
+    }
+  }
+
+  LoadInfoNotifier _initAvatarNotiifer(AuthRepository authRepository) {
+    try {
+      final avatarNotifier = LoadInfoNotifier(authRepository: authRepository);
       return avatarNotifier;
     } on Object catch (e, stackTrace) {
       logger.error('avatar notifier', error: e, stackTrace: stackTrace);

@@ -4,13 +4,16 @@ import 'package:dreamscape/features/auth/repository/auth_repository.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 
-final class AvatarNotifier extends ChangeNotifier with LoggerMixin {
+final class LoadInfoNotifier extends ChangeNotifier with LoggerMixin {
   final AuthRepository _authRepository;
 
-  AvatarNotifier({required AuthRepository authRepository})
+  LoadInfoNotifier({required AuthRepository authRepository})
     : _authRepository = authRepository;
 
   final ImagePicker _picker = ImagePicker();
+
+  String? _userName;
+  String? get userName => _userName;
 
   File? _localAvatar;
   String? _remoteAvatarUrl;
@@ -20,13 +23,27 @@ final class AvatarNotifier extends ChangeNotifier with LoggerMixin {
   String? get remoteAvatarUrl => _remoteAvatarUrl;
   bool get isLoading => _isLoading;
 
-  Future<void> loadAvatar() async {
+  Future<void> loadUserInfo() async {
     try {
       final url = await _authRepository.getAvatarUrl();
+      final name = await _authRepository.getUserName();
+
+      _userName = name;
       _remoteAvatarUrl = url;
       notifyListeners();
     } on Object catch (e, st) {
       logger.error('error loading avatar', error: e, stackTrace: st);
+    }
+  }
+
+  Future<void> setUserName(String newUserName) async {
+    try {
+      await _authRepository.setUserName(newUserName);
+
+      _userName = newUserName;
+      notifyListeners();
+    } on Object catch (e) {
+      logger.error('error changing username', error: e);
     }
   }
 

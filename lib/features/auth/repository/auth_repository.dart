@@ -136,4 +136,21 @@ final class AuthRepository with LoggerMixin implements IAuthRepository {
       rethrow;
     }
   }
+
+  @override
+  Future<String?> getUserName() async {
+    return await _supabase.auth.currentUser?.userMetadata?['name'];
+  }
+
+  @override
+  Future<void> setUserName(String newUserName) async {
+    try {
+      await _supabase.auth.updateUser(
+        UserAttributes(data: {'name': newUserName}),
+      );
+    } on Object catch (e, st) {
+      logger.error('error in setting user name', error: e, stackTrace: st);
+      rethrow;
+    }
+  }
 }

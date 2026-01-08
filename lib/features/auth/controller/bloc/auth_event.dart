@@ -37,8 +37,8 @@ final class AuthChechRequested extends AuthEvent {
           password == other.password;
 }
 
-class AuthLoginRequested extends AuthEvent {
-  const AuthLoginRequested({required this.email, required this.password});
+class AuthSignInRequested extends AuthEvent {
+  const AuthSignInRequested({required this.email, required this.password});
 
   @override
   final String email;
@@ -77,10 +77,8 @@ class AuthSignUpRequested extends AuthEvent {
           password == other.password;
 }
 
-
-
 class AuthLogoutRequested extends AuthEvent {
-  const AuthLogoutRequested({required super.email, required super.password});
+  const AuthLogoutRequested();
 
   @override
   int get hashCode => Object.hashAll([email, password]);

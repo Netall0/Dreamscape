@@ -9,6 +9,10 @@ abstract interface class IAuthRepository {
   Future<void> setAvatarUrl(File file);
   Future<String?> getAvatarUrl();
 
+  Future<String?> getUserName();
+
+  Future<void> setUserName(String newUserName);
+
   Future<void> signOut();
 
   User? getCurrentUser();

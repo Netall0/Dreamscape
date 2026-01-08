@@ -23,7 +23,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> with LoggerMixin {
     on<AuthEvent>((event, emit) {
       return switch (event) {
         AuthChechRequested() => _authChechRequested(event, emit),
-        AuthLoginRequested() => _authLoginRequested(event, emit),
+        AuthSignInRequested() => _authSignInRequested(event, emit),
         AuthSignUpRequested() => _authSignUpRequested(event, emit),
         AuthLogoutRequested() => _authLogoutRequested(event, emit),
         AuthUserChanged() => _onAuthUserChanged(event, emit),
@@ -35,7 +35,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> with LoggerMixin {
     final user = event.user;
     user != null
         ? emit(AuthAuthenticated(user: user))
-        : emit(const AuthError(errorMessage: 'Login failed'));
+        : emit(AuthUnauthenticated());
   }
 
   Future<void> _authLogoutRequested(
@@ -62,8 +62,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> with LoggerMixin {
     }
   }
 
-  Future<void> _authLoginRequested(
-    AuthLoginRequested event,
+  Future<void> _authSignInRequested(
+    AuthSignInRequested event,
     Emitter<AuthState> emit,
   ) async {
     emit(AuthLoading());

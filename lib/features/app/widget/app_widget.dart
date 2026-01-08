@@ -1,11 +1,10 @@
-import 'package:dreamscape/core/router/navigator_observer.dart';
 import 'package:dreamscape/core/router/router.dart';
+import 'package:dreamscape/features/auth/controller/bloc/auth_bloc.dart';
 import 'package:dreamscape/features/initialization/widget/depend_scope.dart';
 import 'package:dreamscape/features/stats/controller/bloc/stats_list_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uikit/overlay/controller/dimmer_overlay_notifier.dart';
-import 'package:uikit/overlay/utils/dimmer_overlay_observer.dart';
 import 'package:uikit/overlay/widget/dimmed_overlay.dart';
 import 'package:uikit/uikit.dart';
 
@@ -19,21 +18,11 @@ class AppMaterial extends StatefulWidget {
 class _AppMaterialState extends State<AppMaterial> {
   late final GoRouter _router;
   final DimmerOverlayNotifier _dimmedOverlayNotifier = DimmerOverlayNotifier();
-
+  late final AuthBloc _authBloc;
   @override
   void initState() {
-    _router = GoRouter(
-      routes: $appRoutes,
-      initialLocation: '/home',
-      observers: [
-        NavObserver(),
-
-        DimmerOverlayObserver(
-          notifier: _dimmedOverlayNotifier,
-          dimmerRoutes: {'home/sleep'},
-        ),
-      ],
-    );
+    _authBloc = DependScope.of(context).dependModel.authBloc;
+    _router = AppRouter.router(_authBloc, _dimmedOverlayNotifier);
     super.initState();
   }
 
