@@ -6,7 +6,7 @@ part of 'router.dart';
 // GoRouterGenerator
 // **************************************************************************
 
-List<RouteBase> get $appRoutes => [$rootRouteData];
+List<RouteBase> get $appRoutes => [$rootRouteData, $signInRoute];
 
 RouteBase get $rootRouteData => StatefulShellRouteData.$route(
   factory: $RootRouteDataExtension._fromState,
@@ -18,7 +18,7 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
           factory: $HomeRouteDate._fromState,
           routes: [
             GoRouteData.$route(
-              path: 'home/sleep',
+              path: 'sleep',
               factory: $SleepScreenData._fromState,
             ),
           ],
@@ -70,7 +70,7 @@ mixin $SleepScreenData on GoRouteData {
       const SleepScreenData();
 
   @override
-  String get location => GoRouteData.$location('/home/home/sleep');
+  String get location => GoRouteData.$location('/home/sleep');
 
   @override
   void go(BuildContext context) => context.go(location);
@@ -112,6 +112,54 @@ mixin $ProfileScreenData on GoRouteData {
 
   @override
   String get location => GoRouteData.$location('/profile');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $signInRoute => GoRouteData.$route(
+  path: '/signin',
+  factory: $SignInRoute._fromState,
+  routes: [
+    GoRouteData.$route(path: 'signup', factory: $SignUpRoute._fromState),
+  ],
+);
+
+mixin $SignInRoute on GoRouteData {
+  static SignInRoute _fromState(GoRouterState state) => SignInRoute();
+
+  @override
+  String get location => GoRouteData.$location('/signin');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $SignUpRoute on GoRouteData {
+  static SignUpRoute _fromState(GoRouterState state) => SignUpRoute();
+
+  @override
+  String get location => GoRouteData.$location('/signin/signup');
 
   @override
   void go(BuildContext context) => context.go(location);
