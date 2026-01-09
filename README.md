@@ -47,7 +47,15 @@ flutter run
 ```
 lib/
 ├── core/
-│   └── gen/          # Generated files
+│   └── gen/                   # Generated files
+    feture/
+    └── alarm                  # Alarm features
+    └── app                    # Application features
+    └── auth                   # Authentication features
+    └── home                   # Home features
+    └── settings               # Settings features
+    └── initialization         # Initialization features
+    └── stats                  # Stats features
 ├── package/
 │   └── uikit/        # UI components
 └── ...
