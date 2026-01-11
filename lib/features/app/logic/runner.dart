@@ -28,13 +28,6 @@ final class AppRunner with LoggerMixin {
     late final Stopwatch timer;
     runZonedGuarded(
       () async {
-        logger.info(
-          '____________________________________________________________________ ${AppConfig.supabaseAnonKey.toString()}',
-        );
-
-        logger.info(
-          '${AppConfig.supabaseUrl.toString()} ________________________________________________',
-        );
         bindings = WidgetsFlutterBinding.ensureInitialized()..deferFirstFrame();
 
         timer = Stopwatch()..start();
