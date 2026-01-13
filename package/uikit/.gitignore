@@ -29,3 +29,9 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 /build/
 /coverage/
+
+
+# Ignore non-CI golden files and failures
+test/golden/**/*.png
+test/failures/**/*.png
+!test/goldens/ci/*.png
