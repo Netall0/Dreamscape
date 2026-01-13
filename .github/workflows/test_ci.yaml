@@ -29,12 +29,12 @@ jobs:
         run: flutter pub get
 
       - name: 🧪 Run Tests
-        run: flutter test --no-pub --dart-define=CI=true test/goldens/
+        run: flutter test --no-pub --dart-define=CI=true test/widgets/
 
       - name: 📁 Save diffs
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: diffs
-          path: package/uikit/test/goldens/failures
+          path: package/uikit/test/widgets/failures
           if-no-files-found: ignore
