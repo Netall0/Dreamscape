@@ -1,0 +1,13 @@
+
+
+{
+    "@@locale": "en",
+    "hello": "hello friend",
+    "home": "Home",
+    "settings": "Settings",
+    "save": "Save",
+    "cancel": "Cancel",
+    "loginButton": "Log In",
+    "welcomeMessage": "Welcome back!",
+    "startSleeping": "Start Sleeping"
+}

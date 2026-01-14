@@ -1,0 +1,12 @@
+{
+    "@@locale": "ru",
+    "hello": "Привет, друг!",
+    "appTitle": "Моё приложение",
+    "home": "Главная",
+    "settings": "Настройки",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "loginButton": "Войти",
+    "welcomeMessage": "С возвращением!",
+    "startSleeping": "Начать спать"
+}
