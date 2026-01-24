@@ -22,8 +22,7 @@ class SleepScreen extends StatefulWidget {
   State<SleepScreen> createState() => _SleepScreenState();
 }
 
-class _SleepScreenState extends State<SleepScreen>
-    with SingleTickerProviderStateMixin, LoggerMixin {
+class _SleepScreenState extends State<SleepScreen> with LoggerMixin {
   late final AudioPlayer _player;
 
   @override
@@ -95,128 +94,134 @@ class _SleepScreenState extends State<SleepScreen>
         backgroundColor: Colors.transparent,
       ),
       backgroundColor: Colors.transparent,
-      body: Align(
-        alignment: .center,
-        child: Column(
-          mainAxisAlignment: .center,
-          children: [
-            ClockWidget(clockStream: clockStream, theme: theme),
-            SizedBox(height: 24),
-            AlarmTimePickerWidget(alarmService: alarmService),
-            SizedBox(height: AppSizes.double20),
-            Stack(
-              alignment: .center,
+      body: SafeArea(
+        child: Align(
+          alignment: Alignment.center,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(
-                  height: size.height * 0.2,
-                  width: size.width * 0.6,
-                  child: CustomRoundMusicBar(isPlaying: _player.playingStream),
-                ),
-                SizedBox(
-                  height: size.height * 0.4,
-                  width: size.width * 0.4,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: ColorConstants.duskPurple,
-                        width: 6,
+                ClockWidget(clockStream: clockStream, theme: theme),
+                const SizedBox(height: 24),
+                AlarmTimePickerWidget(alarmService: alarmService),
+                const SizedBox(height: AppSizes.double20),
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    SizedBox(
+                      height: size.height * 0.2,
+                      width: size.width * 0.6,
+                      child: CustomRoundMusicBar(
+                        isPlaying: _player.playingStream,
                       ),
                     ),
-                  ),
-                ),
-                SizedBox(
-                  height: size.height * 0.4,
-                  width: size.width * 0.4,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: ColorConstants.nightViolet,
-                        width: 4,
+                    SizedBox(
+                      height: size.height * 0.4,
+                      width: size.width * 0.4,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: ColorConstants.duskPurple,
+                            width: 6,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-
-                SizedBox(
-                  height: size.height * 0.1,
-                  width: size.width * 0.1,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: ColorConstants.nightViolet,
+                    SizedBox(
+                      height: size.height * 0.4,
+                      width: size.width * 0.4,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: ColorConstants.nightViolet,
+                            width: 4,
+                          ),
+                        ),
+                      ),
                     ),
-                    child: Align(
-                      alignment: .center,
-                      child: StreamBuilder<PlayerState>(
-                        stream: _player.playerStateStream,
-                        builder: (context, snapshot) {
-                          final state = snapshot.data;
+                    SizedBox(
+                      height: size.height * 0.1,
+                      width: size.width * 0.1,
+                      child: DecoratedBox(
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: ColorConstants.nightViolet,
+                        ),
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: StreamBuilder<PlayerState>(
+                            stream: _player.playerStateStream,
+                            builder: (context, snapshot) {
+                              final state = snapshot.data;
+                              final isPlaying = state?.playing ?? false;
+                              final isLoading =
+                                  state?.processingState ==
+                                      ProcessingState.loading ||
+                                  state?.processingState ==
+                                      ProcessingState.buffering;
 
-                          final isPlaying = state?.playing ?? false;
-                          final isLoading =
-                              state?.processingState ==
-                                  ProcessingState.loading ||
-                              state?.processingState ==
-                                  ProcessingState.buffering;
-
-                          return IconButton(
-                            alignment: .center,
-                            onPressed: isLoading
-                                ? null
-                                : () async {
-                                    if (isPlaying) {
-                                      await _player.pause();
-                                    } else {
-                                      await _player.play();
-                                    }
-                                  },
-                            icon: Icon(
-                              isPlaying ? Icons.pause : Icons.play_arrow,
-                              color: Colors.white,
-                              size: 16,
+                              return IconButton(
+                                alignment: Alignment.center,
+                                onPressed: isLoading
+                                    ? null
+                                    : () async {
+                                        if (isPlaying) {
+                                          await _player.pause();
+                                        } else {
+                                          await _player.play();
+                                        }
+                                      },
+                                icon: Icon(
+                                  isPlaying ? Icons.pause : Icons.play_arrow,
+                                  color: Colors.white,
+                                  size: 16,
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSizes.double20),
+                SizedBox(
+                  width: size.width * 0.7,
+                  height: 56,
+                  child: GestureDetector(
+                    onTap: () async {
+                      await _onTapAdding(
+                        tempRep: tempRep,
+                        bloc: bloc,
+                        context: context,
+                        statsNotifier: statsNotifier,
+                      );
+                    },
+                    child: AdaptiveCard(
+                      borderRadius: .all(.circular(24)),
+                      backgroundColor: ColorConstants.pastelIndigo,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.stop_rounded),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Завершить сон',
+                            style: theme.typography.h5.copyWith(
+                              color: Colors.black,
                             ),
-                          );
-                        },
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ),
               ],
             ),
-
-            SizedBox(
-              width: 200,
-              height: size.height * 0.1,
-              child: GestureDetector(
-                onTap: () async {
-                  await _onTapAdding(
-                    tempRep: tempRep,
-                    bloc: bloc,
-                    context: context,
-                    statsNotifier: statsNotifier,
-                  );
-                },
-                child: AdaptiveCard(
-                  borderRadius: .all(.circular(24)),
-                  backgroundColor: ColorConstants.pastelIndigo,
-                  child: Row(
-                    mainAxisAlignment: .center,
-                    children: [
-                      Icon(Icons.play_arrow),
-                      Text(
-                        'остановить сон',
-                        style: theme.typography.h5.copyWith(
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -231,7 +236,7 @@ class _SleepScreenState extends State<SleepScreen>
     final riseTime = TimeOfDay.now(); //TODO
     SleepQuality sleepQuality = SleepQuality.good;
 
-    await showDialog(
+    await showDialog<void>(
       context: context,
       builder: (context) {
         return AlertDialog.adaptive(
