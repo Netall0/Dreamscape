@@ -1,12 +1,94 @@
 {
     "@@locale": "ru",
     "hello": "Привет, друг!",
-    "appTitle": "Моё приложение",
+    "appTitle": "Dreamscape",
     "home": "Главная",
     "settings": "Настройки",
     "save": "Сохранить",
     "cancel": "Отмена",
     "loginButton": "Войти",
     "welcomeMessage": "С возвращением!",
-    "startSleeping": "Начать спать"
+    "startSleeping": "Начать спать",
+    
+    "profile": "Профиль",
+    "changeName": "Изменить имя",
+    "name": "Имя",
+    "password": "Пароль",
+    "undefined": "Не задано",
+    "feedback": "Обратная связь",
+    "signOut": "Выйти",
+    
+    "phone": "Телефон",
+    "changePhone": "Изменить номер телефона",
+    "phoneHint": "Введите номер телефона",
+    "phoneUpdated": "Номер телефона обновлён!",
+    "phoneError": "Не удалось обновить номер",
+    
+    "feedbackTitle": "Обратная связь",
+    "feedbackSubtitle": "Помоги нам улучшить приложение",
+    "feedbackHint": "Опиши проблему или предложение...",
+    "feedbackCategory": "Категория",
+    "feedbackCategoryBug": "Баг",
+    "feedbackCategorySuggestion": "Идея",
+    "feedbackSend": "Отправить",
+    "feedbackSent": "Спасибо за отзыв!",
+    "feedbackEmpty": "Введите текст отзыва",
+    
+    "themeSettings": "Тема приложения",
+    "darkTheme": "Тёмная",
+    "darkThemeSubtitle": "Чистый чёрный фон, минимум шума",
+    "lightTheme": "Светлая",
+    "lightThemeSubtitle": "Белый фон, лёгкая дневная тема",
+    
+    "languageSettings": "Язык",
+    "english": "Английский",
+    "russian": "Русский",
+    
+    "onboardingTitle1": "Dreamscape",
+    "onboardingSubtitle1": "Отслеживай свой сон без боли и лишней возни. Просто ложись спать — остальное мы поможем сохранить.",
+    "onboardingTitle2": "Статистика сна",
+    "onboardingSubtitle2": "Смотри, сколько ты реально спишь и как меняется качество сна по дням. Грид как на Git подскажет, когда ты выгорел.",
+    "onboardingTitle3": "Твои ритуалы",
+    "onboardingSubtitle3": "Темы, звуки и быстрый ручной ввод сна — подбери под себя и не теряй ни одной ночи.",
+    "onboardingNext": "Дальше",
+    "onboardingStart": "Поехали",
+    "onboardingPlaceholder": "манул\nспит",
+    
+    "sleepSessions": "Твои сессии сна",
+    "sleepStreak": "Трекер сна",
+    "totalSleepHours": "Всего часов сна: {hours} ч",
+    "@totalSleepHours": {
+        "placeholders": {
+            "hours": {"type": "String"}
+        }
+    },
+    "averageSleepHours": "В среднем: {hours} ч",
+    "@averageSleepHours": {
+        "placeholders": {
+            "hours": {"type": "String"}
+        }
+    },
+    "sessionsCount": "Сессий: {count}",
+    "@sessionsCount": {
+        "placeholders": {
+            "count": {"type": "int"}
+        }
+    },
+    "noStatsFound": "Записей не найдено",
+    "youSleptFor": "Ты спал {duration}",
+    "@youSleptFor": {
+        "placeholders": {
+            "duration": {"type": "String"}
+        }
+    },
+    "bedRiseTime": "Лёг: {bed} • Встал: {rise}",
+    "@bedRiseTime": {
+        "placeholders": {
+            "bed": {"type": "String"},
+            "rise": {"type": "String"}
+        }
+    },
+    "delete": "Удалить",
+    "colorPickerTitle": "Выбери цвет для трекинга сна",
+    "paletteTooltip": "Настроить цвета"
 }

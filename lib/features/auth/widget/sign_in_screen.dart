@@ -42,106 +42,118 @@ class _SignInScreenState extends State<SignInScreen> {
               )
             : null;
       },
-      child: AnimatedBackground(
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(height: size.height * .2),
-                SizedBox(
-                  height: size.height * .5,
-                  child: AdaptiveCard(
-                    elevation: 2,
-                    border: .all(color: ColorConstants.duskPurple),
-                    backgroundColor: Colors.transparent.withAlpha(1),
-                    margin: .symmetric(horizontal: 16),
-                    padding: .all(16),
-                    borderRadius: .all(.circular(16)),
-                    child: Column(
-                      mainAxisAlignment: .center,
-                      children: [
-                        Text('Sign in', style: context.appTheme.typography.h1),
-                        SizedBox(height: 24),
-                        TextField(
-                          controller: _emailController,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: .circular(16),
-                            ),
-                            focusColor: Colors.white,
-                            hoverColor: Colors.white,
-                            fillColor: Colors.white,
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: .circular(16),
-                              borderSide: BorderSide(color: Colors.white),
-                            ),
-                            prefixIcon: Icon(Icons.email, color: Colors.white),
-                            labelText: 'Email',
-                            labelStyle: theme.typography.h6,
-                          ),
-                        ),
-                        SizedBox(height: 12),
-                        TextField(
-                          controller: _passwordController,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: .circular(16),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: .circular(16),
-                              borderSide: BorderSide(color: Colors.white),
-                            ),
-                            focusColor: Colors.white,
-                            hoverColor: Colors.white,
-                            fillColor: Colors.white,
-                            prefixIcon: Icon(
-                              Icons.password,
-                              color: Colors.white,
-                            ),
-                            labelText: 'Password',
-                            labelStyle: theme.typography.h6,
-                          ),
-                        ),
-                        SizedBox(height: 24),
-                        AdaptiveButton.secondary(
-                          sideColor: Colors.white,
-                          padding: .symmetric(
-                            horizontal: size.width * .3,
-                            vertical: 16,
-                          ),
-                          color: Colors.transparent.withAlpha(1),
 
-                          onPressed: () {
-                            bloc.add(
-                              AuthSignInRequested(
-                                email: _emailController.text.trim(),
-                                password: _passwordController.text.trim(),
-                              ),
-                            );
-                          },
-                          child: Text(
-                            'Sign in',
-                            style: TextStyle(color: Colors.white),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(height: size.height * .2),
+              SizedBox(
+                height: size.height * .5,
+                child: AdaptiveCard(
+                  elevation: 2,
+                  border: Border.all(color: theme.colors.surface),
+                  backgroundColor: theme.colors.cardBackground.withOpacity(0.9),
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.all(16),
+                  borderRadius: BorderRadius.all(Radius.circular(16)),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Sign in',
+                        style: theme.typography.h1,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 24),
+                      TextField(
+                        controller: _emailController,
+                        style: TextStyle(color: theme.colors.textPrimary),
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16),
+                            borderSide: BorderSide(color: theme.colors.surface),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16),
+                            borderSide: BorderSide(color: theme.colors.surface),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16),
+                            borderSide: BorderSide(color: theme.colors.primary),
+                          ),
+                          prefixIcon: Icon(Icons.email, color: theme.colors.textSecondary),
+                          labelText: 'Email',
+                          labelStyle: theme.typography.h6.copyWith(
+                            color: theme.colors.textSecondary,
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: _passwordController,
+                        obscureText: true,
+                        style: TextStyle(color: theme.colors.textPrimary),
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16),
+                            borderSide: BorderSide(color: theme.colors.surface),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16),
+                            borderSide: BorderSide(color: theme.colors.surface),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16),
+                            borderSide: BorderSide(color: theme.colors.primary),
+                          ),
+                          prefixIcon: Icon(Icons.password, color: theme.colors.textSecondary),
+                          labelText: 'Password',
+                          labelStyle: theme.typography.h6.copyWith(
+                            color: theme.colors.textSecondary,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      AdaptiveButton.secondary(
+                        sideColor: theme.colors.primary,
+                        padding: EdgeInsets.symmetric(horizontal: size.width * .3, vertical: 16),
+                        color: theme.colors.primary,
+                        onPressed: () {
+                          bloc.add(
+                            AuthSignInRequested(
+                              email: _emailController.text.trim(),
+                              password: _passwordController.text.trim(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'Sign in',
+                          style: TextStyle(color: theme.colors.onPrimary),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                SizedBox(height: size.height * .15),
-                TextButton(
-                  onPressed: () {
-                    context.push('/signin/signup');
-                  },
-                  child: Text(
-                    'Don\'t have an account? Sign up',
-                    style: theme.typography.h6,
-                  ),
+              ),
+              SizedBox(height: size.height * .15),
+              TextButton(
+                onPressed: () {
+                  context.push('/signin/signup');
+                },
+                child: Text(
+                  'Don\'t have an account? Sign up',
+                  style: theme.typography.h6.copyWith(color: theme.colors.primary),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

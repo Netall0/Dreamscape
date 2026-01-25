@@ -60,6 +60,18 @@ final class StatsRepository with LoggerMixin implements IStatsRepository {
   }
 
   @override
+  Future<int> getSessionsCount() async {
+    try {
+      final allModels = await _appDatabase.sleepDao.getAllSleepInfo();
+      logger.info('Sessions count: ${allModels.length}');
+      return allModels.length;
+    } on Object catch (e, st) {
+      logger.error('Error getting sessions count: $e', stackTrace: st);
+      return 0;
+    }
+  }
+
+  @override
   Future<List<StatsModel>> getSleepModel() async {
     try {
       final listSleepModels = await _appDatabase.sleepDao.getAllSleepInfo();

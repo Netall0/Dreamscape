@@ -15,8 +15,7 @@ class AlarmTimePickerWidget extends StatefulWidget {
   State<AlarmTimePickerWidget> createState() => _AlarmTimePickerWidgetState();
 }
 
-class _AlarmTimePickerWidgetState extends State<AlarmTimePickerWidget>
-    with LoggerMixin {
+class _AlarmTimePickerWidgetState extends State<AlarmTimePickerWidget> with LoggerMixin {
   TZDateTime? _tzDateTime;
   TimeOfDay? _selectedTime;
 
@@ -24,15 +23,11 @@ class _AlarmTimePickerWidgetState extends State<AlarmTimePickerWidget>
 
   @override
   void initState() {
-    _streamSubscription = widget.alarmService.alarmStreamController.listen((
-      data,
-    ) {
+    _streamSubscription = widget.alarmService.alarmStreamController.listen((data) {
       if (mounted) {
         setState(() {
           _tzDateTime = data;
-          _selectedTime = data != null
-              ? TimeOfDay(hour: data.hour, minute: data.minute)
-              : null;
+          _selectedTime = data != null ? TimeOfDay(hour: data.hour, minute: data.minute) : null;
         });
 
         logger.debug('update UI ');
@@ -48,10 +43,7 @@ class _AlarmTimePickerWidgetState extends State<AlarmTimePickerWidget>
     _tzDateTime = widget.alarmService.getAlarmTime();
 
     if (_tzDateTime != null) {
-      _selectedTime = TimeOfDay(
-        hour: _tzDateTime!.hour,
-        minute: _tzDateTime!.minute,
-      );
+      _selectedTime = TimeOfDay(hour: _tzDateTime!.hour, minute: _tzDateTime!.minute);
     }
   }
 
@@ -97,22 +89,25 @@ class _AlarmTimePickerWidgetState extends State<AlarmTimePickerWidget>
   Widget build(BuildContext context) {
     final theme = context.appTheme;
     return AdaptiveCard(
-      padding: .symmetric(horizontal: 16),
-      borderRadius: .all(.circular(24)),
-      backgroundColor: ColorConstants.pastelIndigo,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      borderRadius: BorderRadius.all(Radius.circular(24)),
+      backgroundColor: theme.colors.cardBackground,
       child: IntrinsicWidth(
         child: Row(
-          mainAxisAlignment: .center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.notifications),
-            TextButton(
-              onPressed: () => _setTime(),
-              child: Text(
-                _selectedTime == null
-                    ? 'set your time'
-                    : '${_selectedTime!.hour}:${_selectedTime!.minute}',
-                // : 'set your time',
-                style: theme.typography.h6,
+            Icon(Icons.notifications, color: theme.colors.textPrimary),
+            Flexible(
+              child: TextButton(
+                onPressed: () => _setTime(),
+                child: Text(
+                  _selectedTime == null
+                      ? 'set your time'
+                      : '${_selectedTime!.hour.toString().padLeft(2, '0')}:${_selectedTime!.minute.toString().padLeft(2, '0')}',
+                  style: theme.typography.h6,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ),
           ],

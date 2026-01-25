@@ -69,12 +69,8 @@ class _SleepScreenState extends State<SleepScreen> with LoggerMixin {
     final theme = context.appTheme;
     final size = MediaQuery.sizeOf(context);
     final bloc = DependScope.of(context).dependModel.statsBloc;
-    final clockStream = DependScope.of(
-      context,
-    ).platformDependContainer.clockNotifier;
-    final alarmService = DependScope.of(
-      context,
-    ).platformDependContainer.alarmService;
+    final clockStream = DependScope.of(context).platformDependContainer.clockNotifier;
+    final alarmService = DependScope.of(context).platformDependContainer.alarmService;
     final tempRep = DependScope.of(context).dependModel.tempRepository;
     final statsNotifier = DependScope.of(context).dependModel.statsNotifier;
 
@@ -112,9 +108,7 @@ class _SleepScreenState extends State<SleepScreen> with LoggerMixin {
                     SizedBox(
                       height: size.height * 0.2,
                       width: size.width * 0.6,
-                      child: CustomRoundMusicBar(
-                        isPlaying: _player.playingStream,
-                      ),
+                      child: CustomRoundMusicBar(isPlaying: _player.playingStream),
                     ),
                     SizedBox(
                       height: size.height * 0.4,
@@ -122,10 +116,7 @@ class _SleepScreenState extends State<SleepScreen> with LoggerMixin {
                       child: DecoratedBox(
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: Border.all(
-                            color: ColorConstants.duskPurple,
-                            width: 6,
-                          ),
+                          border: Border.all(color: theme.colors.surface, width: 6),
                         ),
                       ),
                     ),
@@ -135,10 +126,7 @@ class _SleepScreenState extends State<SleepScreen> with LoggerMixin {
                       child: DecoratedBox(
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: Border.all(
-                            color: ColorConstants.nightViolet,
-                            width: 4,
-                          ),
+                          border: Border.all(color: theme.colors.cardBackground, width: 4),
                         ),
                       ),
                     ),
@@ -146,9 +134,9 @@ class _SleepScreenState extends State<SleepScreen> with LoggerMixin {
                       height: size.height * 0.1,
                       width: size.width * 0.1,
                       child: DecoratedBox(
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: ColorConstants.nightViolet,
+                          color: theme.colors.cardBackground,
                         ),
                         child: Align(
                           alignment: Alignment.center,
@@ -158,10 +146,8 @@ class _SleepScreenState extends State<SleepScreen> with LoggerMixin {
                               final state = snapshot.data;
                               final isPlaying = state?.playing ?? false;
                               final isLoading =
-                                  state?.processingState ==
-                                      ProcessingState.loading ||
-                                  state?.processingState ==
-                                      ProcessingState.buffering;
+                                  state?.processingState == ProcessingState.loading ||
+                                  state?.processingState == ProcessingState.buffering;
 
                               return IconButton(
                                 alignment: Alignment.center,
@@ -176,7 +162,7 @@ class _SleepScreenState extends State<SleepScreen> with LoggerMixin {
                                       },
                                 icon: Icon(
                                   isPlaying ? Icons.pause : Icons.play_arrow,
-                                  color: Colors.white,
+                                  color: theme.colors.textPrimary,
                                   size: 16,
                                 ),
                               );
@@ -201,17 +187,19 @@ class _SleepScreenState extends State<SleepScreen> with LoggerMixin {
                       );
                     },
                     child: AdaptiveCard(
-                      borderRadius: .all(.circular(24)),
-                      backgroundColor: ColorConstants.pastelIndigo,
+                      borderRadius: BorderRadius.all(Radius.circular(24)),
+                      backgroundColor: theme.colors.primary,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.stop_rounded),
+                          Icon(Icons.stop_rounded, color: theme.colors.onPrimary),
                           const SizedBox(width: 8),
-                          Text(
-                            'Завершить сон',
-                            style: theme.typography.h5.copyWith(
-                              color: Colors.black,
+                          Flexible(
+                            child: Text(
+                              'Завершить сон',
+                              style: theme.typography.h5.copyWith(color: theme.colors.onPrimary),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],
@@ -239,23 +227,45 @@ class _SleepScreenState extends State<SleepScreen> with LoggerMixin {
     await showDialog<void>(
       context: context,
       builder: (context) {
-        return AlertDialog.adaptive(
-          title: Text('chose your sleep quality'),
+        final theme = context.appTheme;
+        return AlertDialog(
+          backgroundColor: theme.colors.cardBackground,
+          title: Text(
+            'Как ты спал?',
+            style: TextStyle(color: theme.colors.textPrimary),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
           content: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: SleepQuality.values.map((e) {
-              return AdaptiveCard(
-                onTap: () {
-                  sleepQuality = e;
-                  context.pop();
-                },
-                padding: .all(16),
-                margin: .all(4),
-                child: SizedBox(
-                  height: MediaQuery.sizeOf(context).height * 0.1,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [e.icon, Text(e.name)],
+              return Expanded(
+                child: AdaptiveCard(
+                  onTap: () {
+                    sleepQuality = e;
+                    Navigator.pop(context);
+                  },
+                  padding: const EdgeInsets.all(16),
+                  margin: const EdgeInsets.all(4),
+                  backgroundColor: theme.colors.surface,
+                  child: SizedBox(
+                    height: MediaQuery.sizeOf(context).height * 0.1,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        e.icon,
+                        const SizedBox(height: 4),
+                        Flexible(
+                          child: Text(
+                            e.name,
+                            style: TextStyle(color: theme.colors.textPrimary),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );
@@ -267,8 +277,7 @@ class _SleepScreenState extends State<SleepScreen> with LoggerMixin {
 
     logger.debug('time rise ${riseTime.hour}:${riseTime.minute}');
     final bedTime =
-        await tempRep.getBedTime() ??
-        TimeOfDay(hour: riseTime.hour, minute: riseTime.minute);
+        await tempRep.getBedTime() ?? TimeOfDay(hour: riseTime.hour, minute: riseTime.minute);
 
     final sleepDuration = bedTime.calculationSleepTime(riseTime);
 
@@ -286,9 +295,9 @@ class _SleepScreenState extends State<SleepScreen> with LoggerMixin {
       ),
     );
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('congratulations!!!, sleep added')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('congratulations!!!, sleep added')));
 
       context.pop();
     }

@@ -4,6 +4,7 @@ abstract interface class IStatsRepository {
   //stats methods
   Future<double> getTotalSleepHours();
   Future<double> getAverageSleepHours();
+  Future<int> getSessionsCount();
 
   // Fetches all sleep models from the database.
   Future<List<StatsModel>> getSleepModel();

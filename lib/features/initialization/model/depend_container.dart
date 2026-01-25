@@ -1,3 +1,4 @@
+import 'package:dreamscape/core/config/app_settings_notifier.dart';
 import 'package:dreamscape/core/database/database.dart';
 import 'package:dreamscape/core/repository/temp_repository.dart';
 import 'package:dreamscape/features/auth/controller/bloc/auth_bloc.dart';
@@ -15,6 +16,7 @@ final class DependContainer {
   final StatsCalculateNotifier statsNotifier;
   final LoadInfoNotifier userInfoNotifier;
   final AuthBloc authBloc;
+  final AppSettingsNotifier appSettingsNotifier;
 
   DependContainer({
     required this.authBloc,
@@ -24,6 +26,7 @@ final class DependContainer {
     required this.audioPlayer,
     required this.appDatabase,
     required this.tempRepository,
+    required this.appSettingsNotifier,
   });
 }
 

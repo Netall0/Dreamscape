@@ -1,3 +1,4 @@
+import 'package:dreamscape/core/config/app_settings_notifier.dart';
 import 'package:dreamscape/core/database/database.dart';
 import 'package:dreamscape/core/repository/temp_repository.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
@@ -65,6 +66,10 @@ class CompositionRoot with LoggerMixin {
 
     final AuthBloc authBloc = _initAuthBloc(authRepository);
 
+    final AppSettingsNotifier appSettingsNotifier = AppSettingsNotifier(
+      sharedPreferences: sharedPreferences,
+    );
+
     try {
       return DependContainer(
         authBloc: authBloc,
@@ -74,6 +79,7 @@ class CompositionRoot with LoggerMixin {
         statsBloc: statsBloc,
         appDatabase: appDatabase,
         audioPlayer: audioPlayer,
+        appSettingsNotifier: appSettingsNotifier,
       );
     } on Object catch (e, stackTrace) {
       logger.error('Ошибка в _initDepend', error: e, stackTrace: stackTrace);

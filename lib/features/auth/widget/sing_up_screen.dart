@@ -18,8 +18,7 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   bool _obscureText = false;
@@ -54,177 +53,179 @@ class _SignUpScreenState extends State<SignUpScreen> {
               )
             : null;
       },
-      child: AnimatedBackground(
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(height: size.height * .2),
-                  SizedBox(
-                    height: size.height * .5,
-                    child: AdaptiveCard(
-                      elevation: 2,
-                      border: .all(color: ColorConstants.duskPurple),
-                      backgroundColor: Colors.transparent.withAlpha(1),
-                      margin: .symmetric(horizontal: 16),
-                      padding: .all(16),
-                      borderRadius: .all(.circular(16)),
-                      child: Column(
-                        mainAxisAlignment: .center,
-                        children: [
-                          Text(
-                            'Sign up',
-                            style: context.appTheme.typography.h1,
-                          ),
-                          SizedBox(height: 24),
-                          TextFormField(
-                            validator: (val) {
-                              if (val!.isEmpty) {
-                                return 'Please enter email';
-                              }
-                              if (val.contains('@') == false) {
-                                return 'Please enter valid email';
-                              }
-                              return null;
-                            },
-                            controller: _emailController,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: .circular(16),
-                              ),
-                              focusColor: Colors.white,
-                              hoverColor: Colors.white,
-                              fillColor: Colors.white,
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: .circular(16),
-                                borderSide: BorderSide(color: Colors.white),
-                              ),
-                              prefixIcon: Icon(
-                                Icons.email,
-                                color: Colors.white,
-                              ),
-                              labelText: 'Email',
-                              labelStyle: theme.typography.h6,
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(height: size.height * .2),
+                SizedBox(
+                  height: size.height * .5,
+                  child: AdaptiveCard(
+                    elevation: 2,
+                    border: Border.all(color: theme.colors.surface),
+                    backgroundColor: theme.colors.cardBackground.withOpacity(0.9),
+                    margin: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.all(16),
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Sign up',
+                          style: theme.typography.h1,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 24),
+                        TextFormField(
+                          validator: (val) {
+                            if (val!.isEmpty) {
+                              return 'Please enter email';
+                            }
+                            if (val.contains('@') == false) {
+                              return 'Please enter valid email';
+                            }
+                            return null;
+                          },
+                          controller: _emailController,
+                          style: TextStyle(color: theme.colors.textPrimary),
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(color: theme.colors.surface),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(color: theme.colors.surface),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(color: theme.colors.primary),
+                            ),
+                            prefixIcon: Icon(Icons.email, color: theme.colors.textSecondary),
+                            labelText: 'Email',
+                            labelStyle: theme.typography.h6.copyWith(
+                              color: theme.colors.textSecondary,
                             ),
                           ),
-                          SizedBox(height: 12),
-                          TextFormField(
-                            validator: (val) {
-                              if (val!.isEmpty) {
-                                return 'Please enter password';
-                              }
-                              if (val.length < 6) {
-                                return 'Password must be at least 6 characters';
-                              }
-                              return null;
-                            },
-                            controller: _passwordController,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: .circular(16),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: .circular(16),
-                                borderSide: BorderSide(color: Colors.white),
-                              ),
-                              focusColor: Colors.white,
-                              hoverColor: Colors.white,
-                              fillColor: Colors.white,
-                              prefixIcon: Icon(
-                                Icons.password,
-                                color: Colors.white,
-                              ),
-                              labelText: 'Password',
-                              labelStyle: theme.typography.h6,
+                        ),
+                        const SizedBox(height: 12),
+                        TextFormField(
+                          validator: (val) {
+                            if (val!.isEmpty) {
+                              return 'Please enter password';
+                            }
+                            if (val.length < 6) {
+                              return 'Password must be at least 6 characters';
+                            }
+                            return null;
+                          },
+                          controller: _passwordController,
+                          obscureText: _obscureText,
+                          style: TextStyle(color: theme.colors.textPrimary),
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(color: theme.colors.surface),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(color: theme.colors.surface),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(color: theme.colors.primary),
+                            ),
+                            prefixIcon: Icon(Icons.password, color: theme.colors.textSecondary),
+                            labelText: 'Password',
+                            labelStyle: theme.typography.h6.copyWith(
+                              color: theme.colors.textSecondary,
                             ),
                           ),
-                          SizedBox(height: 24),
-                          TextFormField(
-                            validator: (val) {
-                              if (val == null || val.isEmpty) {
-                                return 'confirm password';
-                              }
-                              if (val != _passwordController.text) {
-                                return 'password not match';
-                              }
-                              return null;
-                            },
-                            controller: _confirmPasswordController,
-                            obscureText: _obscureText,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: .circular(16),
+                        ),
+                        const SizedBox(height: 12),
+                        TextFormField(
+                          validator: (val) {
+                            if (val == null || val.isEmpty) {
+                              return 'Confirm password';
+                            }
+                            if (val != _passwordController.text) {
+                              return 'Passwords don\'t match';
+                            }
+                            return null;
+                          },
+                          controller: _confirmPasswordController,
+                          obscureText: _obscureText,
+                          style: TextStyle(color: theme.colors.textPrimary),
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(color: theme.colors.surface),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(color: theme.colors.surface),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(color: theme.colors.primary),
+                            ),
+                            prefixIcon: Icon(Icons.password, color: theme.colors.textSecondary),
+                            suffixIcon: IconButton(
+                              onPressed: _toggle,
+                              icon: Icon(
+                                _obscureText ? Icons.visibility : Icons.visibility_off,
+                                color: theme.colors.textSecondary,
                               ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: .circular(16),
-                                borderSide: BorderSide(color: Colors.white),
-                              ),
-                              focusColor: Colors.white,
-                              hoverColor: Colors.white,
-                              fillColor: Colors.white,
-                              prefixIcon: Icon(
-                                Icons.password,
-                                color: Colors.white,
-                              ),
-                              suffixIcon: IconButton(
-                                onPressed: () {
-                                  _toggle();
-                                },
-                                icon: Icon(
-                                  _obscureText
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
-                                  color: Colors.white,
-                                ),
-                              ),
-
-                              labelText: 'Confirm Password',
-                              labelStyle: theme.typography.h6,
+                            ),
+                            labelText: 'Confirm Password',
+                            labelStyle: theme.typography.h6.copyWith(
+                              color: theme.colors.textSecondary,
                             ),
                           ),
-                          SizedBox(height: 24),
-                          AdaptiveButton.secondary(
-                            sideColor: Colors.white,
-                            padding: .symmetric(
-                              horizontal: size.width * .3,
-                              vertical: 16,
-                            ),
-                            color: Colors.transparent.withAlpha(1),
-
-                            onPressed: () {
-                              if (!_formKey.currentState!.validate()) return;
-                              bloc.add(
-                                AuthSignUpRequested(
-                                  email: _emailController.text.trim(),
-                                  password: _passwordController.text.trim(),
-                                ),
-                              );
-                            },
-                            child: Text(
-                              'Sign Up',
-                              style: TextStyle(color: Colors.white),
-                            ),
+                        ),
+                        const SizedBox(height: 24),
+                        AdaptiveButton.secondary(
+                          sideColor: theme.colors.primary,
+                          padding: EdgeInsets.symmetric(horizontal: size.width * .3, vertical: 16),
+                          color: theme.colors.primary,
+                          onPressed: () {
+                            if (!_formKey.currentState!.validate()) return;
+                            bloc.add(
+                              AuthSignUpRequested(
+                                email: _emailController.text.trim(),
+                                password: _passwordController.text.trim(),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'Sign Up',
+                            style: TextStyle(color: theme.colors.onPrimary),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                  SizedBox(height: size.height * .15),
-                  TextButton(
-                    onPressed: () {
-                      context.pop();
-                    },
-                    child: Text(
-                      'Have an account? Sign in',
-                      style: theme.typography.h6,
-                    ),
+                ),
+                SizedBox(height: size.height * .15),
+                TextButton(
+                  onPressed: () {
+                    context.pop();
+                  },
+                  child: Text(
+                    'Have an account? Sign in',
+                    style: theme.typography.h6.copyWith(color: theme.colors.primary),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

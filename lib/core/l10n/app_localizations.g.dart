@@ -62,8 +62,7 @@ import 'app_localizations_ru.g.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -71,8 +70,7 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -93,16 +91,19 @@ abstract class AppLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[
-    Locale('en'),
-    Locale('ru'),
-  ];
+  static const List<Locale> supportedLocales = <Locale>[Locale('en'), Locale('ru')];
 
   /// No description provided for @hello.
   ///
   /// In en, this message translates to:
-  /// **'hello friend'**
+  /// **'Hello friend!'**
   String get hello;
+
+  /// No description provided for @appTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Dreamscape'**
+  String get appTitle;
 
   /// No description provided for @home.
   ///
@@ -145,10 +146,303 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Start Sleeping'**
   String get startSleeping;
+
+  /// No description provided for @profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profile;
+
+  /// No description provided for @changeName.
+  ///
+  /// In en, this message translates to:
+  /// **'Change name'**
+  String get changeName;
+
+  /// No description provided for @name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get name;
+
+  /// No description provided for @password.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get password;
+
+  /// No description provided for @undefined.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get undefined;
+
+  /// No description provided for @feedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback'**
+  String get feedback;
+
+  /// No description provided for @signOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get signOut;
+
+  /// No description provided for @phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get phone;
+
+  /// No description provided for @changePhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Change phone number'**
+  String get changePhone;
+
+  /// No description provided for @phoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter phone number'**
+  String get phoneHint;
+
+  /// No description provided for @phoneUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number updated!'**
+  String get phoneUpdated;
+
+  /// No description provided for @phoneError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update phone number'**
+  String get phoneError;
+
+  /// No description provided for @feedbackTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Feedback'**
+  String get feedbackTitle;
+
+  /// No description provided for @feedbackSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Help us improve the app'**
+  String get feedbackSubtitle;
+
+  /// No description provided for @feedbackHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe your issue or suggestion...'**
+  String get feedbackHint;
+
+  /// No description provided for @feedbackCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get feedbackCategory;
+
+  /// No description provided for @feedbackCategoryBug.
+  ///
+  /// In en, this message translates to:
+  /// **'Bug'**
+  String get feedbackCategoryBug;
+
+  /// No description provided for @feedbackCategorySuggestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggestion'**
+  String get feedbackCategorySuggestion;
+
+  /// No description provided for @feedbackSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get feedbackSend;
+
+  /// No description provided for @feedbackSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you for your feedback!'**
+  String get feedbackSent;
+
+  /// No description provided for @feedbackEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your feedback'**
+  String get feedbackEmpty;
+
+  /// No description provided for @themeSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'App Theme'**
+  String get themeSettings;
+
+  /// No description provided for @darkTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get darkTheme;
+
+  /// No description provided for @darkThemeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pure black background, minimal noise'**
+  String get darkThemeSubtitle;
+
+  /// No description provided for @lightTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get lightTheme;
+
+  /// No description provided for @lightThemeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'White background, easy on the eyes'**
+  String get lightThemeSubtitle;
+
+  /// No description provided for @languageSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get languageSettings;
+
+  /// No description provided for @english.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get english;
+
+  /// No description provided for @russian.
+  ///
+  /// In en, this message translates to:
+  /// **'Russian'**
+  String get russian;
+
+  /// No description provided for @onboardingTitle1.
+  ///
+  /// In en, this message translates to:
+  /// **'Dreamscape'**
+  String get onboardingTitle1;
+
+  /// No description provided for @onboardingSubtitle1.
+  ///
+  /// In en, this message translates to:
+  /// **'Track your sleep without pain or hassle. Just go to bed — we\'ll help save the rest.'**
+  String get onboardingSubtitle1;
+
+  /// No description provided for @onboardingTitle2.
+  ///
+  /// In en, this message translates to:
+  /// **'Sleep Statistics'**
+  String get onboardingTitle2;
+
+  /// No description provided for @onboardingSubtitle2.
+  ///
+  /// In en, this message translates to:
+  /// **'See how much you actually sleep and how your sleep quality changes over time. The grid will show when you\'re burned out.'**
+  String get onboardingSubtitle2;
+
+  /// No description provided for @onboardingTitle3.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Rituals'**
+  String get onboardingTitle3;
+
+  /// No description provided for @onboardingSubtitle3.
+  ///
+  /// In en, this message translates to:
+  /// **'Themes, sounds, and quick manual sleep entry — customize it for yourself and never miss a night.'**
+  String get onboardingSubtitle3;
+
+  /// No description provided for @onboardingNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get onboardingNext;
+
+  /// No description provided for @onboardingStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s go'**
+  String get onboardingStart;
+
+  /// No description provided for @onboardingPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'pallas cat\nsleeps'**
+  String get onboardingPlaceholder;
+
+  /// No description provided for @sleepSessions.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Sleep Sessions'**
+  String get sleepSessions;
+
+  /// No description provided for @sleepStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Sleep streak'**
+  String get sleepStreak;
+
+  /// No description provided for @totalSleepHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Sleep Hours: {hours} hrs'**
+  String totalSleepHours(String hours);
+
+  /// No description provided for @averageSleepHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Average Sleep Hours: {hours} hrs'**
+  String averageSleepHours(String hours);
+
+  /// No description provided for @sessionsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Sessions: {count}'**
+  String sessionsCount(int count);
+
+  /// No description provided for @noStatsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No stats found'**
+  String get noStatsFound;
+
+  /// No description provided for @youSleptFor.
+  ///
+  /// In en, this message translates to:
+  /// **'You slept for {duration}'**
+  String youSleptFor(String duration);
+
+  /// No description provided for @bedRiseTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Bed: {bed} • Rise: {rise}'**
+  String bedRiseTime(String bed, String rise);
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @colorPickerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a color for sleep tracking'**
+  String get colorPickerTitle;
+
+  /// No description provided for @paletteTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Customize colors'**
+  String get paletteTooltip;
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -157,8 +451,7 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'ru'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en', 'ru'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;

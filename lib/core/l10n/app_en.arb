@@ -1,13 +1,94 @@
-
-
 {
     "@@locale": "en",
-    "hello": "hello friend",
+    "hello": "Hello friend!",
+    "appTitle": "Dreamscape",
     "home": "Home",
     "settings": "Settings",
     "save": "Save",
     "cancel": "Cancel",
     "loginButton": "Log In",
     "welcomeMessage": "Welcome back!",
-    "startSleeping": "Start Sleeping"
+    "startSleeping": "Start Sleeping",
+    
+    "profile": "Profile",
+    "changeName": "Change name",
+    "name": "Name",
+    "password": "Password",
+    "undefined": "Not set",
+    "feedback": "Feedback",
+    "signOut": "Sign out",
+    
+    "phone": "Phone",
+    "changePhone": "Change phone number",
+    "phoneHint": "Enter phone number",
+    "phoneUpdated": "Phone number updated!",
+    "phoneError": "Failed to update phone number",
+    
+    "feedbackTitle": "Send Feedback",
+    "feedbackSubtitle": "Help us improve the app",
+    "feedbackHint": "Describe your issue or suggestion...",
+    "feedbackCategory": "Category",
+    "feedbackCategoryBug": "Bug",
+    "feedbackCategorySuggestion": "Suggestion",
+    "feedbackSend": "Send",
+    "feedbackSent": "Thank you for your feedback!",
+    "feedbackEmpty": "Please enter your feedback",
+    
+    "themeSettings": "App Theme",
+    "darkTheme": "Dark",
+    "darkThemeSubtitle": "Pure black background, minimal noise",
+    "lightTheme": "Light",
+    "lightThemeSubtitle": "White background, easy on the eyes",
+    
+    "languageSettings": "Language",
+    "english": "English",
+    "russian": "Russian",
+    
+    "onboardingTitle1": "Dreamscape",
+    "onboardingSubtitle1": "Track your sleep without pain or hassle. Just go to bed — we'll help save the rest.",
+    "onboardingTitle2": "Sleep Statistics",
+    "onboardingSubtitle2": "See how much you actually sleep and how your sleep quality changes over time. The grid will show when you're burned out.",
+    "onboardingTitle3": "Your Rituals",
+    "onboardingSubtitle3": "Themes, sounds, and quick manual sleep entry — customize it for yourself and never miss a night.",
+    "onboardingNext": "Next",
+    "onboardingStart": "Let's go",
+    "onboardingPlaceholder": "pallas cat\nsleeps",
+    
+    "sleepSessions": "Your Sleep Sessions",
+    "sleepStreak": "Sleep streak",
+    "totalSleepHours": "Total Sleep Hours: {hours} hrs",
+    "@totalSleepHours": {
+        "placeholders": {
+            "hours": {"type": "String"}
+        }
+    },
+    "averageSleepHours": "Average Sleep Hours: {hours} hrs",
+    "@averageSleepHours": {
+        "placeholders": {
+            "hours": {"type": "String"}
+        }
+    },
+    "sessionsCount": "Sessions: {count}",
+    "@sessionsCount": {
+        "placeholders": {
+            "count": {"type": "int"}
+        }
+    },
+    "noStatsFound": "No stats found",
+    "youSleptFor": "You slept for {duration}",
+    "@youSleptFor": {
+        "placeholders": {
+            "duration": {"type": "String"}
+        }
+    },
+    "bedRiseTime": "Bed: {bed} • Rise: {rise}",
+    "@bedRiseTime": {
+        "placeholders": {
+            "bed": {"type": "String"},
+            "rise": {"type": "String"}
+        }
+    },
+    "delete": "Delete",
+    "colorPickerTitle": "Choose a color for sleep tracking",
+    "paletteTooltip": "Customize colors"
 }

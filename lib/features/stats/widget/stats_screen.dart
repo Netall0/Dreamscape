@@ -1,3 +1,4 @@
+import 'package:dreamscape/core/l10n/app_localizations.g.dart';
 import 'package:dreamscape/core/util/extension/app_context_extension.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:dreamscape/features/initialization/widget/depend_scope.dart';
@@ -18,15 +19,15 @@ class StatsScreen extends StatefulWidget {
 
 class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
   static const List<Color> _presetColors = [
-    ColorConstants.pastelIndigo,
-    ColorConstants.duskPurple,
-    ColorConstants.nightViolet,
+    ColorConstants.primaryDark,
     ColorConstants.pastelBlue,
     ColorConstants.pastelGreen,
     ColorConstants.pastelPeach,
+    ColorConstants.slate500,
+    ColorConstants.infoDark,
   ];
 
-  Color _baseColor = ColorConstants.pastelIndigo;
+  Color _baseColor = ColorConstants.primaryDark;
 
   @override
   void initState() {
@@ -55,55 +56,73 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
   Future<void> _showColorPicker() async {
     if (!mounted) return;
 
-    await showModalBottomSheet<void>(
+    final theme = context.appTheme;
+    final l10n = AppLocalizations.of(context)!;
+
+    await showDialog<void>(
       context: context,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        final theme = context.appTheme;
-        return Container(
-          decoration: const BoxDecoration(
-            color: ColorConstants.midnightBlue,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-          ),
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Выбери цвет для трекинга сна',
-                style: theme.typography.h4.copyWith(color: Colors.white),
-              ),
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 12,
-                children: _presetColors.map((color) {
-                  final isSelected = color.value == _baseColor.value;
-                  return GestureDetector(
-                    onTap: () => _onColorSelected(color),
-                    child: Container(
-                      width: 32,
-                      height: 32,
-                      decoration: BoxDecoration(
-                        color: color,
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: isSelected ? Colors.white : Colors.black54,
-                          width: isSelected ? 3 : 1,
+      builder: (dialogContext) {
+        return Dialog(
+          backgroundColor: theme.colors.cardBackground,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.palette, color: theme.colors.primary),
+                    const SizedBox(width: 12),
+                    Text(l10n.colorPickerTitle, style: theme.typography.h3),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Wrap(
+                  spacing: 16,
+                  runSpacing: 16,
+                  children: _presetColors.map((color) {
+                    final isSelected = color.value == _baseColor.value;
+                    return GestureDetector(
+                      onTap: () => _onColorSelected(color, dialogContext),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: color,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: isSelected ? theme.colors.primary : theme.colors.dividerColor,
+                            width: isSelected ? 3 : 2,
+                          ),
+                          boxShadow: isSelected
+                              ? [
+                                  BoxShadow(
+                                    color: color.withOpacity(0.4),
+                                    blurRadius: 8,
+                                    spreadRadius: 2,
+                                  ),
+                                ]
+                              : null,
                         ),
+                        child: isSelected
+                            ? Icon(Icons.check, color: theme.colors.onPrimary, size: 24)
+                            : null,
                       ),
-                    ),
-                  );
-                }).toList(),
-              ),
-            ],
+                    );
+                  }).toList(),
+                ),
+              ],
+            ),
           ),
         );
       },
     );
   }
 
-  Future<void> _onColorSelected(Color color) async {
+  Future<void> _onColorSelected(Color color, BuildContext dialogContext) async {
     if (!mounted) return;
 
     setState(() {
@@ -112,20 +131,9 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
 
     await _saveColorPreference(color);
 
-    if (Navigator.of(context).canPop()) {
-      Navigator.of(context).pop();
+    if (dialogContext.mounted) {
+      Navigator.of(dialogContext).pop();
     }
-  }
-
-  @override
-  void dispose() {
-    // _slidableController.dispose();
-    super.dispose();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
   }
 
   @override
@@ -133,6 +141,8 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
     final theme = context.appTheme;
     final bloc = DependScope.of(context).dependModel.statsBloc;
     final statsNotifier = DependScope.of(context).dependModel.statsNotifier;
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: CustomScrollView(
@@ -141,47 +151,86 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
             pinned: true,
             backgroundColor: Colors.transparent,
             expandedHeight: 100,
-             actions: [
-               IconButton(
-                 icon: const Icon(Icons.palette_outlined),
-                 tooltip: 'Настроить цвета',
-                 onPressed: _showColorPicker,
-               ),
-             ],
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.palette_outlined),
+                tooltip: l10n.paletteTooltip,
+                onPressed: _showColorPicker,
+              ),
+            ],
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
-                'Your Sleep Sessions',
-                style: theme.typography.h2.copyWith(color: Colors.white),
+                l10n.sleepSessions,
+                style: theme.typography.h2.copyWith(color: theme.colors.textPrimary),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
               centerTitle: true,
             ),
           ),
 
-          //stats section
           const SliverToBoxAdapter(child: SizedBox(height: 16)),
 
+          // Stats section
           SliverToBoxAdapter(
             child: ListenableBuilder(
               listenable: statsNotifier,
               builder: (context, _) {
                 final totalSleepHours = statsNotifier.totalSleepHours;
                 final averageSleepHours = statsNotifier.averageSleepHours;
+                final sessionsCount = statsNotifier.sessionsCount;
+
                 return AdaptiveCard(
-                  margin: .symmetric(horizontal: 16, vertical: 8),
-                  padding: .all(16),
-                  backgroundColor: ColorConstants.midnightBlue,
+                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.all(20),
+                  backgroundColor: theme.colors.cardBackground,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 8),
-                      Text(
-                        'Total Sleep Hours: ${totalSleepHours.toStringAsFixed(1)} hrs',
-                        style: theme.typography.h4,
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: theme.colors.primary.withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Icon(
+                              Icons.nightlight_round,
+                              color: theme.colors.primary,
+                              size: 24,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              l10n.totalSleepHours(totalSleepHours.toStringAsFixed(1)),
+                              style: theme.typography.h3,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Average Sleep Hours: ${averageSleepHours.toStringAsFixed(1)} hrs',
-                        style: theme.typography.h4,
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _StatCard(
+                              icon: Icons.access_time,
+                              label: l10n.averageSleepHours(averageSleepHours.toStringAsFixed(1)),
+                              color: theme.colors.secondary,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _StatCard(
+                              icon: Icons.calendar_today,
+                              label: l10n.sessionsCount(sessionsCount),
+                              color: theme.colors.primary,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -190,6 +239,7 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
             ),
           ),
 
+          // GitHub Style Grid
           SliverToBoxAdapter(
             child: BlocBuilder<StatsListBloc, StatsState>(
               bloc: bloc,
@@ -198,16 +248,81 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
                   return const SizedBox.shrink();
                 }
 
-                return _SleepSessionsGrid(
-                  models: state.statsModelList,
-                  baseColor: _baseColor,
+                return AdaptiveCard(
+                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.all(20),
+                  backgroundColor: theme.colors.cardBackground,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.grid_on, color: theme.colors.primary, size: 20),
+                              const SizedBox(width: 8),
+                              Text(
+                                'Sleep Activity',
+                                style: theme.typography.h4.copyWith(
+                                  color: theme.colors.textPrimary,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: _baseColor.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              '${state.statsModelList.length} sessions',
+                              style: theme.typography.bodySmall.copyWith(
+                                color: _baseColor,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Center(
+                        child: _SleepSessionsGrid(
+                          count: state.statsModelList.length,
+                          maxPerRow: 10,
+                          boxSize: 14.0,
+                          spacing: 4.0,
+                          color: _baseColor,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _GridLegendItem(
+                            color: theme.colors.surface,
+                            label: 'No session',
+                            borderColor: theme.colors.dividerColor,
+                          ),
+                          const SizedBox(width: 16),
+                          _GridLegendItem(
+                            color: _baseColor,
+                            label: 'Session',
+                            borderColor: _baseColor,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 );
               },
             ),
           ),
 
-          const SliverToBoxAdapter(child: Divider()),
-          // list section
+          const SliverToBoxAdapter(child: SizedBox(height: 8)),
+
+          // Sessions List
           BlocConsumer(
             listener: (context, state) {
               if (state is StatsLoaded) {
@@ -215,180 +330,344 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
               }
             },
             bloc: bloc,
-
             builder: (context, state) {
               return switch (state) {
-                StatsLoaded() => SliverList(
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    final model = state.statsModelList[index];
-                    final sleepDurationHours =
-                        model.sleepTime.hour.toString().padLeft(2, '0');
-                    final sleepDurationMinutes =
-                        model.sleepTime.minute.toString().padLeft(2, '0');
-                    final bedHour =
-                        model.bedTime.hour.toString().padLeft(2, '0');
-                    final bedMinute =
-                        model.bedTime.minute.toString().padLeft(2, '0');
-                    final riseHour =
-                        model.riseTime.hour.toString().padLeft(2, '0');
-                    final riseMinute =
-                        model.riseTime.minute.toString().padLeft(2, '0');
+                StatsLoaded() =>
+                  state.statsModelList.isEmpty
+                      ? SliverList(
+                          delegate: SliverChildBuilderDelegate(childCount: 1, (context, index) {
+                            return AdaptiveCard(
+                              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              padding: const EdgeInsets.all(20),
+                              backgroundColor: theme.colors.cardBackground,
+                              child: Center(
+                                child: Column(
+                                  children: [
+                                    Icon(
+                                      Icons.bedtime_outlined,
+                                      size: 48,
+                                      color: theme.colors.textSecondary,
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Text(
+                                      l10n.noStatsFound,
+                                      style: theme.typography.h4.copyWith(
+                                        color: theme.colors.textSecondary,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
+                        )
+                      : SliverList(
+                          delegate: SliverChildBuilderDelegate((context, index) {
+                            final model = state.statsModelList[index];
+                            final sleepDurationHours = model.sleepTime.hour.toString().padLeft(
+                              2,
+                              '0',
+                            );
+                            final sleepDurationMinutes = model.sleepTime.minute.toString().padLeft(
+                              2,
+                              '0',
+                            );
+                            final bedHour = model.bedTime.hour.toString().padLeft(2, '0');
+                            final bedMinute = model.bedTime.minute.toString().padLeft(2, '0');
+                            final riseHour = model.riseTime.hour.toString().padLeft(2, '0');
+                            final riseMinute = model.riseTime.minute.toString().padLeft(2, '0');
 
-                    return Slidable(
-                      endActionPane: ActionPane(
-                        motion: const ScrollMotion(),
-                        children: [
-                          SlidableAction(
-                            onPressed: (_) {
-                              statsNotifier.setStats();
-                              logger.debug('Delete button pressed');
-                              bloc.add(StatsEventDeleteById(model.id!));
-                            },
-                            backgroundColor: Colors.red,
-                            foregroundColor: Colors.white,
-                            icon: Icons.delete,
-                            label: 'Delete',
-                          ),
-                        ],
-                      ),
-                      child: AdaptiveCard(
-                        margin:
-                            const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        padding: const EdgeInsets.all(12),
-                        backgroundColor: ColorConstants.midnightBlue,
-                        child: ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              model.sleepQuality.icon,
-                              const SizedBox(height: 4),
-                              Text(model.sleepQuality.name),
-                            ],
-                          ),
-                          title: Text(
-                            'You slept for $sleepDurationHours:$sleepDurationMinutes',
-                            style: theme.typography.h4,
-                          ),
-                          subtitle: Text(
-                            'Bed: $bedHour:$bedMinute • Rise: $riseHour:$riseMinute',
-                            style: theme.typography.h6,
-                          ),
+                            return Slidable(
+                              endActionPane: ActionPane(
+                                motion: const ScrollMotion(),
+                                children: [
+                                  SlidableAction(
+                                    onPressed: (_) {
+                                      statsNotifier.setStats();
+                                      logger.debug('Delete button pressed');
+                                      bloc.add(StatsEventDeleteById(model.id!));
+                                    },
+                                    backgroundColor: theme.colors.error,
+                                    foregroundColor: theme.colors.onPrimary,
+                                    icon: Icons.delete_outline,
+                                    label: l10n.delete,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ],
+                              ),
+                              child: AdaptiveCard(
+                                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                                padding: const EdgeInsets.all(16),
+                                backgroundColor: theme.colors.cardBackground,
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color: theme.colors.primary.withOpacity(0.1),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          model.sleepQuality.icon,
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            model.sleepQuality.name,
+                                            style: theme.typography.bodySmall,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(width: 16),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Icon(
+                                                Icons.bedtime,
+                                                size: 18,
+                                                color: theme.colors.primary,
+                                              ),
+                                              const SizedBox(width: 6),
+                                              Text(
+                                                l10n.youSleptFor(
+                                                  '$sleepDurationHours:$sleepDurationMinutes',
+                                                ),
+                                                style: theme.typography.h4,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 6),
+                                          Row(
+                                            children: [
+                                              Icon(
+                                                Icons.schedule,
+                                                size: 16,
+                                                color: theme.colors.textSecondary,
+                                              ),
+                                              const SizedBox(width: 6),
+                                              Expanded(
+                                                child: Text(
+                                                  l10n.bedRiseTime(
+                                                    '$bedHour:$bedMinute',
+                                                    '$riseHour:$riseMinute',
+                                                  ),
+                                                  style: theme.typography.bodySmall.copyWith(
+                                                    color: theme.colors.textSecondary,
+                                                  ),
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }, childCount: state.statsModelList.length),
                         ),
-                      ),
-                    );
-                  }, childCount: state.statsModelList.length),
-                ),
                 StatsInitial() => const SliverFillRemaining(
                   child: Center(child: CircularProgressIndicator.adaptive()),
                 ),
                 StatsEmpty() => SliverList(
-                  delegate: SliverChildBuilderDelegate(childCount: 1, (
-                    context,
-                    index,
-                  ) {
+                  delegate: SliverChildBuilderDelegate(childCount: 1, (context, index) {
                     return AdaptiveCard(
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
+                      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      padding: const EdgeInsets.all(20),
+                      backgroundColor: theme.colors.cardBackground,
+                      child: Center(
+                        child: Column(
+                          children: [
+                            Icon(
+                              Icons.bedtime_outlined,
+                              size: 48,
+                              color: theme.colors.textSecondary,
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              l10n.noStatsFound,
+                              style: theme.typography.h4.copyWith(
+                                color: theme.colors.textSecondary,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
                       ),
-                      padding: const EdgeInsets.all(16),
-                      backgroundColor: ColorConstants.midnightBlue,
-                      child: Text('No stats found', style: theme.typography.h4),
                     );
                   }),
                 ),
                 StatsError(:final message) => SliverFillRemaining(
                   child: Center(
-                    child: Text(
-                      'Error loading stats: $message',
-                      style: theme.typography.h4,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.error_outline, size: 48, color: theme.colors.error),
+                        const SizedBox(height: 12),
+                        Text(
+                          'Error: $message',
+                          style: theme.typography.h4.copyWith(color: theme.colors.error),
+                          textAlign: TextAlign.center,
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                _ => const SliverFillRemaining(
-                  child: Center(child: Text('Unknown state')),
-                ),
+                _ => const SliverFillRemaining(child: Center(child: Text('Unknown state'))),
               };
             },
           ),
+
+          const SliverToBoxAdapter(child: SizedBox(height: 16)),
         ],
       ),
     );
   }
 }
 
+// GitHub Style Grid Widget
 class _SleepSessionsGrid extends StatelessWidget {
   const _SleepSessionsGrid({
-    required this.models,
-    required this.baseColor,
+    required this.count,
+    this.maxPerRow = 7,
+    this.boxSize = 12.0,
+    this.spacing = 3.0,
+    this.color,
   });
 
-  final List<StatsModel> models;
-  final Color baseColor;
+  final int count;
+  final int maxPerRow;
+  final double boxSize;
+  final double spacing;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
-    if (models.isEmpty) {
-      return const SizedBox.shrink();
-    }
+    final theme = context.appTheme;
+    final activeColor = color ?? theme.colors.primary;
+    final inactiveColor = theme.colors.surface;
 
-    return AdaptiveCard(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      padding: const EdgeInsets.all(12),
-      backgroundColor: ColorConstants.midnightBlue,
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          const columns = 7;
-          const spacing = 4.0;
-          final cellSize =
-              (constraints.maxWidth - (columns - 1) * spacing) / columns;
+    final rows = (count / maxPerRow).ceil();
 
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Sleep streak',
-                style: context.appTheme.typography.h5,
-              ),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: spacing,
-                runSpacing: spacing,
-                children: List.generate(models.length, (index) {
-                  final model = models[index];
-                  final hours = model.sleepTime.hour +
-                      (model.sleepTime.minute / 60.0);
-                  final color = _colorForHours(hours);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(rows, (rowIndex) {
+        return Padding(
+          padding: EdgeInsets.only(bottom: rowIndex < rows - 1 ? spacing : 0),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: List.generate(maxPerRow, (colIndex) {
+              final boxIndex = rowIndex * maxPerRow + colIndex;
+              final isActive = boxIndex < count;
 
-                  return Tooltip(
-                    message: '${hours.toStringAsFixed(1)} h',
-                    child: Container(
-                      width: cellSize,
-                      height: cellSize,
-                      decoration: BoxDecoration(
-                        color: color,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
+              return Padding(
+                padding: EdgeInsets.only(right: colIndex < maxPerRow - 1 ? spacing : 0),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  width: boxSize,
+                  height: boxSize,
+                  decoration: BoxDecoration(
+                    color: isActive ? activeColor : inactiveColor,
+                    borderRadius: BorderRadius.circular(2),
+                    border: Border.all(
+                      color: isActive ? activeColor : theme.colors.dividerColor,
+                      width: 1,
                     ),
-                  );
-                }),
-              ),
-            ],
-          );
-        },
-      ),
+                  ),
+                ),
+              );
+            }),
+          ),
+        );
+      }),
     );
   }
+}
 
-  Color _colorForHours(double hours) {
-    final clamped = hours.clamp(0.0, 10.0);
-    final t = clamped / 10.0;
-    return Color.lerp(
-          baseColor.withOpacity(0.25),
-          baseColor,
-          t,
-        ) ??
-        baseColor;
+// Legend Item for Grid
+class _GridLegendItem extends StatelessWidget {
+  const _GridLegendItem({required this.color, required this.label, required this.borderColor});
+
+  final Color color;
+  final String label;
+  final Color borderColor;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.appTheme;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 12,
+          height: 12,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(2),
+            border: Border.all(color: borderColor, width: 1),
+          ),
+        ),
+        const SizedBox(width: 6),
+        Text(
+          label,
+          style: theme.typography.bodySmall.copyWith(
+            color: theme.colors.textSecondary,
+            fontSize: 11,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// Stat Card Widget
+class _StatCard extends StatelessWidget {
+  const _StatCard({required this.icon, required this.label, required this.color});
+
+  final IconData icon;
+  final String label;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.appTheme;
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withOpacity(0.3), width: 1),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: color, size: 20),
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: theme.typography.bodySmall.copyWith(
+              color: theme.colors.textPrimary,
+              fontWeight: FontWeight.w600,
+            ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
   }
 }

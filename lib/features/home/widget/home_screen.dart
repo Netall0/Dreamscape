@@ -25,12 +25,8 @@ class _ScreenState extends State<HomeScreen> with LoggerMixin {
     // final notificationSender = DependScope.of(
     //   context,
     // ).dependModel.notificationsSender;
-    final alarmService = DependScope.of(
-      context,
-    ).platformDependContainer.alarmService;
-    final clockStream = DependScope.of(
-      context,
-    ).platformDependContainer.clockNotifier;
+    final alarmService = DependScope.of(context).platformDependContainer.alarmService;
+    final clockStream = DependScope.of(context).platformDependContainer.clockNotifier;
     final tempRep = DependScope.of(context).dependModel.tempRepository;
 
     return Scaffold(
@@ -39,7 +35,16 @@ class _ScreenState extends State<HomeScreen> with LoggerMixin {
         child: Column(
           children: [
             SizedBox(height: size.height * .13),
-            Text('hello  friend', style: theme.typography.h1.copyWith()),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                'hello friend',
+                style: theme.typography.h1,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
             ClockWidget(clockStream: clockStream, theme: theme),
             SizedBox(height: 24),
             AlarmTimePickerWidget(alarmService: alarmService),
@@ -63,9 +68,7 @@ class _ScreenState extends State<HomeScreen> with LoggerMixin {
                   );
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('bedTime: ${time.hour} : ${time.minute}'),
-                      ),
+                      SnackBar(content: Text('bedTime: ${time.hour} : ${time.minute}')),
                     );
                   }
                 },
@@ -73,16 +76,19 @@ class _ScreenState extends State<HomeScreen> with LoggerMixin {
                   height: 40,
                   width: 200,
                   child: AdaptiveCard(
-                    borderRadius: .all(.circular(24)),
-                    backgroundColor: ColorConstants.pastelIndigo,
+                    borderRadius: BorderRadius.all(Radius.circular(24)),
+                    backgroundColor: theme.colors.primary,
                     child: Row(
-                      mainAxisAlignment: .center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.play_arrow),
-                        Text(
-                          ' Начать сон',
-                          style: theme.typography.h5.copyWith(
-                            color: const Color.fromRGBO(0, 0, 0, 1),
+                        Icon(Icons.play_arrow, color: theme.colors.onPrimary),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            'Начать сон',
+                            style: theme.typography.h5.copyWith(color: theme.colors.onPrimary),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],

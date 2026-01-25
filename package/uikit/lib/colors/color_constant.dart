@@ -115,24 +115,22 @@ class ColorConstants {
     BoxShadow(offset: Offset(0, 2), blurRadius: 4, color: Color(0x1A000000)),
   ];
 
-  // night gradien
-  static const pastelLavender = Color(0xFFE6E6FA); // нежно-лавандовый
-  static const pastelPurple = Color(0xFFBCA7E8); // мягкий фиолетовый
-  static const pastelIndigo = Color(0xFF9FA8DA); // пастельный индиго
-  static const duskPurple = Color(0xFF7E57C2); // фиолетовый сумеречный
-  static const nightViolet = Color(0xFF5E4B8B); // глубокий ночной фиолетовый
-  static const midnightBlue = Color(0xFF3A3D66); // тёмно-ночной синий
+  // night gradient - нейтральные тёмные тона
+  static const midnightBlue = Color(0xFF1E293B); // тёмно-синий для карточек
 
   // day gradient
   static const pastelSky = Color(0xFFE3F2FD); // пастельно-небесный
   static const pastelBlue = Color(0xFFBBDEFB); // мягкий дневной голубой
   static const pastelMint = Color(0xFFCCF2E8); // светлый мятный
-  static const pastelGreen = Color(0xFFC8E6C9); // нежно-зелёный (атмосфера природы)
+  static const pastelGreen = Color(
+    0xFFC8E6C9,
+  ); // нежно-зелёный (атмосфера природы)
   static const pastelPeach = Color(
     0xFFFFE0B2,
   ); // пастельно-персиковый (как солнечный луч)
-  static const pastelYellow = Color(0xFFFFF9C4); // мягкий лимонный (утреннее солнце)
-  static  const pastelLilac = Color(0xFFE8DAF6); // дневной сиреневый, очень легкий
+  static const pastelYellow = Color(
+    0xFFFFF9C4,
+  ); // мягкий лимонный (утреннее солнце)
   static const pastelWarm = Color(
     0xFFFFF3E0,
   ); // молочно-тёплый (идеальный под дневной фон)

@@ -3,11 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:uikit/theme/app_theme.dart';
 
 class ClockWidget extends StatelessWidget {
-  const ClockWidget({
-    super.key,
-    required this.clockStream,
-    required this.theme,
-  });
+  const ClockWidget({super.key, required this.clockStream, required this.theme});
 
   final StreamClockController clockStream;
   final AppTheme theme;
@@ -21,8 +17,14 @@ class ClockWidget extends StatelessWidget {
           AsyncSnapshot(:final data?) => Text(
             '${data.hour.toString().padLeft(2, '0')}:${data.minute.toString().padLeft(2, '0')}',
             style: theme.typography.h1,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
-          AsyncSnapshot(hasError: true) => Text('Error: ${snapshot.error}'),
+          AsyncSnapshot(hasError: true) => Text(
+            'Error: ${snapshot.error}',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
           _ => const CircularProgressIndicator(),
         };
       },
