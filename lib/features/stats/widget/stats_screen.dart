@@ -547,7 +547,11 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
                     ),
                   ),
                 ),
-                _ => const SliverFillRemaining(child: Center(child: Text('Unknown state'))),
+                _ => SliverFillRemaining(
+                    child: Center(
+                      child: Text(AppLocalizations.of(context)!.unknownState),
+                    ),
+                  ),
               };
             },
           ),

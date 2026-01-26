@@ -1,3 +1,4 @@
+import 'package:dreamscape/core/l10n/app_localizations.g.dart';
 import 'package:dreamscape/core/util/extension/app_context_extension.dart';
 import 'package:dreamscape/features/auth/controller/bloc/auth_bloc.dart';
 import 'package:dreamscape/features/initialization/widget/depend_scope.dart';
@@ -28,6 +29,7 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = context.appTheme;
+    final l10n = AppLocalizations.of(context)!;
     final bloc = DependScope.of(context).dependModel.authBloc;
     final size = MediaQuery.sizeOf(context);
     final isTablet = size.width > 600;
@@ -39,7 +41,7 @@ class _SignInScreenState extends State<SignInScreen> {
             ? ScaffoldMessenger.of(context).showSnackBar(
                 appFlavor!.contains('dev')
                     ? SnackBar(content: Text(state.errorMessage))
-                    : SnackBar(content: Text('autg Failed')),
+                    : SnackBar(content: Text(l10n.authFailed)),
               )
             : null;
       },
@@ -75,7 +77,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  'Sign in',
+                                  l10n.signIn,
                                   style: theme.typography.h1,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -98,7 +100,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                       borderSide: BorderSide(color: theme.colors.primary),
                                     ),
                                     prefixIcon: Icon(Icons.email, color: theme.colors.textSecondary),
-                                    labelText: 'Email',
+                                    labelText: l10n.email,
                                     labelStyle: theme.typography.h6.copyWith(
                                       color: theme.colors.textSecondary,
                                     ),
@@ -123,7 +125,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                       borderSide: BorderSide(color: theme.colors.primary),
                                     ),
                                     prefixIcon: Icon(Icons.password, color: theme.colors.textSecondary),
-                                    labelText: 'Password',
+                                    labelText: l10n.password,
                                     labelStyle: theme.typography.h6.copyWith(
                                       color: theme.colors.textSecondary,
                                     ),
@@ -143,7 +145,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                     );
                                   },
                                   child: Text(
-                                    'Sign in',
+                                    l10n.signIn,
                                     style: TextStyle(color: theme.colors.onPrimary),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
@@ -159,7 +161,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             context.push('/signin/signup');
                           },
                           child: Text(
-                            'Don\'t have an account? Sign up',
+                            l10n.dontHaveAccount,
                             style: theme.typography.h6.copyWith(color: theme.colors.primary),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,

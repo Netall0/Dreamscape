@@ -1,3 +1,4 @@
+import 'package:dreamscape/core/l10n/app_localizations.g.dart';
 import 'package:dreamscape/core/util/extension/app_context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -14,11 +15,14 @@ class RootScreen extends StatefulWidget {
 }
 
 class _RootScreenState extends State<RootScreen> {
-  final List<CustomBottomNavigationBarItems> items = [
-    CustomBottomNavigationBarItems(name: 'home', icons: Icon(Icons.home)),
-    CustomBottomNavigationBarItems(name: 'stats', icons: Icon(Icons.graphic_eq)),
-    CustomBottomNavigationBarItems(name: 'profile', icons: Icon(Icons.person)),
-  ];
+  List<CustomBottomNavigationBarItems> _buildItems(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return [
+      CustomBottomNavigationBarItems(name: l10n.home, icons: Icon(Icons.home)),
+      CustomBottomNavigationBarItems(name: l10n.stats, icons: Icon(Icons.graphic_eq)),
+      CustomBottomNavigationBarItems(name: l10n.profile, icons: Icon(Icons.person)),
+    ];
+  }
 
   void change(int index) {
     widget._navigationShell.goBranch(
@@ -42,7 +46,7 @@ class _RootScreenState extends State<RootScreen> {
         color: colors.cardBackground.withOpacity(0.8),
         height: AppSizes.screenHeightOfContext(context) * 0.07,
         borderValue: AppSizes.radiusMedium,
-        items: items,
+        items: _buildItems(context),
         currentIndex: widget._navigationShell.currentIndex,
         onTap: (index) => change(index),
       ),

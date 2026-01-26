@@ -18,6 +18,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get home => 'Home';
 
   @override
+  String get stats => 'Stats';
+
+  @override
   String get settings => 'Settings';
 
   @override
@@ -34,6 +37,73 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get startSleeping => 'Start Sleeping';
+
+  @override
+  String get signIn => 'Sign in';
+
+  @override
+  String get signUp => 'Sign Up';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get confirmPassword => 'Confirm Password';
+
+  @override
+  String get haveAccount => 'Have an account? Sign in';
+
+  @override
+  String get dontHaveAccount => 'Don\'t have an account? Sign up';
+
+  @override
+  String get authFailed => 'Authentication failed';
+
+  @override
+  String get pleaseEnterEmail => 'Please enter email';
+
+  @override
+  String get pleaseEnterValidEmail => 'Please enter valid email';
+
+  @override
+  String get pleaseEnterPassword => 'Please enter password';
+
+  @override
+  String get passwordMinLength => 'Password must be at least 6 characters';
+
+  @override
+  String get passwordsDontMatch => 'Passwords don\'t match';
+
+  @override
+  String get setYourTime => 'Set your time';
+
+  @override
+  String alarmSet(String time) {
+    return 'Alarm set for $time';
+  }
+
+  @override
+  String get alarmTitle => 'Wake up';
+
+  @override
+  String get alarmBody => 'Time to wake up';
+
+  @override
+  String get sleepAdded => 'Congratulations! Sleep added';
+
+  @override
+  String bedTime(String time) {
+    return 'Bed time: $time';
+  }
+
+  @override
+  String get finishSleep => 'Finish Sleep';
+
+  @override
+  String get howDidYouSleep => 'How did you sleep?';
+
+  @override
+  String get unknownState => 'Unknown state';
 
   @override
   String get profile => 'Profile';

@@ -3,12 +3,47 @@
     "hello": "Hello friend!",
     "appTitle": "Dreamscape",
     "home": "Home",
+    "stats": "Stats",
     "settings": "Settings",
     "save": "Save",
     "cancel": "Cancel",
     "loginButton": "Log In",
     "welcomeMessage": "Welcome back!",
     "startSleeping": "Start Sleeping",
+    
+    "signIn": "Sign in",
+    "signUp": "Sign Up",
+    "email": "Email",
+    "confirmPassword": "Confirm Password",
+    "haveAccount": "Have an account? Sign in",
+    "dontHaveAccount": "Don't have an account? Sign up",
+    "authFailed": "Authentication failed",
+    "pleaseEnterEmail": "Please enter email",
+    "pleaseEnterValidEmail": "Please enter valid email",
+    "pleaseEnterPassword": "Please enter password",
+    "passwordMinLength": "Password must be at least 6 characters",
+    "passwordsDontMatch": "Passwords don't match",
+    
+    "setYourTime": "Set your time",
+    "alarmSet": "Alarm set for {time}",
+    "@alarmSet": {
+        "placeholders": {
+            "time": {"type": "String"}
+        }
+    },
+    "alarmTitle": "Wake up",
+    "alarmBody": "Time to wake up",
+    
+    "sleepAdded": "Congratulations! Sleep added",
+    "bedTime": "Bed time: {time}",
+    "@bedTime": {
+        "placeholders": {
+            "time": {"type": "String"}
+        }
+    },
+    "finishSleep": "Finish Sleep",
+    "howDidYouSleep": "How did you sleep?",
+    "unknownState": "Unknown state",
     
     "profile": "Profile",
     "changeName": "Change name",

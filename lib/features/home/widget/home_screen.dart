@@ -1,4 +1,5 @@
 import 'package:dreamscape/core/gen/assets.gen.dart';
+import 'package:dreamscape/core/l10n/app_localizations.g.dart';
 import 'package:dreamscape/core/router/router.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:dreamscape/core/util/extension/app_context_extension.dart';
@@ -86,8 +87,10 @@ class _ScreenState extends State<HomeScreen> with LoggerMixin {
                               ),
                             );
                             if (context.mounted) {
+                              final l10n = AppLocalizations.of(context)!;
+                              final timeString = '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('bedTime: ${time.hour} : ${time.minute}')),
+                                SnackBar(content: Text(l10n.bedTime(timeString))),
                               );
                             }
                           },

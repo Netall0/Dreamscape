@@ -18,6 +18,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get home => 'Главная';
 
   @override
+  String get stats => 'Статистика';
+
+  @override
   String get settings => 'Настройки';
 
   @override
@@ -34,6 +37,73 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get startSleeping => 'Начать спать';
+
+  @override
+  String get signIn => 'Войти';
+
+  @override
+  String get signUp => 'Регистрация';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get confirmPassword => 'Подтвердите пароль';
+
+  @override
+  String get haveAccount => 'Уже есть аккаунт? Войти';
+
+  @override
+  String get dontHaveAccount => 'Нет аккаунта? Зарегистрироваться';
+
+  @override
+  String get authFailed => 'Ошибка аутентификации';
+
+  @override
+  String get pleaseEnterEmail => 'Введите email';
+
+  @override
+  String get pleaseEnterValidEmail => 'Введите корректный email';
+
+  @override
+  String get pleaseEnterPassword => 'Введите пароль';
+
+  @override
+  String get passwordMinLength => 'Пароль должен быть не менее 6 символов';
+
+  @override
+  String get passwordsDontMatch => 'Пароли не совпадают';
+
+  @override
+  String get setYourTime => 'Установите время';
+
+  @override
+  String alarmSet(String time) {
+    return 'Будильник установлен на $time';
+  }
+
+  @override
+  String get alarmTitle => 'Просыпайся';
+
+  @override
+  String get alarmBody => 'Время вставать';
+
+  @override
+  String get sleepAdded => 'Поздравляем! Сон добавлен';
+
+  @override
+  String bedTime(String time) {
+    return 'Время отхода ко сну: $time';
+  }
+
+  @override
+  String get finishSleep => 'Завершить сон';
+
+  @override
+  String get howDidYouSleep => 'Как ты спал?';
+
+  @override
+  String get unknownState => 'Неизвестное состояние';
 
   @override
   String get profile => 'Профиль';

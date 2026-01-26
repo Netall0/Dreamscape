@@ -111,6 +111,12 @@ abstract class AppLocalizations {
   /// **'Home'**
   String get home;
 
+  /// No description provided for @stats.
+  ///
+  /// In en, this message translates to:
+  /// **'Stats'**
+  String get stats;
+
   /// No description provided for @settings.
   ///
   /// In en, this message translates to:
@@ -146,6 +152,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Start Sleeping'**
   String get startSleeping;
+
+  /// No description provided for @signIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get signIn;
+
+  /// No description provided for @signUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Up'**
+  String get signUp;
+
+  /// No description provided for @email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// No description provided for @confirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Password'**
+  String get confirmPassword;
+
+  /// No description provided for @haveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Have an account? Sign in'**
+  String get haveAccount;
+
+  /// No description provided for @dontHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have an account? Sign up'**
+  String get dontHaveAccount;
+
+  /// No description provided for @authFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication failed'**
+  String get authFailed;
+
+  /// No description provided for @pleaseEnterEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter email'**
+  String get pleaseEnterEmail;
+
+  /// No description provided for @pleaseEnterValidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter valid email'**
+  String get pleaseEnterValidEmail;
+
+  /// No description provided for @pleaseEnterPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter password'**
+  String get pleaseEnterPassword;
+
+  /// No description provided for @passwordMinLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 6 characters'**
+  String get passwordMinLength;
+
+  /// No description provided for @passwordsDontMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords don\'t match'**
+  String get passwordsDontMatch;
+
+  /// No description provided for @setYourTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your time'**
+  String get setYourTime;
+
+  /// No description provided for @alarmSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Alarm set for {time}'**
+  String alarmSet(String time);
+
+  /// No description provided for @alarmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Wake up'**
+  String get alarmTitle;
+
+  /// No description provided for @alarmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Time to wake up'**
+  String get alarmBody;
+
+  /// No description provided for @sleepAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Congratulations! Sleep added'**
+  String get sleepAdded;
+
+  /// No description provided for @bedTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Bed time: {time}'**
+  String bedTime(String time);
+
+  /// No description provided for @finishSleep.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish Sleep'**
+  String get finishSleep;
+
+  /// No description provided for @howDidYouSleep.
+  ///
+  /// In en, this message translates to:
+  /// **'How did you sleep?'**
+  String get howDidYouSleep;
+
+  /// No description provided for @unknownState.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown state'**
+  String get unknownState;
 
   /// No description provided for @profile.
   ///

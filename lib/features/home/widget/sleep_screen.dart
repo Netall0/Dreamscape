@@ -1,4 +1,5 @@
 import 'package:dreamscape/core/gen/assets.gen.dart';
+import 'package:dreamscape/core/l10n/app_localizations.g.dart';
 import 'package:dreamscape/core/repository/temp_repository.dart';
 import 'package:dreamscape/core/util/extension/time_of_day_extension.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
@@ -205,7 +206,7 @@ class _SleepScreenState extends State<SleepScreen> with LoggerMixin {
                           const SizedBox(width: 8),
                           Flexible(
                             child: Text(
-                              'Завершить сон',
+                              AppLocalizations.of(context)!.finishSleep,
                               style: theme.typography.h5.copyWith(color: theme.colors.onPrimary),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -240,10 +241,11 @@ class _SleepScreenState extends State<SleepScreen> with LoggerMixin {
       context: context,
       builder: (context) {
         final theme = context.appTheme;
+        final l10n = AppLocalizations.of(context)!;
         return AlertDialog(
           backgroundColor: theme.colors.cardBackground,
           title: Text(
-            'Как ты спал?',
+            l10n.howDidYouSleep,
             style: TextStyle(color: theme.colors.textPrimary),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -307,9 +309,10 @@ class _SleepScreenState extends State<SleepScreen> with LoggerMixin {
       ),
     );
     if (context.mounted) {
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('congratulations!!!, sleep added')));
+      ).showSnackBar(SnackBar(content: Text(l10n.sleepAdded)));
 
       context.pop();
     }

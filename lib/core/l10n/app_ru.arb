@@ -3,12 +3,47 @@
     "hello": "Привет, друг!",
     "appTitle": "Dreamscape",
     "home": "Главная",
+    "stats": "Статистика",
     "settings": "Настройки",
     "save": "Сохранить",
     "cancel": "Отмена",
     "loginButton": "Войти",
     "welcomeMessage": "С возвращением!",
     "startSleeping": "Начать спать",
+    
+    "signIn": "Войти",
+    "signUp": "Регистрация",
+    "email": "Email",
+    "confirmPassword": "Подтвердите пароль",
+    "haveAccount": "Уже есть аккаунт? Войти",
+    "dontHaveAccount": "Нет аккаунта? Зарегистрироваться",
+    "authFailed": "Ошибка аутентификации",
+    "pleaseEnterEmail": "Введите email",
+    "pleaseEnterValidEmail": "Введите корректный email",
+    "pleaseEnterPassword": "Введите пароль",
+    "passwordMinLength": "Пароль должен быть не менее 6 символов",
+    "passwordsDontMatch": "Пароли не совпадают",
+    
+    "setYourTime": "Установите время",
+    "alarmSet": "Будильник установлен на {time}",
+    "@alarmSet": {
+        "placeholders": {
+            "time": {"type": "String"}
+        }
+    },
+    "alarmTitle": "Просыпайся",
+    "alarmBody": "Время вставать",
+    
+    "sleepAdded": "Поздравляем! Сон добавлен",
+    "bedTime": "Время отхода ко сну: {time}",
+    "@bedTime": {
+        "placeholders": {
+            "time": {"type": "String"}
+        }
+    },
+    "finishSleep": "Завершить сон",
+    "howDidYouSleep": "Как ты спал?",
+    "unknownState": "Неизвестное состояние",
     
     "profile": "Профиль",
     "changeName": "Изменить имя",

@@ -1,3 +1,4 @@
+import 'package:dreamscape/core/l10n/app_localizations.g.dart';
 import 'package:dreamscape/core/util/extension/app_context_extension.dart';
 import 'package:dreamscape/features/auth/controller/bloc/auth_bloc.dart';
 import 'package:dreamscape/features/initialization/widget/depend_scope.dart';
@@ -39,6 +40,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = context.appTheme;
+    final l10n = AppLocalizations.of(context)!;
     final bloc = DependScope.of(context).dependModel.authBloc;
     final size = MediaQuery.sizeOf(context);
     final isTablet = size.width > 600;
@@ -50,7 +52,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ? ScaffoldMessenger.of(context).showSnackBar(
                 appFlavor!.contains('dev')
                     ? SnackBar(content: Text(state.errorMessage))
-                    : SnackBar(content: Text('autg Failed')),
+                    : SnackBar(content: Text(l10n.authFailed)),
               )
             : null;
       },
@@ -87,7 +89,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Sign up',
+                          l10n.signUp,
                           style: theme.typography.h1,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -96,10 +98,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         TextFormField(
                           validator: (val) {
                             if (val!.isEmpty) {
-                              return 'Please enter email';
+                              return l10n.pleaseEnterEmail;
                             }
                             if (val.contains('@') == false) {
-                              return 'Please enter valid email';
+                              return l10n.pleaseEnterValidEmail;
                             }
                             return null;
                           },
@@ -119,7 +121,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               borderSide: BorderSide(color: theme.colors.primary),
                             ),
                             prefixIcon: Icon(Icons.email, color: theme.colors.textSecondary),
-                            labelText: 'Email',
+                            labelText: l10n.email,
                             labelStyle: theme.typography.h6.copyWith(
                               color: theme.colors.textSecondary,
                             ),
@@ -129,10 +131,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         TextFormField(
                           validator: (val) {
                             if (val!.isEmpty) {
-                              return 'Please enter password';
+                              return l10n.pleaseEnterPassword;
                             }
                             if (val.length < 6) {
-                              return 'Password must be at least 6 characters';
+                              return l10n.passwordMinLength;
                             }
                             return null;
                           },
@@ -153,7 +155,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               borderSide: BorderSide(color: theme.colors.primary),
                             ),
                             prefixIcon: Icon(Icons.password, color: theme.colors.textSecondary),
-                            labelText: 'Password',
+                            labelText: l10n.password,
                             labelStyle: theme.typography.h6.copyWith(
                               color: theme.colors.textSecondary,
                             ),
@@ -163,10 +165,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         TextFormField(
                           validator: (val) {
                             if (val == null || val.isEmpty) {
-                              return 'Confirm password';
+                              return l10n.confirmPassword;
                             }
                             if (val != _passwordController.text) {
-                              return 'Passwords don\'t match';
+                              return l10n.passwordsDontMatch;
                             }
                             return null;
                           },
@@ -194,7 +196,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 color: theme.colors.textSecondary,
                               ),
                             ),
-                            labelText: 'Confirm Password',
+                            labelText: l10n.confirmPassword,
                             labelStyle: theme.typography.h6.copyWith(
                               color: theme.colors.textSecondary,
                             ),
@@ -215,7 +217,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             );
                           },
                           child: Text(
-                            'Sign Up',
+                            l10n.signUp,
                             style: TextStyle(color: theme.colors.onPrimary),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -231,7 +233,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               context.pop();
                             },
                             child: Text(
-                              'Have an account? Sign in',
+                              l10n.haveAccount,
                               style: theme.typography.h6.copyWith(color: theme.colors.primary),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
