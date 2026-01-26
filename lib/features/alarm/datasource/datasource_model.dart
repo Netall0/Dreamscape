@@ -1,12 +1,6 @@
-import 'package:dreamscape/features/alarm/datasource/alarm_datasource.dart';
+import 'alarm_datasource.dart';
 
 class DatasourceModel {
-  final int year;
-  final int month;
-  final int day;
-  final int hour;
-  final int minute;
-  final int id;
 
   DatasourceModel({
     required this.year,
@@ -16,6 +10,12 @@ class DatasourceModel {
     required this.minute,
     required this.id,
   });
+  final int year;
+  final int month;
+  final int day;
+  final int hour;
+  final int minute;
+  final int id;
 
   Map<AlarmField, int> toMap() => {
     AlarmField.year: year,

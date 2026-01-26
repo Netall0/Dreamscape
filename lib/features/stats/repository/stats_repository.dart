@@ -1,13 +1,13 @@
-import 'package:dreamscape/core/database/database.dart';
-import 'package:dreamscape/core/util/logger/logger.dart';
-import 'package:dreamscape/features/stats/model/stats_model.dart';
-import 'package:dreamscape/features/stats/repository/i_stats_repository.dart';
+import '../../../core/database/database.dart';
+import '../../../core/util/logger/logger.dart';
+import '../model/stats_model.dart';
+import 'i_stats_repository.dart';
 
 final class StatsRepository with LoggerMixin implements IStatsRepository {
-  final AppDatabase _appDatabase;
 
   StatsRepository({required AppDatabase appDatabase})
     : _appDatabase = appDatabase;
+  final AppDatabase _appDatabase;
 
   //stats methods
 
@@ -15,14 +15,14 @@ final class StatsRepository with LoggerMixin implements IStatsRepository {
   @override
   Future<double> getTotalSleepHours() async {
     try {
-      final allModels = await _appDatabase.sleepDao.getAllSleepInfo();
+      final List<SleepInfoTableData> allModels = await _appDatabase.sleepDao.getAllSleepInfo();
 
       if (allModels.isEmpty) return 0.0;
 
-      double total = 0.0;
-      for (var model in allModels) {
+      var total = 0.0;
+      for (final model in allModels) {
         final sleepModel = StatsModel.fromDriftRow(model);
-        final hours =
+        final double hours =
             sleepModel.sleepTime.hour + (sleepModel.sleepTime.minute / 60.0);
         total += hours;
       }
@@ -38,19 +38,19 @@ final class StatsRepository with LoggerMixin implements IStatsRepository {
   @override
   Future<double> getAverageSleepHours() async {
     try {
-      final allModels = await _appDatabase.sleepDao.getAllSleepInfo();
+      final List<SleepInfoTableData> allModels = await _appDatabase.sleepDao.getAllSleepInfo();
 
       if (allModels.isEmpty) return 0.0;
 
-      double total = 0.0;
-      for (var model in allModels) {
+      var total = 0.0;
+      for (final model in allModels) {
         final sleepModel = StatsModel.fromDriftRow(model);
-        final hours =
+        final double hours =
             sleepModel.sleepTime.hour + (sleepModel.sleepTime.minute / 60.0);
         total += hours;
       }
 
-      final average = total / allModels.length;
+      final double average = total / allModels.length;
       logger.info('Average sleep hours calculated: $average');
       return average;
     } on Object catch (e, st) {
@@ -62,7 +62,7 @@ final class StatsRepository with LoggerMixin implements IStatsRepository {
   @override
   Future<List<StatsModel>> getSleepModel() async {
     try {
-      final listSleepModels = await _appDatabase.sleepDao.getAllSleepInfo();
+      final List<SleepInfoTableData> listSleepModels = await _appDatabase.sleepDao.getAllSleepInfo();
       logger.debug('Fetched ${listSleepModels.length} sleep models');
       return listSleepModels.map((e) => StatsModel.fromDriftRow(e)).toList();
     } on Object catch (e, st) {

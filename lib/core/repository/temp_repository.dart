@@ -1,12 +1,13 @@
-import 'package:dreamscape/core/repository/i_temp_repository.dart';
-import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../util/logger/logger.dart';
+import 'i_temp_repository.dart';
+
 final class TempRepository with LoggerMixin implements ITempRepository {
-  final SharedPreferences _sharedPreferences;
   TempRepository({required SharedPreferences sharedPreferences})
     : _sharedPreferences = sharedPreferences;
+  final SharedPreferences _sharedPreferences;
 
   static const String _bedTimeKey = 'bed_time';
   static const String _riseTimeKey = 'rise_time';
@@ -25,7 +26,7 @@ final class TempRepository with LoggerMixin implements ITempRepository {
   @override
   Future<TimeOfDay?> getBedTime() async {
     try {
-      final minutes = _sharedPreferences.getInt(_bedTimeKey);
+      final int? minutes = _sharedPreferences.getInt(_bedTimeKey);
       if (minutes == null) return null;
       return TimeOfDay(hour: minutes ~/ 60, minute: minutes % 60);
     } on Object catch (e, st) {
@@ -49,7 +50,7 @@ final class TempRepository with LoggerMixin implements ITempRepository {
   @override
   Future<void> saveBedTime(TimeOfDay bedTime) async {
     try {
-      final minutes = bedTime.hour * 60 + bedTime.minute;
+      final int minutes = bedTime.hour * 60 + bedTime.minute;
       _sharedPreferences.setInt(_bedTimeKey, minutes);
       logger.info('Bed time saved successfully');
     } on Object catch (e, st) {

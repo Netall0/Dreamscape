@@ -1,13 +1,17 @@
-import 'package:dreamscape/core/gen/assets.gen.dart';
-import 'package:dreamscape/core/router/router.dart';
-import 'package:dreamscape/core/util/logger/logger.dart';
-import 'package:dreamscape/core/util/extension/app_context_extension.dart';
-import 'package:dreamscape/features/home/widget/alarm_time_picker_widget.dart';
-import 'package:dreamscape/features/home/widget/clock_widget.dart';
-import 'package:dreamscape/features/initialization/widget/depend_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:uikit/uikit.dart';
+
+import '../../../core/gen/assets.gen.dart';
+import '../../../core/repository/temp_repository.dart';
+import '../../../core/router/router.dart';
+import '../../../core/util/extension/app_context_extension.dart';
+import '../../../core/util/logger/logger.dart';
+import '../../alarm/services/alarm_service.dart';
+import '../../initialization/widget/depend_scope.dart';
+import '../controller/clock_stream_controller.dart';
+import 'alarm_time_picker_widget.dart';
+import 'clock_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,18 +24,18 @@ class _ScreenState extends State<HomeScreen> with LoggerMixin {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.appTheme;
-    final size = MediaQuery.sizeOf(context);
+    final AppTheme theme = context.appTheme;
+    final Size size = MediaQuery.sizeOf(context);
     // final notificationSender = DependScope.of(
     //   context,
     // ).dependModel.notificationsSender;
-    final alarmService = DependScope.of(
+    final AlarmService alarmService = DependScope.of(
       context,
     ).platformDependContainer.alarmService;
-    final clockStream = DependScope.of(
+    final StreamClockController clockStream = DependScope.of(
       context,
     ).platformDependContainer.clockNotifier;
-    final tempRep = DependScope.of(context).dependModel.tempRepository;
+    final TempRepository tempRep = DependScope.of(context).dependModel.tempRepository;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -41,9 +45,9 @@ class _ScreenState extends State<HomeScreen> with LoggerMixin {
             SizedBox(height: size.height * .13),
             Text('hello  friend', style: theme.typography.h1.copyWith()),
             ClockWidget(clockStream: clockStream, theme: theme),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             AlarmTimePickerWidget(alarmService: alarmService),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             Lottie.asset(
               Assets.lottie.sleepingPolarBear.path,
               height: (size.width < 500) ? size.height * .4 : size.height * .3,
@@ -54,7 +58,7 @@ class _ScreenState extends State<HomeScreen> with LoggerMixin {
               child: GestureDetector(
                 onTap: () async {
                   final time = TimeOfDay.now();
-                  SleepScreenData().go(context);
+                  const SleepScreenData().go(context);
                   await tempRep.saveBedTime(
                     TimeOfDay(
                       hour: time.hour, //TODO
@@ -73,12 +77,12 @@ class _ScreenState extends State<HomeScreen> with LoggerMixin {
                   height: 40,
                   width: 200,
                   child: AdaptiveCard(
-                    borderRadius: .all(.circular(24)),
+                    borderRadius: const .all(.circular(24)),
                     backgroundColor: ColorConstants.pastelIndigo,
                     child: Row(
                       mainAxisAlignment: .center,
                       children: [
-                        Icon(Icons.play_arrow),
+                        const Icon(Icons.play_arrow),
                         Text(
                           ' Начать сон',
                           style: theme.typography.h5.copyWith(

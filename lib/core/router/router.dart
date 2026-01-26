@@ -1,18 +1,20 @@
 import 'dart:async';
 
-import 'package:dreamscape/core/router/navigator_observer.dart';
-import 'package:dreamscape/features/app/widget/root_screen.dart';
-import 'package:dreamscape/features/auth/controller/bloc/auth_bloc.dart';
-import 'package:dreamscape/features/auth/widget/profile_screen.dart';
-import 'package:dreamscape/features/auth/widget/sign_in_screen.dart';
-import 'package:dreamscape/features/auth/widget/sing_up_screen.dart';
-import 'package:dreamscape/features/home/widget/home_screen.dart';
-import 'package:dreamscape/features/stats/widget/stats_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:dreamscape/features/home/widget/sleep_screen.dart';
 import 'package:uikit/overlay/controller/dimmer_overlay_notifier.dart';
 import 'package:uikit/overlay/utils/dimmer_overlay_observer.dart';
+
+import '../../features/app/widget/root_screen.dart';
+import '../../features/auth/controller/bloc/auth_bloc.dart';
+import '../../features/auth/widget/profile_screen.dart';
+import '../../features/auth/widget/sign_in_screen.dart';
+import '../../features/auth/widget/sing_up_screen.dart';
+import '../../features/home/widget/home_screen.dart';
+import '../../features/home/widget/sleep_screen.dart';
+import '../../features/stats/widget/stats_screen.dart';
+import 'navigator_observer.dart';
+
 part 'router.g.dart';
 
 final class AppRouter {
@@ -29,8 +31,8 @@ final class AppRouter {
       ),
     ],
     redirect: (context, state) {
-      final authState = authBloc.state;
-      final currentLocation = state.matchedLocation;
+      final AuthState authState = authBloc.state;
+      final String currentLocation = state.matchedLocation;
 
       final authPaths = ['/signin', '/signin/signup'];
 
@@ -51,7 +53,6 @@ final class AppRouter {
           if (currentLocation == '/signin') {
             return '/home';
           }
-          break;
       }
 
       return null;
@@ -61,12 +62,12 @@ final class AppRouter {
 }
 
 class BlocListenable<T> extends ChangeNotifier {
-  final Stream<T> stream;
-  late final StreamSubscription<T> _sub;
 
   BlocListenable(Stream<T> s) : stream = s.asBroadcastStream() {
     _sub = stream.listen((_) => notifyListeners());
   }
+  final Stream<T> stream;
+  late final StreamSubscription<T> _sub;
 
   @override
   void dispose() {
@@ -122,7 +123,7 @@ class HomeRouteDate extends GoRouteData with $HomeRouteDate {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return HomeScreen();
+    return const HomeScreen();
   }
 }
 
@@ -131,7 +132,7 @@ class SleepScreenData extends GoRouteData with $SleepScreenData {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return SleepScreen();
+    return const SleepScreen();
   }
 }
 
@@ -142,7 +143,7 @@ class StatsShellBranchData extends StatefulShellBranchData {}
 class StatsData extends GoRouteData with $StatsData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return StatsScreen();
+    return const StatsScreen();
   }
 }
 
@@ -153,7 +154,7 @@ class ProfileShellBranchData extends StatefulShellBranchData {}
 class ProfileScreenData extends GoRouteData with $ProfileScreenData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return ProfileScreen();
+    return const ProfileScreen();
   }
 }
 
@@ -164,13 +165,13 @@ class ProfileScreenData extends GoRouteData with $ProfileScreenData {
 class SignInRoute extends GoRouteData with $SignInRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return SignInScreen();
+    return const SignInScreen();
   }
 }
 
 class SignUpRoute extends GoRouteData with $SignUpRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return SignUpScreen();
+    return const SignUpScreen();
   }
 }

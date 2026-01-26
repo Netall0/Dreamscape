@@ -1,1 +1,1 @@
-abstract interface class {{name.pascalCase()}}Repository{}
+abstract interface class {{name.pascalCase()}}void void Repository{}

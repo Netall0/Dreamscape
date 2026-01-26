@@ -1,14 +1,16 @@
 import 'dart:io';
-import 'package:dreamscape/core/util/logger/logger.dart';
-import 'package:dreamscape/features/auth/repository/auth_repository.dart';
+
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../../core/util/logger/logger.dart';
+import '../../repository/auth_repository.dart';
+
 final class LoadInfoNotifier extends ChangeNotifier with LoggerMixin {
-  final AuthRepository _authRepository;
 
   LoadInfoNotifier({required AuthRepository authRepository})
     : _authRepository = authRepository;
+  final AuthRepository _authRepository;
 
   final ImagePicker _picker = ImagePicker();
 
@@ -25,8 +27,8 @@ final class LoadInfoNotifier extends ChangeNotifier with LoggerMixin {
 
   Future<void> loadUserInfo() async {
     try {
-      final url = await _authRepository.getAvatarUrl();
-      final name = await _authRepository.getUserName();
+      final String? url = await _authRepository.getAvatarUrl();
+      final String? name = await _authRepository.getUserName();
 
       _userName = name;
       _remoteAvatarUrl = url;
@@ -63,7 +65,7 @@ final class LoadInfoNotifier extends ChangeNotifier with LoggerMixin {
       await Future.delayed(const Duration(milliseconds: 300));
 
       String? url;
-      for (int i = 0; i < 3; i++) {
+      for (var i = 0; i < 3; i++) {
         url = await _authRepository.getAvatarUrl();
         if (url != null) break;
         await Future.delayed(const Duration(milliseconds: 200));

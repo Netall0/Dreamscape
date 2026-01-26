@@ -1,21 +1,21 @@
 import 'dart:async';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:dreamscape/core/util/bloc/bloc_transformers.dart';
-import 'package:dreamscape/core/util/logger/logger.dart';
-import 'package:dreamscape/features/auth/repository/auth_repository.dart';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../../../../core/util/bloc/bloc_transformers.dart';
+import '../../../../core/util/logger/logger.dart';
+import '../../repository/auth_repository.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> with LoggerMixin {
-  final AuthRepository _authRepository;
-  late StreamSubscription _authSubscription;
 
   AuthBloc({required AuthRepository authRepository})
     : _authRepository = authRepository,
-      super(AuthInitial()) {
+      super(const AuthInitial()) {
     _authSubscription = authRepository.getAuthStateChanges().listen(
       (user) => add(AuthUserChanged(user)),
     );
@@ -30,19 +30,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> with LoggerMixin {
       };
     }, transformer: BlocTransformer.sequential());
   }
+  final AuthRepository _authRepository;
+  late StreamSubscription _authSubscription;
 
   void _onAuthUserChanged(AuthUserChanged event, Emitter<AuthState> emit) {
-    final user = event.user;
+    final User? user = event.user;
     user != null
         ? emit(AuthAuthenticated(user: user))
-        : emit(AuthUnauthenticated());
+        : emit(const AuthUnauthenticated());
   }
 
   Future<void> _authLogoutRequested(
     AuthLogoutRequested event,
     Emitter<AuthState> emit,
   ) async {
-    emit(AuthLoading());
+    emit(const AuthLoading());
     try {
       await _authRepository.signOut();
     } on Object catch (e) {
@@ -54,7 +56,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> with LoggerMixin {
     AuthSignUpRequested event,
     Emitter<AuthState> emit,
   ) async {
-    emit(AuthLoading());
+    emit(const AuthLoading());
     try {
       await _authRepository.signUpWithEmail(event.email, event.password);
     } on Object catch (e) {
@@ -66,7 +68,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> with LoggerMixin {
     AuthSignInRequested event,
     Emitter<AuthState> emit,
   ) async {
-    emit(AuthLoading());
+    emit(const AuthLoading());
     try {
       await _authRepository.signInWithEmail(event.email, event.password);
     } on Object catch (e) {
@@ -78,11 +80,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> with LoggerMixin {
     AuthChechRequested event,
     Emitter<AuthState> emit,
   ) async {
-    emit(AuthLoading());
+    emit(const AuthLoading());
     try {
-      final user = _authRepository.getCurrentUser();
+      final User? user = _authRepository.getCurrentUser();
       user == null
-          ? emit(AuthUnauthenticated())
+          ? emit(const AuthUnauthenticated())
           : emit(AuthAuthenticated(user: user));
     } on Object catch (e, st) {
       logger.error('Error in _authChechRequested: $e', stackTrace: st);

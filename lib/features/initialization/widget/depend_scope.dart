@@ -1,6 +1,7 @@
-import 'package:dreamscape/features/initialization/model/depend_container.dart';
-import 'package:dreamscape/features/initialization/model/platform_depend_container.dart';
 import 'package:flutter/material.dart';
+
+import '../model/depend_container.dart';
+import '../model/platform_depend_container.dart';
 
 final class DependScope extends InheritedWidget {
   const DependScope({

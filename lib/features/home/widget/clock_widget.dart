@@ -1,6 +1,7 @@
-import 'package:dreamscape/features/home/controller/clock_stream_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:uikit/theme/app_theme.dart';
+
+import '../controller/clock_stream_controller.dart';
 
 class ClockWidget extends StatelessWidget {
   const ClockWidget({

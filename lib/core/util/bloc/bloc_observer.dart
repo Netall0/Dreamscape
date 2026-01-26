@@ -1,5 +1,6 @@
-import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../logger/logger.dart';
 
 class AppBlocObserver extends BlocObserver with LoggerMixin {
   @override
@@ -23,7 +24,7 @@ class AppBlocObserver extends BlocObserver with LoggerMixin {
     final logMessage = StringBuffer()
       ..writeln('Bloc: ${bloc.runtimeType}')
       ..writeln('Event: ${event.runtimeType}')
-      ..write('Details: ${event?.toString()}');
+      ..write('Details: $event');
 
     logger.info(logMessage.toString());
     super.onEvent(bloc, event);

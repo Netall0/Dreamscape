@@ -2,22 +2,23 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:dreamscape/core/config/app_config.dart';
-import 'package:dreamscape/features/alarm/datasource/alarm_datasource.dart';
-import 'package:dreamscape/features/alarm/services/alarm_service.dart';
-import 'package:dreamscape/core/util/logger/logger.dart';
-import 'package:dreamscape/features/app/widget/app_scope.dart';
-import 'package:dreamscape/features/home/controller/clock_stream_controller.dart';
-import 'package:dreamscape/features/initialization/logic/composition_root.dart';
-import 'package:dreamscape/features/initialization/model/depend_container.dart';
-import 'package:dreamscape/features/initialization/model/platform_depend_container.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
+
+import '../../../core/config/app_config.dart';
+import '../../../core/util/logger/logger.dart';
+import '../../alarm/datasource/alarm_datasource.dart';
+import '../../alarm/services/alarm_service.dart';
+import '../../home/controller/clock_stream_controller.dart';
+import '../../initialization/logic/composition_root.dart';
+import '../../initialization/model/depend_container.dart';
+import '../../initialization/model/platform_depend_container.dart';
+import '../widget/app_scope.dart';
 
 final class AppRunner with LoggerMixin {
   Future<void> run(AppEnv env) async {
@@ -94,7 +95,7 @@ final class AppRunner with LoggerMixin {
 
   Future<SharedPreferences> _initSharedPreferences() async {
     try {
-      final sharedPreferences = await SharedPreferences.getInstance();
+      final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
       return sharedPreferences;
     } on Object catch (e, stackTrace) {
       logger.error(
@@ -111,9 +112,9 @@ final class AppRunner with LoggerMixin {
   ) async {
     late final AlarmService alarmService;
 
-    FlutterLocalNotificationsPlugin notificationsPlugin =
+    final FlutterLocalNotificationsPlugin notificationsPlugin =
         await _intiLocalNotificaion(
-          onAlarmTap: () async => await alarmService.cancelAlarm(1),
+          onAlarmTap: () async => alarmService.cancelAlarm(1),
         );
 
     alarmService = _initAlarmService(notificationsPlugin, sharedPreferences);
@@ -130,7 +131,7 @@ final class AppRunner with LoggerMixin {
     SharedPreferences sharedPreferences,
   ) {
     try {
-      final AlarmService alarmService = AlarmService(
+      final alarmService = AlarmService(
         localNotificationsPlugin: notificationsPlugin,
         alarmDatasource: AlarmDatasource(sharedPreferences: sharedPreferences),
         // repeatDaily: false,
@@ -144,7 +145,7 @@ final class AppRunner with LoggerMixin {
 
   Future<StreamClockController> _initClockNotifier() async {
     try {
-      final StreamClockController clockNotifier = StreamClockController();
+      final clockNotifier = StreamClockController();
       return clockNotifier;
     } on Object catch (e, stackTrace) {
       logger.error('clock failed', error: e, stackTrace: stackTrace);
@@ -161,9 +162,7 @@ final class AppRunner with LoggerMixin {
       '@mipmap/ic_launcher',
     );
     const iosSettings = DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
+      
     );
 
     const initSettings = InitializationSettings(
@@ -194,21 +193,18 @@ final class AppRunner with LoggerMixin {
       'Notifications',
       description: 'Default notification channel',
       importance: Importance.high,
-      playSound: true,
     );
 
     const alarmChannel = AndroidNotificationChannel(
       'Alarm_channel',
       'Alarms',
-      playSound: true,
       description: 'channel for your alarm',
       importance: Importance.max,
       sound: RawResourceAndroidNotificationSound('alarm'),
       enableLights: true,
-      enableVibration: true,
     );
 
-    final androidImpl = notificationsPlugin
+    final AndroidFlutterLocalNotificationsPlugin? androidImpl = notificationsPlugin
         .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin
         >();
@@ -220,15 +216,15 @@ final class AppRunner with LoggerMixin {
     logger.debug('alarm channel created');
 
     if (Platform.isAndroid) {
-      final androidImpl = notificationsPlugin
+      final AndroidFlutterLocalNotificationsPlugin? androidImpl = notificationsPlugin
           .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin
           >();
 
-      final granted = await androidImpl?.requestNotificationsPermission();
+      final bool? granted = await androidImpl?.requestNotificationsPermission();
       logger.debug('Android notification permission: $granted');
 
-      final exactAlarmGranted = await androidImpl
+      final bool? exactAlarmGranted = await androidImpl
           ?.requestExactAlarmsPermission();
       logger.debug('Exact alarm permission: $exactAlarmGranted');
     }
@@ -238,7 +234,7 @@ final class AppRunner with LoggerMixin {
   Future<void> _initTimezone() async {
     try {
       tz.initializeTimeZones();
-      final currentTimeZone = await FlutterTimezone.getLocalTimezone();
+      final String currentTimeZone = await FlutterTimezone.getLocalTimezone();
 
       tz.setLocalLocation(tz.getLocation(currentTimeZone));
       logger.debug('locaton set ($currentTimeZone)');

@@ -1,9 +1,10 @@
-import 'package:dreamscape/features/app/widget/app_widget.dart';
-import 'package:dreamscape/features/initialization/model/depend_container.dart';
-import 'package:dreamscape/features/initialization/model/platform_depend_container.dart';
-import 'package:dreamscape/features/initialization/widget/depend_scope.dart';
 import 'package:flutter/widgets.dart';
 import 'package:uikit/uikit.dart';
+
+import '../../initialization/model/depend_container.dart';
+import '../../initialization/model/platform_depend_container.dart';
+import '../../initialization/widget/depend_scope.dart';
+import 'app_widget.dart';
 
 class AppScope extends StatefulWidget {
   const AppScope({
@@ -39,7 +40,7 @@ class _AppScopeState extends State<AppScope> with WidgetsBindingObserver {
       child: DependScope(
         dependModel: widget.dependContainer,
         platformDependContainer: widget.platformDependContainer,
-        child: AppMaterial(),
+        child: const AppMaterial(),
   
       ),
     );

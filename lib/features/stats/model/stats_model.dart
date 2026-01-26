@@ -1,7 +1,8 @@
-import 'package:dreamscape/core/database/database.dart';
-import 'package:dreamscape/core/util/extension/time_of_day_extension.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
+
+import '../../../core/database/database.dart';
+import '../../../core/util/extension/time_of_day_extension.dart';
 
 enum SleepQuality {
   bad('bad', Icon(Icons.sentiment_very_dissatisfied)),
@@ -27,12 +28,6 @@ enum AuthException {
 }
 
 final class StatsModel {
-  final int? id;
-  final SleepQuality sleepQuality;
-  final TimeOfDay bedTime;
-  final TimeOfDay riseTime;
-  final TimeOfDay sleepTime;
-  final String sleepNotes;
 
   StatsModel({
     this.id,
@@ -54,6 +49,12 @@ final class StatsModel {
     sleepNotes: row.notes ?? '',
     sleepTime: (row.sleepDurationMinutes ?? 0).toTimeOfDayToMiutes(),
   );
+  final int? id;
+  final SleepQuality sleepQuality;
+  final TimeOfDay bedTime;
+  final TimeOfDay riseTime;
+  final TimeOfDay sleepTime;
+  final String sleepNotes;
 
   static int _timeOfDayToMinutes(TimeOfDay time) {
     return time.hour * 60 + time.minute;

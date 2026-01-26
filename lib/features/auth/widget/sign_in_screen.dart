@@ -1,12 +1,13 @@
-import 'package:dreamscape/core/util/extension/app_context_extension.dart';
-import 'package:dreamscape/features/auth/controller/bloc/auth_bloc.dart';
-import 'package:dreamscape/features/initialization/widget/depend_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uikit/uikit.dart';
 import 'package:uikit/widget/gradient_background.dart';
+
+import '../../../core/util/extension/app_context_extension.dart';
+import '../../initialization/widget/depend_scope.dart';
+import '../controller/bloc/auth_bloc.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -28,9 +29,9 @@ class _SignInScreenState extends State<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.appTheme;
-    final bloc = DependScope.of(context).dependModel.authBloc;
-    final size = MediaQuery.sizeOf(context);
+    final AppTheme theme = context.appTheme;
+    final AuthBloc bloc = DependScope.of(context).dependModel.authBloc;
+    final Size size = MediaQuery.sizeOf(context);
     return BlocListener<AuthBloc, AuthState>(
       bloc: bloc,
       listener: (context, state) {
@@ -38,8 +39,9 @@ class _SignInScreenState extends State<SignInScreen> {
             ? ScaffoldMessenger.of(context).showSnackBar(
                 appFlavor!.contains('dev')
                     ? SnackBar(content: Text(state.errorMessage))
-                    : SnackBar(content: Text('autg Failed')),
+                    : const SnackBar(content: Text('autg Failed')),
               )
+            // ignore: unnecessary_statements
             : null;
       },
       child: AnimatedBackground(
@@ -56,14 +58,14 @@ class _SignInScreenState extends State<SignInScreen> {
                     elevation: 2,
                     border: .all(color: ColorConstants.duskPurple),
                     backgroundColor: Colors.transparent.withAlpha(1),
-                    margin: .symmetric(horizontal: 16),
-                    padding: .all(16),
-                    borderRadius: .all(.circular(16)),
+                    margin: const .symmetric(horizontal: 16),
+                    padding: const .all(16),
+                    borderRadius: const .all(.circular(16)),
                     child: Column(
                       mainAxisAlignment: .center,
                       children: [
                         Text('Sign in', style: context.appTheme.typography.h1),
-                        SizedBox(height: 24),
+                        const SizedBox(height: 24),
                         TextField(
                           controller: _emailController,
                           decoration: InputDecoration(
@@ -75,14 +77,14 @@ class _SignInScreenState extends State<SignInScreen> {
                             fillColor: Colors.white,
                             focusedBorder: OutlineInputBorder(
                               borderRadius: .circular(16),
-                              borderSide: BorderSide(color: Colors.white),
+                              borderSide: const BorderSide(color: Colors.white),
                             ),
-                            prefixIcon: Icon(Icons.email, color: Colors.white),
+                            prefixIcon: const Icon(Icons.email, color: Colors.white),
                             labelText: 'Email',
                             labelStyle: theme.typography.h6,
                           ),
                         ),
-                        SizedBox(height: 12),
+                        const SizedBox(height: 12),
                         TextField(
                           controller: _passwordController,
                           decoration: InputDecoration(
@@ -91,12 +93,12 @@ class _SignInScreenState extends State<SignInScreen> {
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: .circular(16),
-                              borderSide: BorderSide(color: Colors.white),
+                              borderSide: const BorderSide(color: Colors.white),
                             ),
                             focusColor: Colors.white,
                             hoverColor: Colors.white,
                             fillColor: Colors.white,
-                            prefixIcon: Icon(
+                            prefixIcon: const Icon(
                               Icons.password,
                               color: Colors.white,
                             ),
@@ -104,7 +106,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             labelStyle: theme.typography.h6,
                           ),
                         ),
-                        SizedBox(height: 24),
+                        const SizedBox(height: 24),
                         AdaptiveButton.secondary(
                           sideColor: Colors.white,
                           padding: .symmetric(
@@ -121,7 +123,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               ),
                             );
                           },
-                          child: Text(
+                          child: const Text(
                             'Sign in',
                             style: TextStyle(color: Colors.white),
                           ),
@@ -136,7 +138,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     context.push('/signin/signup');
                   },
                   child: Text(
-                    'Don\'t have an account? Sign up',
+                    "Don't have an account? Sign up",
                     style: theme.typography.h6,
                   ),
                 ),

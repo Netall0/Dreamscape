@@ -1,4 +1,4 @@
-import 'package:dreamscape/features/stats/model/stats_model.dart';
+import '../../stats/model/stats_model.dart';
 
 abstract interface class IHomeSleepRepository {
   //stats methods

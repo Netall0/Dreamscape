@@ -1,4 +1,4 @@
-import 'package:dreamscape/features/alarm/datasource/datasource_model.dart';
+import 'datasource_model.dart';
 
 abstract interface class IAlarmDataSource {
   Future<DatasourceModel?> load();

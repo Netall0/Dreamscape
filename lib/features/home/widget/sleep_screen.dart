@@ -1,19 +1,22 @@
-import 'package:dreamscape/core/gen/assets.gen.dart';
-import 'package:dreamscape/core/repository/temp_repository.dart';
-import 'package:dreamscape/core/util/extension/time_of_day_extension.dart';
-import 'package:dreamscape/core/util/logger/logger.dart';
-import 'package:dreamscape/core/util/extension/app_context_extension.dart';
-import 'package:dreamscape/features/stats/controller/bloc/stats_list_bloc.dart';
-import 'package:dreamscape/features/stats/controller/notifier/stats_calculate_notifier.dart';
-import 'package:dreamscape/features/stats/model/stats_model.dart';
-import 'package:dreamscape/features/home/widget/alarm_time_picker_widget.dart';
-import 'package:dreamscape/features/home/widget/clock_widget.dart';
-import 'package:dreamscape/features/initialization/widget/depend_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:uikit/uikit.dart';
 import 'package:uikit/widget/custom_round_music_bar.dart';
+
+import '../../../core/gen/assets.gen.dart';
+import '../../../core/repository/temp_repository.dart';
+import '../../../core/util/extension/app_context_extension.dart';
+import '../../../core/util/extension/time_of_day_extension.dart';
+import '../../../core/util/logger/logger.dart';
+import '../../alarm/services/alarm_service.dart';
+import '../../initialization/widget/depend_scope.dart';
+import '../../stats/controller/bloc/stats_list_bloc.dart';
+import '../../stats/controller/notifier/stats_calculate_notifier.dart';
+import '../../stats/model/stats_model.dart';
+import '../controller/clock_stream_controller.dart';
+import 'alarm_time_picker_widget.dart';
+import 'clock_widget.dart';
 
 class SleepScreen extends StatefulWidget {
   const SleepScreen({super.key});
@@ -67,43 +70,42 @@ class _SleepScreenState extends State<SleepScreen>
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.appTheme;
-    final size = MediaQuery.sizeOf(context);
-    final bloc = DependScope.of(context).dependModel.statsBloc;
-    final clockStream = DependScope.of(
+    final AppTheme theme = context.appTheme;
+    final Size size = MediaQuery.sizeOf(context);
+    final StatsListBloc bloc = DependScope.of(context).dependModel.statsBloc;
+    final StreamClockController clockStream = DependScope.of(
       context,
     ).platformDependContainer.clockNotifier;
-    final alarmService = DependScope.of(
+    final AlarmService alarmService = DependScope.of(
       context,
     ).platformDependContainer.alarmService;
-    final tempRep = DependScope.of(context).dependModel.tempRepository;
-    final statsNotifier = DependScope.of(context).dependModel.statsNotifier;
+    final TempRepository tempRep = DependScope.of(context).dependModel.tempRepository;
+    final StatsCalculateNotifier statsNotifier = DependScope.of(context).dependModel.statsNotifier;
 
     //TODO i know
 
     return Scaffold(
       appBar: AppBar(
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.mood))],
+        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.mood))],
         leading: IconButton(
           onPressed: () {
             tempRep.clearTempData();
             logger.debug('clear times');
             context.pop();
           },
-          icon: Icon(Icons.arrow_back_ios),
+          icon: const Icon(Icons.arrow_back_ios),
         ),
         backgroundColor: Colors.transparent,
       ),
       backgroundColor: Colors.transparent,
       body: Align(
-        alignment: .center,
         child: Column(
           mainAxisAlignment: .center,
           children: [
             ClockWidget(clockStream: clockStream, theme: theme),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             AlarmTimePickerWidget(alarmService: alarmService),
-            SizedBox(height: AppSizes.double20),
+            const SizedBox(height: AppSizes.double20),
             Stack(
               alignment: .center,
               children: [
@@ -143,19 +145,18 @@ class _SleepScreenState extends State<SleepScreen>
                   height: size.height * 0.1,
                   width: size.width * 0.1,
                   child: DecoratedBox(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                       color: ColorConstants.nightViolet,
                     ),
                     child: Align(
-                      alignment: .center,
                       child: StreamBuilder<PlayerState>(
                         stream: _player.playerStateStream,
                         builder: (context, snapshot) {
-                          final state = snapshot.data;
+                          final PlayerState? state = snapshot.data;
 
-                          final isPlaying = state?.playing ?? false;
-                          final isLoading =
+                          final bool isPlaying = state?.playing ?? false;
+                          final bool isLoading =
                               state?.processingState ==
                                   ProcessingState.loading ||
                               state?.processingState ==
@@ -199,12 +200,12 @@ class _SleepScreenState extends State<SleepScreen>
                   );
                 },
                 child: AdaptiveCard(
-                  borderRadius: .all(.circular(24)),
+                  borderRadius: const .all(.circular(24)),
                   backgroundColor: ColorConstants.pastelIndigo,
                   child: Row(
                     mainAxisAlignment: .center,
                     children: [
-                      Icon(Icons.play_arrow),
+                      const Icon(Icons.play_arrow),
                       Text(
                         'остановить сон',
                         style: theme.typography.h5.copyWith(
@@ -235,7 +236,7 @@ class _SleepScreenState extends State<SleepScreen>
       context: context,
       builder: (context) {
         return AlertDialog.adaptive(
-          title: Text('chose your sleep quality'),
+          title: const Text('chose your sleep quality'),
           content: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: SleepQuality.values.map((e) {
@@ -244,8 +245,8 @@ class _SleepScreenState extends State<SleepScreen>
                   sleepQuality = e;
                   context.pop();
                 },
-                padding: .all(16),
-                margin: .all(4),
+                padding: const .all(16),
+                margin: const .all(4),
                 child: SizedBox(
                   height: MediaQuery.sizeOf(context).height * 0.1,
                   child: Column(
@@ -261,11 +262,11 @@ class _SleepScreenState extends State<SleepScreen>
     );
 
     logger.debug('time rise ${riseTime.hour}:${riseTime.minute}');
-    final bedTime =
+    final TimeOfDay bedTime =
         await tempRep.getBedTime() ??
         TimeOfDay(hour: riseTime.hour, minute: riseTime.minute);
 
-    final sleepDuration = bedTime.calculationSleepTime(riseTime);
+    final TimeOfDay sleepDuration = bedTime.calculationSleepTime(riseTime);
 
     statsNotifier.setStats();
 
@@ -282,7 +283,7 @@ class _SleepScreenState extends State<SleepScreen>
     );
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('congratulations!!!, sleep added')),
+        const SnackBar(content: Text('congratulations!!!, sleep added')),
       );
 
       context.pop();

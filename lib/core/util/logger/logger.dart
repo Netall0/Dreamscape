@@ -1,6 +1,8 @@
 import 'dart:developer' as developer;
-import 'package:dreamscape/core/util/logger/i_logger.dart';
+
 import 'package:flutter/foundation.dart';
+
+import 'i_logger.dart';
 
 enum LogLevel {
   debug(0, 'DEBUG'),
@@ -18,7 +20,7 @@ final class AppLogger implements IAppLogger {
   AppLogger({this.context});
 
   final String? context; // ✅ Опциональный контекст
-  final _minLevel = kDebugMode ? LogLevel.debug : LogLevel.warn;
+  final LogLevel _minLevel = kDebugMode ? LogLevel.debug : LogLevel.warn;
 
   @override
   void debug(
@@ -100,7 +102,7 @@ final class AppLogger implements IAppLogger {
       buffer.writeln(logMessage);
       if (error != null) buffer.writeln(error);
       if (stackTrace != null) {
-        final lines = stackTrace.toString().split('\n').take(5);
+        final Iterable<String> lines = stackTrace.toString().split('\n').take(5);
         for (final line in lines) {
           buffer.writeln('  $line');
         }

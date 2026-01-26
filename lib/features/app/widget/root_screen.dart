@@ -15,12 +15,12 @@ class RootScreen extends StatefulWidget {
 
 class _RootScreenState extends State<RootScreen> {
   final List<CustomBottomNavigationBarItems> items = [
-    CustomBottomNavigationBarItems(name: 'home', icons: Icon(Icons.home)),
+    CustomBottomNavigationBarItems(name: 'home', icons: const Icon(Icons.home)),
     CustomBottomNavigationBarItems(
       name: 'stats',
-      icons: Icon(Icons.graphic_eq),
+      icons: const Icon(Icons.graphic_eq),
     ),
-    CustomBottomNavigationBarItems(name: 'profile', icons: Icon(Icons.person)),
+    CustomBottomNavigationBarItems(name: 'profile', icons: const Icon(Icons.person)),
   ];
 
   void change(int index) {

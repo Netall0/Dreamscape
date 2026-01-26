@@ -1,16 +1,17 @@
-import 'package:dreamscape/core/database/database.dart';
-import 'package:dreamscape/core/repository/temp_repository.dart';
-import 'package:dreamscape/core/util/logger/logger.dart';
-import 'package:dreamscape/features/auth/controller/bloc/auth_bloc.dart';
-import 'package:dreamscape/features/auth/controller/notifier/load_user_info_notifier.dart';
-import 'package:dreamscape/features/auth/repository/auth_repository.dart';
-import 'package:dreamscape/features/stats/controller/notifier/stats_calculate_notifier.dart';
-import 'package:dreamscape/features/stats/repository/stats_repository.dart';
-import 'package:dreamscape/features/initialization/model/depend_container.dart';
-import 'package:dreamscape/features/initialization/model/platform_depend_container.dart';
-import 'package:dreamscape/features/stats/controller/bloc/stats_list_bloc.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../core/database/database.dart';
+import '../../../core/repository/temp_repository.dart';
+import '../../../core/util/logger/logger.dart';
+import '../../auth/controller/bloc/auth_bloc.dart';
+import '../../auth/controller/notifier/load_user_info_notifier.dart';
+import '../../auth/repository/auth_repository.dart';
+import '../../stats/controller/bloc/stats_list_bloc.dart';
+import '../../stats/controller/notifier/stats_calculate_notifier.dart';
+import '../../stats/repository/stats_repository.dart';
+import '../model/depend_container.dart';
+import '../model/platform_depend_container.dart';
 
 // typedef OnError =
 //     void Function(String message, Object error, [StackTrace? stackTrace]);
@@ -18,20 +19,20 @@ import 'package:shared_preferences/shared_preferences.dart';
 // typedef OnComplete = void Functioфring message);
 
 class CompositionRoot with LoggerMixin {
-  final PlatformDependContainer platformDependContainer;
-  final SharedPreferences sharedPreferences;
 
   CompositionRoot({
     required this.platformDependContainer,
     required this.sharedPreferences,
   });
+  final PlatformDependContainer platformDependContainer;
+  final SharedPreferences sharedPreferences;
 
   Future<InheritedResult> compose() async {
     logger.debug('initialization start');
 
     final stopwatch = Stopwatch()..start();
 
-    final depend = await _initDepend();
+    final DependContainer depend = await _initDepend();
 
     stopwatch.stop();
 
@@ -51,7 +52,7 @@ class CompositionRoot with LoggerMixin {
       sharedPreferences,
       appDatabase,
     );
-    final AuthRepository authRepository = AuthRepository();
+    final authRepository = AuthRepository();
 
     final TempRepository tempRepository = _initTempRepository(
       sharedPreferences,

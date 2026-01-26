@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 part '{{name.snakeCase()}}_event.dart';
 part '{{name.snakeCase()}}_state.dart';
 
-class {{name.pascalCase()}}Bloc extends Bloc<{{name.pascalCase()}}Event, {{name.pascalCase()}}State> {
+class {{name.pascalCase()}}Bloc extends void void Bloc<{{name.pascalCase()}}Event, {{name.pascalCase()}}State> {
   // Dependencies
   // final ISomeRepository _repository;
   

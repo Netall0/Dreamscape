@@ -1,13 +1,13 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'dart:ui' as ui;
 
-import 'package:dreamscape/core/util/logger/logger.dart';
-import 'package:dreamscape/features/auth/repository/i_auth_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../core/util/logger/logger.dart';
+import 'i_auth_repository.dart';
+
 final class AuthRepository with LoggerMixin implements IAuthRepository {
-  late final SupabaseClient _supabase;
-  late final String _userId;
 
   AuthRepository() {
     _supabase = Supabase.instance.client;
@@ -15,6 +15,8 @@ final class AuthRepository with LoggerMixin implements IAuthRepository {
         _supabase.auth.currentUser?.id ??
         'eb2debd7-bbdc-429d-978b-64a2b0b99906'; //TODO: remove
   }
+  late final SupabaseClient _supabase;
+  late final String _userId;
 
   @override
   Stream<User?> getAuthStateChanges() {
@@ -48,7 +50,7 @@ final class AuthRepository with LoggerMixin implements IAuthRepository {
         return null;
       }
 
-      final url = _supabase.storage.from('avatars').getPublicUrl(path);
+      final String url = _supabase.storage.from('avatars').getPublicUrl(path);
       logger.info('avatar url: $url');
       final imageUrl = Uri.parse(url)
           .replace(
@@ -67,22 +69,22 @@ final class AuthRepository with LoggerMixin implements IAuthRepository {
   @override
   Future<void> setAvatarUrl(File file) async {
     try {
-      final imageBytes = await file.readAsBytes();
-      final codec = await ui.instantiateImageCodec(
+      final Uint8List imageBytes = await file.readAsBytes();
+      final ui.Codec codec = await ui.instantiateImageCodec(
         imageBytes,
         targetWidth: 512,
         targetHeight: 512,
       );
-      final frame = await codec.getNextFrame();
-      final image = frame.image;
+      final ui.FrameInfo frame = await codec.getNextFrame();
+      final ui.Image image = frame.image;
 
-      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
 
       if (byteData == null) {
         throw Exception('Failed to convert image');
       }
 
-      final compressedBytes = byteData.buffer.asUint8List();
+      final Uint8List compressedBytes = byteData.buffer.asUint8List();
       final path = 'upload/$_userId';
 
       await _supabase.storage
@@ -139,7 +141,7 @@ final class AuthRepository with LoggerMixin implements IAuthRepository {
 
   @override
   Future<String?> getUserName() async {
-    return await _supabase.auth.currentUser?.userMetadata?['name'];
+    return _supabase.auth.currentUser?.userMetadata?['name'].toString();
   }
 
   @override

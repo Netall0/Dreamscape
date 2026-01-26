@@ -1,5 +1,6 @@
-import 'package:dreamscape/core/gen/fonts.gen.dart';
 import 'package:flutter/widgets.dart';
+
+import '../gen/fonts.gen.dart';
 
 class AppIcons {
   AppIcons._();

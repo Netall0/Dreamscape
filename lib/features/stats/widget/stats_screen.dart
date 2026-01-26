@@ -1,11 +1,14 @@
-import 'package:dreamscape/core/util/extension/app_context_extension.dart';
-import 'package:dreamscape/core/util/logger/logger.dart';
-import 'package:dreamscape/features/initialization/widget/depend_scope.dart';
-import 'package:dreamscape/features/stats/controller/bloc/stats_list_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:uikit/uikit.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:uikit/uikit.dart';
+
+import '../../../core/util/extension/app_context_extension.dart';
+import '../../../core/util/logger/logger.dart';
+import '../../initialization/widget/depend_scope.dart';
+import '../controller/bloc/stats_list_bloc.dart';
+import '../controller/notifier/stats_calculate_notifier.dart';
+import '../model/stats_model.dart';
 
 class StatsScreen extends StatefulWidget {
   const StatsScreen({super.key});
@@ -28,9 +31,9 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.appTheme;
-    final bloc = DependScope.of(context).dependModel.statsBloc;
-    final statsNotifier = DependScope.of(context).dependModel.statsNotifier;
+    final AppTheme theme = context.appTheme;
+    final StatsListBloc bloc = DependScope.of(context).dependModel.statsBloc;
+    final StatsCalculateNotifier statsNotifier = DependScope.of(context).dependModel.statsNotifier;
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: CustomScrollView(
@@ -54,16 +57,16 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
           ListenableBuilder(
             listenable: statsNotifier,
             builder: (context, _) {
-              final totalSleepHours = statsNotifier.totalSleepHours;
-              final averageSleepHours = statsNotifier.averageSleepHours;
+              final double totalSleepHours = statsNotifier.totalSleepHours;
+              final double averageSleepHours = statsNotifier.averageSleepHours;
               return SliverList(
                 delegate: SliverChildBuilderDelegate(childCount: 1, (
                   context,
                   index,
                 ) {
                   return AdaptiveCard(
-                    margin: .symmetric(horizontal: 16, vertical: 8),
-                    padding: .all(16),
+                    margin: const .symmetric(horizontal: 16, vertical: 8),
+                    padding: const .all(16),
                     backgroundColor: ColorConstants.midnightBlue,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,7 +89,7 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
             },
           ),
 
-          SliverToBoxAdapter(child: Divider()),
+          const SliverToBoxAdapter(child: Divider()),
           // list section
           BlocConsumer(
             listener: (context, state) {
@@ -100,10 +103,10 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
               return switch (state) {
                 StatsLoaded() => SliverList(
                   delegate: SliverChildBuilderDelegate((context, index) {
-                    final model = state.statsModelList[index];
+                    final StatsModel model = state.statsModelList[index];
                     return Slidable(
                       endActionPane: ActionPane(
-                        motion: ScrollMotion(),
+                        motion: const ScrollMotion(),
                         children: [
                           SlidableAction(
                             onPressed: (_) {
@@ -120,7 +123,7 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
                       ),
                       child: Card(
                         color: ColorConstants.midnightBlue,
-                        margin: .symmetric(horizontal: 16, vertical: 8),
+                        margin: const .symmetric(horizontal: 16, vertical: 8),
                         child: ListTile(
                           leading: Column(
                             children: [
@@ -150,8 +153,8 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
                     index,
                   ) {
                     return AdaptiveCard(
-                      margin: .symmetric(horizontal: 16, vertical: 8),
-                      padding: .all(16),
+                      margin: const .symmetric(horizontal: 16, vertical: 8),
+                      padding: const .all(16),
                       backgroundColor: ColorConstants.midnightBlue,
                       child: Text('No stats found', style: theme.typography.h4),
                     );

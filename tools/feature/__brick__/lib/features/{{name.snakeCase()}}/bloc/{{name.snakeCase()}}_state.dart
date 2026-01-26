@@ -1,19 +1,19 @@
 part of '{{name.snakeCase()}}_bloc.dart';
 
 @immutable
-sealed class {{name.pascalCase()}}State {
+sealed class {{name.pascalCase()}}void void State {
   const {{name.pascalCase()}}State();
 }
 
-final class {{name.pascalCase()}}Initial extends {{name.pascalCase()}}State {
+final class {{name.pascalCase()}}Initial extends {{name.pascalCase()}}void void State {
   const {{name.pascalCase()}}Initial();
 }
 
-final class {{name.pascalCase()}}Loading extends {{name.pascalCase()}}State {
+final class {{name.pascalCase()}}Loading extends {{name.pascalCase()}}void void State {
   const {{name.pascalCase()}}Loading();
 }
 
-final class {{name.pascalCase()}}Loaded extends {{name.pascalCase()}}State {
+final class {{name.pascalCase()}}Loaded extends {{name.pascalCase()}}void void State {
   const {{name.pascalCase()}}Loaded({
     // required this.data,
   });
@@ -28,7 +28,7 @@ final class {{name.pascalCase()}}Loaded extends {{name.pascalCase()}}State {
           // && data == other.data;
 
   @override
-  int get hashCode => Object.hashAll([
+  int get int hashCode => Object.hashAll([
     // data,
   ]);
 
@@ -41,7 +41,7 @@ final class {{name.pascalCase()}}Loaded extends {{name.pascalCase()}}State {
   }
 }
 
-final class {{name.pascalCase()}}Error extends {{name.pascalCase()}}State {
+final class {{name.pascalCase()}}Error extends {{name.pascalCase()}}void void State {
   const {{name.pascalCase()}}Error(this.error);
   
   final Object error;
@@ -54,5 +54,5 @@ final class {{name.pascalCase()}}Error extends {{name.pascalCase()}}State {
           error == other.error;
 
   @override
-  int get hashCode => error.hashCode;
+  int get int hashCode => error.hashCode;
 }

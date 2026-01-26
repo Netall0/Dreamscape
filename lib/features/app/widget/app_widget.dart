@@ -1,12 +1,13 @@
-import 'package:dreamscape/core/router/router.dart';
-import 'package:dreamscape/features/auth/controller/bloc/auth_bloc.dart';
-import 'package:dreamscape/features/initialization/widget/depend_scope.dart';
-import 'package:dreamscape/features/stats/controller/bloc/stats_list_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uikit/overlay/controller/dimmer_overlay_notifier.dart';
 import 'package:uikit/overlay/widget/dimmed_overlay.dart';
 import 'package:uikit/uikit.dart';
+
+import '../../../core/router/router.dart';
+import '../../auth/controller/bloc/auth_bloc.dart';
+import '../../initialization/widget/depend_scope.dart';
+import '../../stats/controller/bloc/stats_list_bloc.dart';
 
 class AppMaterial extends StatefulWidget {
   const AppMaterial({super.key});
@@ -43,8 +44,8 @@ class _AppMaterialState extends State<AppMaterial> {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       routerConfig: _router,
-      theme: ThemeData(useMaterial3: true, extensions: [AppTheme.dark]),
-      darkTheme: ThemeData(useMaterial3: true, extensions: [AppTheme.dark]),
+      theme: ThemeData(useMaterial3: true, extensions: const [AppTheme.dark]),
+      darkTheme: ThemeData(useMaterial3: true, extensions: const [AppTheme.dark]),
       debugShowCheckedModeBanner: false,
       builder: (context, child) {
         return Stack(

@@ -1,22 +1,23 @@
 import 'dart:async';
 
-import 'package:dreamscape/features/alarm/datasource/alarm_datasource.dart';
-import 'package:dreamscape/features/alarm/datasource/datasource_model.dart';
-import 'package:dreamscape/features/alarm/services/i_alarm_service.dart';
-import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/standalone.dart';
 import 'package:timezone/timezone.dart' as tz;
+
+import '../../../core/util/logger/logger.dart';
+import '../datasource/alarm_datasource.dart';
+import '../datasource/datasource_model.dart';
+import 'i_alarm_service.dart';
 // import 'dart:developer';
 
 final class AlarmService with LoggerMixin implements IAlarmService {
-  final FlutterLocalNotificationsPlugin _localNotificationsPlugin;
-  final AlarmDatasource _alarmDatasource;
   AlarmService({
     required FlutterLocalNotificationsPlugin localNotificationsPlugin,
     required AlarmDatasource alarmDatasource,
   }) : _localNotificationsPlugin = localNotificationsPlugin,
        _alarmDatasource = alarmDatasource;
+  final FlutterLocalNotificationsPlugin _localNotificationsPlugin;
+  final AlarmDatasource _alarmDatasource;
 
   TZDateTime? _alarmTime;
 
@@ -70,7 +71,7 @@ final class AlarmService with LoggerMixin implements IAlarmService {
   Stream<TZDateTime?> get alarmStreamController => _streamController.stream;
 
   Future<void> initAlarmService() async {
-    final dataAlarm = await _alarmDatasource.load();
+    final DatasourceModel? dataAlarm = await _alarmDatasource.load();
     dataAlarm != null
         ? _alarmTime = TZDateTime(
             tz.local,
@@ -126,7 +127,7 @@ final class AlarmService with LoggerMixin implements IAlarmService {
         title,
         body,
         _alarmTime!,
-        NotificationDetails(
+        const NotificationDetails(
           android: AndroidNotificationDetails(
             'Alarm_channel',
             'Alarms',
@@ -137,13 +138,11 @@ final class AlarmService with LoggerMixin implements IAlarmService {
             autoCancel: false,
             sound: RawResourceAndroidNotificationSound('alarm'),
             enableLights: true,
-            enableVibration: true,
             category: AndroidNotificationCategory.alarm,
             actions: [
               AndroidNotificationAction(
                 'dismiss_alarm',
                 'отключить',
-                cancelNotification: true,
                 showsUserInterface: true,
               ),
             ],
@@ -162,7 +161,7 @@ final class AlarmService with LoggerMixin implements IAlarmService {
         matchDateTimeComponents: repeatDaily ? DateTimeComponents.time : null,
       );
 
-      final before = await _localNotificationsPlugin
+      final List<PendingNotificationRequest> before = await _localNotificationsPlugin
           .pendingNotificationRequests();
       logger.debug('🔔 Pending before: ${before.length}');
 
@@ -182,14 +181,14 @@ final class AlarmService with LoggerMixin implements IAlarmService {
       _streamController.add(_alarmTime);
       logger.debug('datasource saved alarmtime');
 
-      final after = await _localNotificationsPlugin
+      final List<PendingNotificationRequest> after = await _localNotificationsPlugin
           .pendingNotificationRequests();
       logger.debug('Pending after: ${after.length}');
-      for (var pending in after) {
+      for (final pending in after) {
         logger.debug(' -  : ${pending.id}, Title: ${pending.title}');
       }
 
-      final diff = _alarmTime!.difference(now);
+      final Duration diff = _alarmTime!.difference(now);
       logger.debug(
         ' Alarm set for: (${diff.inHours}h ${diff.inMinutes.remainder(60)}m)',
       );

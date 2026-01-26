@@ -1,11 +1,14 @@
 import 'dart:async';
-import 'package:dreamscape/features/alarm/services/alarm_service.dart';
-import 'package:dreamscape/core/util/logger/logger.dart';
-import 'package:dreamscape/core/util/extension/app_context_extension.dart';
+
 import 'package:flutter/material.dart';
 import 'package:timezone/standalone.dart';
 import 'package:uikit/colors/color_constant.dart';
+import 'package:uikit/theme/app_theme.dart';
 import 'package:uikit/widget/card.dart';
+
+import '../../../core/util/extension/app_context_extension.dart';
+import '../../../core/util/logger/logger.dart';
+import '../../alarm/services/alarm_service.dart';
 
 class AlarmTimePickerWidget extends StatefulWidget {
   const AlarmTimePickerWidget({super.key, required this.alarmService});
@@ -61,8 +64,8 @@ class _AlarmTimePickerWidgetState extends State<AlarmTimePickerWidget>
     super.dispose();
   }
 
-  void _setTime() async {
-    final time = await showTimePicker(
+  Future<void> _setTime() async {
+    final TimeOfDay? time = await showTimePicker(
       context: context,
       initialTime: _selectedTime ?? TimeOfDay.now(),
     );
@@ -95,16 +98,16 @@ class _AlarmTimePickerWidgetState extends State<AlarmTimePickerWidget>
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.appTheme;
+    final AppTheme theme = context.appTheme;
     return AdaptiveCard(
-      padding: .symmetric(horizontal: 16),
-      borderRadius: .all(.circular(24)),
+      padding: const .symmetric(horizontal: 16),
+      borderRadius: const .all(.circular(24)),
       backgroundColor: ColorConstants.pastelIndigo,
       child: IntrinsicWidth(
         child: Row(
           mainAxisAlignment: .center,
           children: [
-            Icon(Icons.notifications),
+            const Icon(Icons.notifications),
             TextButton(
               onPressed: () => _setTime(),
               child: Text(

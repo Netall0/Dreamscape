@@ -1,6 +1,7 @@
-import 'package:dreamscape/core/database/database.dart';
-import 'package:dreamscape/core/database/tables/sleep_tables.dart';
 import 'package:drift/drift.dart';
+
+import '../database.dart';
+import '../tables/sleep_tables.dart';
 
 part 'sleep_dao.g.dart';
 

@@ -1,7 +1,7 @@
 part of '{{name.snakeCase()}}_bloc.dart';
 
 @immutable
-sealed class {{name.pascalCase()}}Event {
+sealed class {{name.pascalCase()}}void void Event {
   const {{name.pascalCase()}}Event();
 }
 

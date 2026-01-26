@@ -1,13 +1,15 @@
 import 'dart:io';
 
-import 'package:dreamscape/core/util/extension/app_context_extension.dart';
-import 'package:dreamscape/core/util/logger/logger.dart';
-import 'package:dreamscape/features/auth/controller/bloc/auth_bloc.dart';
-import 'package:dreamscape/features/initialization/widget/depend_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uikit/uikit.dart';
+
+import '../../../core/util/extension/app_context_extension.dart';
+import '../../../core/util/logger/logger.dart';
+import '../../initialization/widget/depend_scope.dart';
+import '../controller/bloc/auth_bloc.dart';
+import '../controller/notifier/load_user_info_notifier.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -45,11 +47,11 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
 
   @override
   Widget build(BuildContext context) {
-    final style = context.appTheme;
-    final userInfoNotifier = DependScope.of(
+    final AppTheme style = context.appTheme;
+    final LoadInfoNotifier userInfoNotifier = DependScope.of(
       context,
     ).dependModel.userInfoNotifier;
-    final bloc = DependScope.of(context).dependModel.authBloc;
+    final AuthBloc bloc = DependScope.of(context).dependModel.authBloc;
 
     return SafeArea(
       bottom: false,
@@ -70,9 +72,9 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
                   child: Column(
                     children: [
                       const SizedBox(height: 24),
-                      Row(
+                      const Row(
                         mainAxisAlignment: MainAxisAlignment.end,
-                        children: const [
+                        children: [
                           Icon(Icons.settings, color: Colors.white),
                         ],
                       ),
@@ -123,7 +125,7 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
                       backgroundColor: ColorConstants.midnightBlue,
                       child: Column(
                         children: [
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           GestureDetector(
                             onTap: () async {
                               if (mounted) {
@@ -168,7 +170,7 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
                             text: _currentUser.email ?? '',
                             icon: Icons.email,
                           ),
-                          RowGeneralWidget(
+                          const RowGeneralWidget(
                             text: 'password',
                             icon: Icons.password,
                           ),
@@ -180,7 +182,7 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
                                 : _currentUser.phone ?? '',
                             icon: Icons.phone,
                           ),
-                          RowGeneralWidget(text: 'feedback', icon: Icons.help),
+                          const RowGeneralWidget(text: 'feedback', icon: Icons.help),
                         ],
                       ),
                     );

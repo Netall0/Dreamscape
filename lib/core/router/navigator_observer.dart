@@ -1,5 +1,6 @@
-import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:flutter/widgets.dart';
+
+import '../util/logger/logger.dart';
 
 final class NavObserver extends NavigatorObserver with LoggerMixin{
   @override

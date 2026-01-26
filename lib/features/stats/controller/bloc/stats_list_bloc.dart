@@ -1,13 +1,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:dreamscape/core/util/logger/logger.dart';
-import 'package:dreamscape/features/stats/model/stats_model.dart';
-import 'package:dreamscape/features/stats/repository/stats_repository.dart';
+import '../../../../core/util/logger/logger.dart';
+import '../../model/stats_model.dart';
+import '../../repository/stats_repository.dart';
 
 part 'stats_list_event.dart';
 part 'stats_list_state.dart';
 
 class StatsListBloc extends Bloc<StatsEvent, StatsState> with LoggerMixin {
-  final StatsRepository _statsRepository;
   StatsListBloc({required StatsRepository statsRepository})
     : _statsRepository = statsRepository,
       super(StatsInitial()) {
@@ -22,6 +21,7 @@ class StatsListBloc extends Bloc<StatsEvent, StatsState> with LoggerMixin {
       // transformer:
     );
   }
+  final StatsRepository _statsRepository;
 
   Future<void> _onDeleteById(
     StatsEventDeleteById event,
@@ -30,7 +30,7 @@ class StatsListBloc extends Bloc<StatsEvent, StatsState> with LoggerMixin {
     try {
       await _statsRepository.deleteSleepModel(event.id);
       logger.debug('StatsModel deleted with id: ${event.id}');
-      final list = await _statsRepository.getSleepModel();
+      final List<StatsModel> list = await _statsRepository.getSleepModel();
       if (list.isEmpty) {
         emit(StatsEmpty());
       } else {
@@ -76,7 +76,7 @@ class StatsListBloc extends Bloc<StatsEvent, StatsState> with LoggerMixin {
   ) async {
     emit(StatsLoading());
     try {
-      final statsModelList = await _statsRepository.getSleepModel();
+      final List<StatsModel> statsModelList = await _statsRepository.getSleepModel();
       if (statsModelList.isEmpty) {
         emit(StatsEmpty());
       } else {
