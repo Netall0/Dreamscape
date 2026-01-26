@@ -68,6 +68,8 @@ class _SleepScreenState extends State<SleepScreen> with LoggerMixin {
   Widget build(BuildContext context) {
     final theme = context.appTheme;
     final size = MediaQuery.sizeOf(context);
+    final isTablet = size.width > 600;
+    final isDesktop = size.width > 1024;
     final bloc = DependScope.of(context).dependModel.statsBloc;
     final clockStream = DependScope.of(context).platformDependContainer.clockNotifier;
     final alarmService = DependScope.of(context).platformDependContainer.alarmService;
@@ -87,17 +89,24 @@ class _SleepScreenState extends State<SleepScreen> with LoggerMixin {
           },
           icon: Icon(Icons.arrow_back_ios),
         ),
-        backgroundColor: Colors.transparent,
+        backgroundColor: theme.colors.background,
       ),
-      backgroundColor: Colors.transparent,
+      backgroundColor: theme.colors.background,
       body: SafeArea(
-        child: Align(
-          alignment: Alignment.center,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final maxWidth = isDesktop ? 800.0 : (isTablet ? 600.0 : double.infinity);
+            return Align(
+              alignment: Alignment.center,
+              child: SingleChildScrollView(
+                padding: EdgeInsets.symmetric(
+                  horizontal: isDesktop ? 32 : (isTablet ? 24 : 16),
+                ),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: maxWidth),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
                 ClockWidget(clockStream: clockStream, theme: theme),
                 const SizedBox(height: 24),
                 AlarmTimePickerWidget(alarmService: alarmService),
@@ -207,9 +216,12 @@ class _SleepScreenState extends State<SleepScreen> with LoggerMixin {
                     ),
                   ),
                 ),
-              ],
-            ),
-          ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

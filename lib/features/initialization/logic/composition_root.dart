@@ -3,8 +3,10 @@ import 'package:dreamscape/core/database/database.dart';
 import 'package:dreamscape/core/repository/temp_repository.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:dreamscape/features/auth/controller/bloc/auth_bloc.dart';
+import 'package:dreamscape/features/auth/controller/notifier/feedback_notifier.dart';
 import 'package:dreamscape/features/auth/controller/notifier/load_user_info_notifier.dart';
 import 'package:dreamscape/features/auth/repository/auth_repository.dart';
+import 'package:dreamscape/features/auth/repository/feedback_repository.dart';
 import 'package:dreamscape/features/stats/controller/notifier/stats_calculate_notifier.dart';
 import 'package:dreamscape/features/stats/repository/stats_repository.dart';
 import 'package:dreamscape/features/initialization/model/depend_container.dart';
@@ -53,6 +55,7 @@ class CompositionRoot with LoggerMixin {
       appDatabase,
     );
     final AuthRepository authRepository = AuthRepository();
+    final FeedbackRepository feedbackRepository = FeedbackRepository();
 
     final TempRepository tempRepository = _initTempRepository(
       sharedPreferences,
@@ -70,6 +73,8 @@ class CompositionRoot with LoggerMixin {
       sharedPreferences: sharedPreferences,
     );
 
+    final FeedbackNotifier feedbackNotifier = _initFeedbackNotifier(feedbackRepository);
+
     try {
       return DependContainer(
         authBloc: authBloc,
@@ -80,6 +85,7 @@ class CompositionRoot with LoggerMixin {
         appDatabase: appDatabase,
         audioPlayer: audioPlayer,
         appSettingsNotifier: appSettingsNotifier,
+        feedbackNotifier: feedbackNotifier,
       );
     } on Object catch (e, stackTrace) {
       logger.error('Ошибка в _initDepend', error: e, stackTrace: stackTrace);
@@ -160,6 +166,16 @@ class CompositionRoot with LoggerMixin {
       return homeSleepRepository;
     } on Object catch (e, stackTrace) {
       logger.error('home sleep service', error: e, stackTrace: stackTrace);
+      rethrow;
+    }
+  }
+
+  FeedbackNotifier _initFeedbackNotifier(FeedbackRepository feedbackRepository) {
+    try {
+      final feedbackNotifier = FeedbackNotifier(feedbackRepository: feedbackRepository);
+      return feedbackNotifier;
+    } on Object catch (e, stackTrace) {
+      logger.error('feedback notifier', error: e, stackTrace: stackTrace);
       rethrow;
     }
   }

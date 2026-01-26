@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uikit/uikit.dart';
-import 'package:uikit/widget/gradient_background.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -42,6 +41,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final theme = context.appTheme;
     final bloc = DependScope.of(context).dependModel.authBloc;
     final size = MediaQuery.sizeOf(context);
+    final isTablet = size.width > 600;
+    final isDesktop = size.width > 1024;
     return BlocListener<AuthBloc, AuthState>(
       bloc: bloc,
       listener: (context, state) {
@@ -54,23 +55,34 @@ class _SignUpScreenState extends State<SignUpScreen> {
             : null;
       },
       child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(height: size.height * .2),
-                SizedBox(
-                  height: size.height * .5,
-                  child: AdaptiveCard(
-                    elevation: 2,
-                    border: Border.all(color: theme.colors.surface),
-                    backgroundColor: theme.colors.cardBackground.withOpacity(0.9),
-                    margin: const EdgeInsets.symmetric(horizontal: 16),
-                    padding: const EdgeInsets.all(16),
-                    borderRadius: BorderRadius.all(Radius.circular(16)),
+        backgroundColor: theme.colors.background,
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            final maxWidth = isDesktop ? 500.0 : (isTablet ? 450.0 : double.infinity);
+            return Center(
+              child: SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: maxWidth),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isDesktop ? 32 : (isTablet ? 24 : 16),
+                      vertical: isDesktop ? 32 : (isTablet ? 24 : 16),
+                    ),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(height: isDesktop ? size.height * .1 : size.height * .2),
+                          SizedBox(
+                            height: isDesktop ? size.height * .45 : size.height * .5,
+                            child: AdaptiveCard(
+                              elevation: 2,
+                              border: Border.all(color: theme.colors.surface),
+                              backgroundColor: theme.colors.cardBackground.withOpacity(0.9),
+                              margin: EdgeInsets.zero,
+                              padding: EdgeInsets.all(isDesktop ? 24 : (isTablet ? 20 : 16)),
+                              borderRadius: BorderRadius.all(Radius.circular(16)),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -213,21 +225,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: size.height * .15),
-                TextButton(
-                  onPressed: () {
-                    context.pop();
-                  },
-                  child: Text(
-                    'Have an account? Sign in',
-                    style: theme.typography.h6.copyWith(color: theme.colors.primary),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                          SizedBox(height: isDesktop ? size.height * .1 : size.height * .15),
+                          TextButton(
+                            onPressed: () {
+                              context.pop();
+                            },
+                            child: Text(
+                              'Have an account? Sign in',
+                              style: theme.typography.h6.copyWith(color: theme.colors.primary),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
       ),
     );

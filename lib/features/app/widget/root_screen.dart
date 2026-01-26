@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uikit/uikit.dart';
 import 'package:uikit/widget/custom_bottom_navigation_bar.dart';
-import 'package:uikit/widget/gradient_background.dart';
 
 class RootScreen extends StatefulWidget {
   const RootScreen(this._navigationShell, {super.key});

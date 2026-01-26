@@ -9,16 +9,13 @@ class ColorConstants {
   static const secondaryDark = Color(0xFF10B981); // Более яркий зеленый
 
   // ФОНЫ - четкое разделение
-  static const backgroundLight = Color(0xFFFFFFFF); // Чистый белый
-  static const backgroundDark = Color.fromARGB(255, 0, 0, 0); // Глубокий темный
+  static const backgroundLight = Color(0xFFF5F7FA); // Мягкий светло-серый фон
+  static const backgroundDark = Color(0xFF0F172A); // Глубокий темно-синий фон
 
-  static const surfaceLight = Color.fromARGB(
-    255,
-    207,
-    207,
-    207,
-  ); // Очень светло-серый
-  static const surfaceDark = Color(0xFF1E293B); // Темно-серый
+  static const surfaceLight = Color(
+    0xFFE8EBF0,
+  ); // Светло-серый для поверхностей
+  static const surfaceDark = Color(0xFF1E293B); // Темно-серый для поверхностей
 
   // ТЕКСТОВЫЕ ЦВЕТА - максимальный контраст для читаемости
   static const textPrimaryLight = Color(0xFF0F172A); // Почти черный
@@ -30,23 +27,17 @@ class ColorConstants {
   static const textDisabledDark = Color(0xFF64748B); // Средне-серый
 
   // КОМПОНЕНТЫ - четко различимые
-  static const cardBackgroundLight = Color.fromARGB(
-    255,
-    221,
-    219,
-    219,
-  ); // Белый для карточек
+  static const cardBackgroundLight = Color(
+    0xFFFFFFFF,
+  ); // Чистый белый для карточек
   static const dividerColorLight = Color(0xFFE2E8F0); // Видимый разделитель
   static const shadowColorLight = Color(0x0D000000); // Мягкая тень
 
-  static const cardBackgroundDark = Color.fromARGB(
-    255,
-    25,
-    25,
-    36,
-  ); // Контрастный серый
-  static const dividerColorDark = Color(0xFF475569); // Видимый разделитель
-  static const shadowColorDark = Color(0x26000000); // Заметная тень
+  static const cardBackgroundDark = Color(
+    0xFF1E293B,
+  ); // Темно-синий для карточек
+  static const dividerColorDark = Color(0xFF334155); // Видимый разделитель
+  static const shadowColorDark = Color(0x40000000); // Заметная тень
 
   // ЦВЕТА СОСТОЯНИЙ - яркие и различимые
   static const successLight = Color(0xFF059669);

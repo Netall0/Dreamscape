@@ -3,7 +3,6 @@ import 'package:dreamscape/core/util/extension/app_context_extension.dart';
 import 'package:dreamscape/core/util/logger/logger.dart';
 import 'package:dreamscape/features/initialization/widget/depend_scope.dart';
 import 'package:dreamscape/features/stats/controller/bloc/stats_list_bloc.dart';
-import 'package:dreamscape/features/stats/model/stats_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -142,14 +141,19 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
     final bloc = DependScope.of(context).dependModel.statsBloc;
     final statsNotifier = DependScope.of(context).dependModel.statsNotifier;
     final l10n = AppLocalizations.of(context)!;
+    final size = MediaQuery.sizeOf(context);
+    final isTablet = size.width > 600;
+    final isDesktop = size.width > 1024;
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: CustomScrollView(
+      backgroundColor: theme.colors.background,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return CustomScrollView(
         slivers: [
           SliverAppBar(
             pinned: true,
-            backgroundColor: Colors.transparent,
+            backgroundColor: theme.colors.background,
             expandedHeight: 100,
             actions: [
               IconButton(
@@ -180,10 +184,16 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
                 final averageSleepHours = statsNotifier.averageSleepHours;
                 final sessionsCount = statsNotifier.sessionsCount;
 
-                return AdaptiveCard(
-                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  padding: const EdgeInsets.all(20),
-                  backgroundColor: theme.colors.cardBackground,
+                return Center(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: isDesktop ? 1200.0 : (isTablet ? 800.0 : double.infinity)),
+                    child: AdaptiveCard(
+                      margin: EdgeInsets.symmetric(
+                        horizontal: isDesktop ? 32 : (isTablet ? 24 : 16),
+                        vertical: 8,
+                      ),
+                      padding: EdgeInsets.all(isDesktop ? 24 : (isTablet ? 20 : 16)),
+                      backgroundColor: theme.colors.cardBackground,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -234,6 +244,8 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
                       ),
                     ],
                   ),
+                    ),
+                  ),
                 );
               },
             ),
@@ -248,10 +260,16 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
                   return const SizedBox.shrink();
                 }
 
-                return AdaptiveCard(
-                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  padding: const EdgeInsets.all(20),
-                  backgroundColor: theme.colors.cardBackground,
+                return Center(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: isDesktop ? 1200.0 : (isTablet ? 800.0 : double.infinity)),
+                    child: AdaptiveCard(
+                      margin: EdgeInsets.symmetric(
+                        horizontal: isDesktop ? 32 : (isTablet ? 24 : 16),
+                        vertical: 8,
+                      ),
+                      padding: EdgeInsets.all(isDesktop ? 24 : (isTablet ? 20 : 16)),
+                      backgroundColor: theme.colors.cardBackground,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -314,6 +332,8 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
                         ],
                       ),
                     ],
+                      ),
+                    ),
                   ),
                 );
               },
@@ -534,6 +554,8 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
 
           const SliverToBoxAdapter(child: SizedBox(height: 16)),
         ],
+      );
+        },
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'package:dreamscape/core/config/app_settings_notifier.dart';
 import 'package:dreamscape/core/database/database.dart';
 import 'package:dreamscape/core/repository/temp_repository.dart';
 import 'package:dreamscape/features/auth/controller/bloc/auth_bloc.dart';
+import 'package:dreamscape/features/auth/controller/notifier/feedback_notifier.dart';
 import 'package:dreamscape/features/auth/controller/notifier/load_user_info_notifier.dart';
 import 'package:dreamscape/features/stats/controller/notifier/stats_calculate_notifier.dart';
 import 'package:dreamscape/features/stats/controller/bloc/stats_list_bloc.dart';
@@ -17,6 +18,7 @@ final class DependContainer {
   final LoadInfoNotifier userInfoNotifier;
   final AuthBloc authBloc;
   final AppSettingsNotifier appSettingsNotifier;
+  final FeedbackNotifier feedbackNotifier;
 
   DependContainer({
     required this.authBloc,
@@ -27,6 +29,7 @@ final class DependContainer {
     required this.appDatabase,
     required this.tempRepository,
     required this.appSettingsNotifier,
+    required this.feedbackNotifier,
   });
 }
 
