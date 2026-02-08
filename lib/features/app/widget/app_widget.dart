@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uikit/overlay/controller/dimmer_overlay_notifier.dart';
@@ -38,7 +40,7 @@ class _AppMaterialState extends State<AppMaterial> {
     _dimmedOverlayNotifier.dispose();
     super.dispose();
   }
-
+  
   // only one theme in app
   @override
   Widget build(BuildContext context) {
@@ -47,6 +49,7 @@ class _AppMaterialState extends State<AppMaterial> {
       theme: ThemeData(useMaterial3: true, extensions: const [AppTheme.dark]),
       darkTheme: ThemeData(useMaterial3: true, extensions: const [AppTheme.dark]),
       debugShowCheckedModeBanner: false,
+      scrollBehavior: MyScrollBehavior(),
       builder: (context, child) {
         return Stack(
           children: [
@@ -62,6 +65,13 @@ class _AppMaterialState extends State<AppMaterial> {
       },
     );
   }
+}
+
+
+
+//allow scrolling on all devices
+class MyScrollBehavior extends MaterialScrollBehavior {
+  Set<PointerDeviceKind> get dragDevices => PointerDeviceKind.values.toSet();
 }
 
 //TODO settings feature

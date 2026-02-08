@@ -248,7 +248,7 @@ class _CupertinoButtonSecondary extends StatelessWidget {
     required this.onPressed,
     required this.child,
     this.padding,
-    this.color,
+    this.color, this.sideColor,
   });
 
   @override

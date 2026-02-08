@@ -28,6 +28,8 @@ class _AppScopeState extends State<AppScope> with WidgetsBindingObserver {
   }
 
   @override
+/*************  ✨ Windsurf Command ⭐  *************/
+/*******  64e4690f-538e-4635-b938-8d9caf8fea2b  *******/
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     widget.platformDependContainer.clockNotifier.dispose();
