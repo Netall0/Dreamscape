@@ -76,6 +76,10 @@ lib/
 - [ ] API documentation
 - [ ] Mason template usage guide
 
+### 😴idc
+- [ ] update init flow((List<RECORD>) steps))
+
+
 ---
 
 <p align="center">Made with 💜 by <a href="https://github.com/Netall0">Netall0</a></p>
