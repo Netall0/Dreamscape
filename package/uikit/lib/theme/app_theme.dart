@@ -3,8 +3,6 @@ import 'package:theme_tailor_annotation/theme_tailor_annotation.dart';
 import 'package:uikit/colors/app_colors.dart';
 import 'package:uikit/fonts/app_fonts.dart';
 
-
-
 part 'app_theme.tailor.dart';
 
 @TailorMixin()
@@ -23,6 +21,11 @@ class AppTheme extends ThemeExtension<AppTheme> with _$AppThemeTailorMixin {
   );
 
   static const dark = AppTheme(
+    colors: AppColors.dark,
+    typography: AppFonts.dark,
+  );
+
+  static const purple = AppTheme(
     colors: AppColors.dark,
     typography: AppFonts.dark,
   );

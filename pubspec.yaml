@@ -81,4 +81,7 @@ flutter:
     - family: AppIcons
       fonts:
         - asset: assets/fonts/icomoon.ttf
+    - family: Fredoka
+      fonts:
+        - asset: assets/fonts/fredoka.ttf
 

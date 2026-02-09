@@ -24,8 +24,6 @@ class AppTypographyConstants {
   static const double letterSpacingNormal = 0.0;
   static const double letterSpacingWide = 0.5;
 
-
-    // Typography
-  static const fontFamily = 'SF Pro Display';
-  static const fontFamilyBody = 'SF Pro Text';
+  // Typography
+  static const fontFamilyBody = 'Fredoka';
 }

@@ -1,4 +1,4 @@
-// dart format width=80
+// dart format width=100
 
 /// GENERATED CODE - DO NOT MODIFY BY HAND
 /// *****************************************************
@@ -30,8 +30,7 @@ class $AssetsLottieGen {
       const LottieGenImage('assets/lottie/Sleeping Polar Bear.json');
 
   /// File path: assets/lottie/polar_bear.lottie
-  LottieGenImage get polarBear =>
-      const LottieGenImage('assets/lottie/polar_bear.lottie');
+  LottieGenImage get polarBear => const LottieGenImage('assets/lottie/polar_bear.lottie');
 
   /// File path: assets/lottie/sleep.json
   LottieGenImage get sleep => const LottieGenImage('assets/lottie/sleep.json');
@@ -62,12 +61,7 @@ class Assets {
 }
 
 class AssetGenImage {
-  const AssetGenImage(
-    this._assetName, {
-    this.size,
-    this.flavors = const {},
-    this.animation,
-  });
+  const AssetGenImage(this._assetName, {this.size, this.flavors = const {}, this.animation});
 
   final String _assetName;
 
@@ -167,8 +161,7 @@ class LottieGenImage {
     _lottie.LottieImageProviderFactory? imageProviderFactory,
     Key? key,
     AssetBundle? bundle,
-    Widget Function(BuildContext, Widget, _lottie.LottieComposition?)?
-    frameBuilder,
+    Widget Function(BuildContext, Widget, _lottie.LottieComposition?)? frameBuilder,
     ImageErrorWidgetBuilder? errorBuilder,
     double? width,
     double? height,

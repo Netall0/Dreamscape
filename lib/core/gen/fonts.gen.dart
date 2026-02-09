@@ -1,4 +1,4 @@
-// dart format width=80
+// dart format width=100
 /// GENERATED CODE - DO NOT MODIFY BY HAND
 /// *****************************************************
 ///  FlutterGen
@@ -13,4 +13,7 @@ class AppFontFamily {
 
   /// Font family: AppIcons
   static const String appIcons = 'AppIcons';
+
+  /// Font family: Fredoka
+  static const String fredoka = 'Fredoka';
 }

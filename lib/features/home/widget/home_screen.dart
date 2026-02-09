@@ -29,9 +29,7 @@ class _ScreenState extends State<HomeScreen> with LoggerMixin {
     // final notificationSender = DependScope.of(
     //   context,
     // ).dependModel.notificationsSender;
-    final AlarmService alarmService = DependScope.of(
-      context,
-    ).platformDependContainer.alarmService;
+    final AlarmService alarmService = DependScope.of(context).platformDependContainer.alarmService;
     final StreamClockController clockStream = DependScope.of(
       context,
     ).platformDependContainer.clockNotifier;
@@ -43,7 +41,7 @@ class _ScreenState extends State<HomeScreen> with LoggerMixin {
         child: Column(
           children: [
             SizedBox(height: size.height * .13),
-            Text('hello  friend', style: theme.typography.h1.copyWith()),
+            Text('hello  friend', style: theme.typography.h1),
             ClockWidget(clockStream: clockStream, theme: theme),
             const SizedBox(height: 24),
             AlarmTimePickerWidget(alarmService: alarmService),
@@ -67,9 +65,7 @@ class _ScreenState extends State<HomeScreen> with LoggerMixin {
                   );
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('bedTime: ${time.hour} : ${time.minute}'),
-                      ),
+                      SnackBar(content: Text('bedTime: ${time.hour} : ${time.minute}')),
                     );
                   }
                 },
@@ -83,12 +79,7 @@ class _ScreenState extends State<HomeScreen> with LoggerMixin {
                       mainAxisAlignment: .center,
                       children: [
                         const Icon(Icons.play_arrow),
-                        Text(
-                          ' Начать сон',
-                          style: theme.typography.h5.copyWith(
-                            color: const Color.fromRGBO(0, 0, 0, 1),
-                          ),
-                        ),
+                        Text(' Начать сон', style: theme.typography.h5),
                       ],
                     ),
                   ),
