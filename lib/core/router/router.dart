@@ -12,6 +12,7 @@ import '../../features/auth/widget/sign_in_screen.dart';
 import '../../features/auth/widget/sing_up_screen.dart';
 import '../../features/home/widget/home_screen.dart';
 import '../../features/home/widget/sleep_screen.dart';
+import '../../features/settings/widget/settings_screen.dart';
 import '../../features/stats/widget/stats_screen.dart';
 import 'navigator_observer.dart';
 
@@ -25,10 +26,7 @@ final class AppRouter {
     observers: [
       NavObserver(),
 
-      DimmerOverlayObserver(
-        notifier: DimmerOverlayNotifier(),
-        dimmerRoutes: {'home/sleep'},
-      ),
+      DimmerOverlayObserver(notifier: DimmerOverlayNotifier(), dimmerRoutes: {'home/sleep'}),
     ],
     redirect: (context, state) {
       final AuthState authState = authBloc.state;
@@ -62,7 +60,6 @@ final class AppRouter {
 }
 
 class BlocListenable<T> extends ChangeNotifier {
-
   BlocListenable(Stream<T> s) : stream = s.asBroadcastStream() {
     _sub = stream.listen((_) => notifyListeners());
   }
@@ -96,7 +93,10 @@ class BlocListenable<T> extends ChangeNotifier {
     //profile
     TypedStatefulShellBranch<StatefulShellBranchData>(
       routes: <TypedRoute<RouteData>>[
-        TypedGoRoute<ProfileScreenData>(path: '/profile'),
+        TypedGoRoute<ProfileScreenData>(
+          path: '/profile',
+          routes: [TypedGoRoute<SettingScreenData>(path: 'settings')],
+        ),
       ],
     ),
   ],
@@ -157,6 +157,15 @@ class ProfileScreenData extends GoRouteData with $ProfileScreenData {
     return const ProfileScreen();
   }
 }
+
+class SettingScreenData extends GoRouteData with $SettingScreenData {
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const SettingsScreen();
+  }
+}
+
+//auth
 
 @TypedGoRoute<SignInRoute>(
   path: '/signin',

@@ -35,6 +35,12 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
         GoRouteData.$route(
           path: '/profile',
           factory: $ProfileScreenData._fromState,
+          routes: [
+            GoRouteData.$route(
+              path: 'settings',
+              factory: $SettingScreenData._fromState,
+            ),
+          ],
         ),
       ],
     ),
@@ -112,6 +118,27 @@ mixin $ProfileScreenData on GoRouteData {
 
   @override
   String get location => GoRouteData.$location('/profile');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $SettingScreenData on GoRouteData {
+  static SettingScreenData _fromState(GoRouterState state) =>
+      SettingScreenData();
+
+  @override
+  String get location => GoRouteData.$location('/profile/settings');
 
   @override
   void go(BuildContext context) => context.go(location);

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uikit/uikit.dart';
 
+import '../../../core/router/router.dart';
 import '../../../core/util/extension/app_context_extension.dart';
 import '../../../core/util/logger/logger.dart';
 import '../../initialization/widget/depend_scope.dart';
@@ -31,11 +32,7 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
     }
 
     if (remoteAvatarUrl != null) {
-      return ResizeImage(
-        NetworkImage(remoteAvatarUrl),
-        width: 200,
-        height: 200,
-      );
+      return ResizeImage(NetworkImage(remoteAvatarUrl), width: 200, height: 200);
     }
 
     return null;
@@ -48,9 +45,7 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
   @override
   Widget build(BuildContext context) {
     final AppTheme style = context.appTheme;
-    final LoadInfoNotifier userInfoNotifier = DependScope.of(
-      context,
-    ).dependModel.userInfoNotifier;
+    final LoadInfoNotifier userInfoNotifier = DependScope.of(context).dependModel.userInfoNotifier;
     final AuthBloc bloc = DependScope.of(context).dependModel.authBloc;
 
     return SafeArea(
@@ -63,28 +58,25 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
             child: Column(
               children: [
                 AdaptiveCard(
-                  padding: const EdgeInsets.only(
-                    left: 16,
-                    right: 16,
-                    bottom: 16,
-                  ),
+                  padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
                   backgroundColor: ColorConstants.midnightBlue,
                   child: Column(
                     children: [
                       const SizedBox(height: 24),
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Icon(Icons.settings, color: Colors.white),
+                          InkWell(
+                            onTap: () => SettingScreenData().go(context),
+                            child: const Icon(Icons.settings, color: Colors.white),
+                          ),
                         ],
                       ),
                       ListenableBuilder(
                         listenable: userInfoNotifier,
                         builder: (context, child) {
                           return GestureDetector(
-                            onTap: userInfoNotifier.isLoading
-                                ? null
-                                : userInfoNotifier.pickAvatar,
+                            onTap: userInfoNotifier.isLoading ? null : userInfoNotifier.pickAvatar,
                             child: Stack(
                               alignment: Alignment.center,
                               children: [
@@ -96,19 +88,14 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
                                     userInfoNotifier.remoteAvatarUrl,
                                   ),
                                 ),
-                                if (userInfoNotifier.isLoading)
-                                  const CircularProgressIndicator(),
+                                if (userInfoNotifier.isLoading) const CircularProgressIndicator(),
                               ],
                             ),
                           );
                         },
                       ),
                       const SizedBox(height: 8),
-                      Text(
-                        'profile',
-                        style: style.typography.h2,
-                        textAlign: TextAlign.center,
-                      ),
+                      Text('profile', style: style.typography.h2, textAlign: TextAlign.center),
                       Text(
                         _currentUser!.createdAt.split('T').first,
                         style: style.typography.h3,
@@ -134,15 +121,12 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
                                   builder: (context) {
                                     return AlertDialog(
                                       title: const Text('change name'),
-                                      content: TextField(
-                                        controller: emailController,
-                                      ),
+                                      content: TextField(controller: emailController),
 
                                       actions: [
                                         TextButton(
                                           child: const Text('cancel'),
-                                          onPressed: () =>
-                                              Navigator.pop(context),
+                                          onPressed: () => Navigator.pop(context),
                                         ),
                                         TextButton(
                                           child: const Text('save'),
@@ -166,18 +150,10 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
                               icon: Icons.person,
                             ),
                           ),
+                          RowGeneralWidget(text: _currentUser.email ?? '', icon: Icons.email),
+                          const RowGeneralWidget(text: 'password', icon: Icons.password),
                           RowGeneralWidget(
-                            text: _currentUser.email ?? '',
-                            icon: Icons.email,
-                          ),
-                          const RowGeneralWidget(
-                            text: 'password',
-                            icon: Icons.password,
-                          ),
-                          RowGeneralWidget(
-                            text:
-                                (_currentUser.phone == null ||
-                                    _currentUser.phone!.trim().isEmpty)
+                            text: (_currentUser.phone == null || _currentUser.phone!.trim().isEmpty)
                                 ? 'undefined'
                                 : _currentUser.phone ?? '',
                             icon: Icons.phone,
@@ -193,10 +169,7 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
                   onTap: () => bloc.add(const AuthLogoutRequested()),
 
                   backgroundColor: ColorConstants.midnightBlue,
-                  child: const RowGeneralWidget(
-                    text: 'sign out',
-                    icon: Icons.logout_outlined,
-                  ),
+                  child: const RowGeneralWidget(text: 'sign out', icon: Icons.logout_outlined),
                 ),
               ],
             ),
@@ -221,7 +194,7 @@ class RowGeneralWidget extends StatelessWidget {
         children: [
           Icon(icon, color: Colors.white),
           const SizedBox(width: 24),
-          Text(text, style: context.appTheme.typography.h3),
+          Expanded(child: Text(text, style: context.appTheme.typography.h3)),
         ],
       ),
     );

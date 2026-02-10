@@ -6,5 +6,5 @@ extension AppThemeBuildContextProps on BuildContext {
   AppColors get colors => appTheme.colors;
   LayoutInherited get layout => LayoutInherited.of(this);
   AppFonts get typography => appTheme.typography;
-
+  Size get sizeOf => MediaQuery.sizeOf(this);
 }
