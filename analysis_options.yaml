@@ -166,7 +166,7 @@ linter:
     # - prefer_constructors_over_static_methods # far too many false positives
     - prefer_contains
     # - prefer_double_quotes # opposite of prefer_single_quotes
-    # - prefer_expression_function_bodies # conflicts with ./docs/contributing/Style-guide-for-Flutter-repo.md#consider-using--for-short-functions-and-methods
+    - prefer_expression_function_bodies # conflicts with ./docs/contributing/Style-guide-for-Flutter-repo.md#consider-using--for-short-functions-and-methods
     - prefer_final_fields
     - prefer_final_in_for_each
     - prefer_final_locals

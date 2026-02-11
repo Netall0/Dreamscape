@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:uikit/theme/app_theme.dart';
 
 import '../../../core/util/extension/app_context_extension.dart';
@@ -33,7 +34,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             padding: const .symmetric(horizontal: 16),
             sliver: SliverToBoxAdapter(
               child: SizedBox(
-                height: size.height * 0.3,
                 width: size.width,
                 child: DecoratedBox(
                   decoration: BoxDecoration(
@@ -47,14 +47,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       crossAxisAlignment: .start,
                       children: [
                         Text('Theme Changer', style: theme.typography.h3),
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: .spaceEvenly,
-                            children: [
-                              ChoiseWidget(size: size),
-                              ChoiseWidget(size: size),
-                            ],
-                          ),
+                        LayoutBuilder(
+                          builder: (context, constraints) => Column(
+                              mainAxisSize: .min,
+                              mainAxisAlignment: .spaceEvenly,
+                              children: [
+                                ChoiseWidget(size: size, constraints: constraints,),
+                                ChoiseWidget(size: size,constraints: constraints,),
+                              ],
+                            ),
                         ),
                       ],
                     ),
@@ -72,9 +73,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
 //TODO learn adaptive ui, make something good
 
 class ChoiseWidget extends StatefulWidget {
-  const ChoiseWidget({super.key, required this.size});
+  const ChoiseWidget({super.key, required this.size, required this.constraints});
 
   final Size size;
+
+  final Constraints constraints;
 
   @override
   State<ChoiseWidget> createState() => _ChoiseWidgetState();

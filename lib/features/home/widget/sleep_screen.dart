@@ -234,13 +234,11 @@ class _SleepScreenState extends State<SleepScreen>
 
     await showDialog(
       context: context,
-      builder: (context) {
-        return AlertDialog.adaptive(
+      builder: (context) => AlertDialog.adaptive(
           title: const Text('chose your sleep quality'),
           content: Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: SleepQuality.values.map((e) {
-              return AdaptiveCard(
+            children: SleepQuality.values.map((e) => AdaptiveCard(
                 onTap: () {
                   sleepQuality = e;
                   context.pop();
@@ -254,11 +252,9 @@ class _SleepScreenState extends State<SleepScreen>
                     children: [e.icon, Text(e.name)],
                   ),
                 ),
-              );
-            }).toList(),
+              )).toList(),
           ),
-        );
-      },
+        ),
     );
 
     logger.debug('time rise ${riseTime.hour}:${riseTime.minute}');

@@ -74,8 +74,7 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
                       ),
                       ListenableBuilder(
                         listenable: userInfoNotifier,
-                        builder: (context, child) {
-                          return GestureDetector(
+                        builder: (context, child) => GestureDetector(
                             onTap: userInfoNotifier.isLoading ? null : userInfoNotifier.pickAvatar,
                             child: Stack(
                               alignment: Alignment.center,
@@ -91,8 +90,7 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
                                 if (userInfoNotifier.isLoading) const CircularProgressIndicator(),
                               ],
                             ),
-                          );
-                        },
+                          ),
                       ),
                       const SizedBox(height: 8),
                       Text('profile', style: style.typography.h2, textAlign: TextAlign.center),
@@ -107,8 +105,7 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
                 const SizedBox(height: 24),
                 ListenableBuilder(
                   listenable: userInfoNotifier,
-                  builder: (context, child) {
-                    return AdaptiveCard(
+                  builder: (context, child) => AdaptiveCard(
                       backgroundColor: ColorConstants.midnightBlue,
                       child: Column(
                         children: [
@@ -118,8 +115,7 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
                               if (mounted) {
                                 await showDialog(
                                   context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
+                                  builder: (context) => AlertDialog.adaptive(
                                       title: const Text('change name'),
                                       content: TextField(controller: emailController),
 
@@ -140,8 +136,7 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
                                           },
                                         ),
                                       ],
-                                    );
-                                  },
+                                    ),
                                 );
                               }
                             },
@@ -161,8 +156,7 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
                           const RowGeneralWidget(text: 'feedback', icon: Icons.help),
                         ],
                       ),
-                    );
-                  },
+                    ),
                 ),
                 const SizedBox(height: 24),
                 AdaptiveCard(
