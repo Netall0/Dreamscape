@@ -1,9 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:uikit/theme/app_theme.dart';
 
 import '../../../core/util/extension/app_context_extension.dart';
+import '../../initialization/widget/depend_scope.dart';
+import '../controller/settings_controller.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -16,91 +17,114 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final AppTheme theme = context.appTheme;
-    final Size size = context.sizeOf;
+    final SettingsController controller = DependScope.of(context).dependModel.settingsController;
+    final ThemeModes currentMode = ThemeModes.values.firstWhere(
+      (mode) => mode.name == controller.themeMode,
+      orElse: () => ThemeModes.light,
+    );
+
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            backgroundColor: Colors.transparent,
-            centerTitle: true,
-            title: Text('Settings', style: theme.typography.h1),
-          ),
-
-          SliverToBoxAdapter(child: SizedBox(height: size.height * 0.1)),
-
-          // theme changer ui
-          SliverPadding(
-            padding: const .symmetric(horizontal: 16),
-            sliver: SliverToBoxAdapter(
-              child: SizedBox(
-                width: size.width,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    borderRadius: .circular(12),
-                    border: .all(color: Colors.white.withOpacity(0.12)),
-                    color: Colors.black.withOpacity(0.22),
-                  ),
-                  child: Padding(
-                    padding: const .all(16),
-                    child: Column(
-                      crossAxisAlignment: .start,
-                      children: [
-                        Text('Theme Changer', style: theme.typography.h3),
-                        LayoutBuilder(
-                          builder: (context, constraints) => Column(
-                              mainAxisSize: .min,
-                              mainAxisAlignment: .spaceEvenly,
-                              children: [
-                                ChoiseWidget(size: size, constraints: constraints,),
-                                ChoiseWidget(size: size,constraints: constraints,),
-                              ],
-                            ),
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              backgroundColor: Colors.transparent,
+              centerTitle: true,
+              title: Text('Settings', style: theme.typography.h1),
+            ),
+            const SliverToBoxAdapter(child: SizedBox(height: 24)),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              sliver: SliverToBoxAdapter(
+                child: AdaptiveThemeCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Theme', style: theme.typography.h3),
+                      const SizedBox(height: 12),
+                      ...ThemeModes.values.map(
+                        (mode) => ChoiceWidget(
+                          title: mode.name == ThemeModes.dark.name ? 'Dark' : 'Light',
+                          isSelected: mode == currentMode,
+                          onTap: () => controller.setThemeMode(mode.name),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
 
-//TODO learn adaptive ui, make something good
+class AdaptiveThemeCard extends StatelessWidget {
+  const AdaptiveThemeCard({super.key, required this.child});
 
-class ChoiseWidget extends StatefulWidget {
-  const ChoiseWidget({super.key, required this.size, required this.constraints});
-
-  final Size size;
-
-  final Constraints constraints;
-
-  @override
-  State<ChoiseWidget> createState() => _ChoiseWidgetState();
-}
-
-class _ChoiseWidgetState extends State<ChoiseWidget> {
-  bool tapped = false;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
+    final AppTheme theme = context.appTheme;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: theme.colors.dividerColor),
+        color: theme.colors.cardBackground,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: child,
+      ),
+    );
+  }
+}
+
+class ChoiceWidget extends StatelessWidget {
+  const ChoiceWidget({
+    super.key,
+    required this.title,
+    required this.isSelected,
+    this.onTap,
+  });
+
+  final String title;
+  final bool isSelected;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppTheme theme = context.appTheme;
     return Padding(
-      padding: const .all(16),
-      child: GestureDetector(
-        onTap: () => setState(() => tapped = !tapped),
-        child: SizedBox(
-          height: widget.size.height * 0.1,
-          width: widget.size.width * 0.2,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              borderRadius: .circular(12),
-              border: .all(color: tapped ? Colors.white : Colors.white.withOpacity(0.12)),
-              color: Colors.black.withOpacity(0.22),
+      padding: const EdgeInsets.only(top: 8),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Ink(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: isSelected ? theme.colors.primary.withOpacity(0.16) : theme.colors.surface,
+            border: Border.all(
+              color: isSelected ? theme.colors.primary : theme.colors.dividerColor,
             ),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  title,
+                  style: theme.typography.h5.copyWith(color: theme.colors.textPrimary),
+                ),
+              ),
+              Icon(
+                isSelected ? Icons.check_circle : Icons.radio_button_unchecked,
+                color: isSelected ? theme.colors.primary : theme.colors.textSecondary,
+              ),
+            ],
           ),
         ),
       ),

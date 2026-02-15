@@ -7,6 +7,8 @@ import '../../../core/util/logger/logger.dart';
 import '../../auth/controller/bloc/auth_bloc.dart';
 import '../../auth/controller/notifier/load_user_info_notifier.dart';
 import '../../auth/repository/auth_repository.dart';
+import '../../settings/controller/settings_controller.dart';
+import '../../settings/repository/settings_repository.dart';
 import '../../stats/controller/bloc/stats_list_bloc.dart';
 import '../../stats/controller/notifier/stats_calculate_notifier.dart';
 import '../../stats/repository/stats_repository.dart';
@@ -19,11 +21,7 @@ import '../model/platform_depend_container.dart';
 // typedef OnComplete = void Functioфring message);
 
 class CompositionRoot with LoggerMixin {
-
-  CompositionRoot({
-    required this.platformDependContainer,
-    required this.sharedPreferences,
-  });
+  CompositionRoot({required this.platformDependContainer, required this.sharedPreferences});
   final PlatformDependContainer platformDependContainer;
   final SharedPreferences sharedPreferences;
 
@@ -38,33 +36,25 @@ class CompositionRoot with LoggerMixin {
 
     logger.debug('initialized depend ${stopwatch.elapsedMilliseconds}ms');
 
-    return InheritedResult(
-      ms: stopwatch.elapsedMilliseconds,
-      dependModel: depend,
-    );
+    return InheritedResult(ms: stopwatch.elapsedMilliseconds, dependModel: depend);
   }
 
   Future<DependContainer> _initDepend() async {
     final AudioPlayer audioPlayer =
         await _initAudioPlayer(); //AudioPlayer()..setReleaseMode(ReleaseMode.STOP);
     final AppDatabase appDatabase = _initAppDatabase();
-    final StatsRepository statsRepository = _initStatsRepository(
-      sharedPreferences,
-      appDatabase,
-    );
+    final StatsRepository statsRepository = _initStatsRepository(sharedPreferences, appDatabase);
     final authRepository = AuthRepository();
 
-    final TempRepository tempRepository = _initTempRepository(
-      sharedPreferences,
-    );
-    final StatsCalculateNotifier statsNotifier = _initStatsNotifier(
-      statsRepository,
-    );
+    final TempRepository tempRepository = _initTempRepository(sharedPreferences);
+    final StatsCalculateNotifier statsNotifier = _initStatsNotifier(statsRepository);
     final StatsListBloc statsBloc = _initStatsBloc(statsRepository);
 
     final LoadInfoNotifier avatarNotifier = _initAvatarNotiifer(authRepository);
 
     final AuthBloc authBloc = _initAuthBloc(authRepository);
+
+    final SettingsController settingsController = _initSettingsController();
 
     try {
       return DependContainer(
@@ -75,9 +65,22 @@ class CompositionRoot with LoggerMixin {
         statsBloc: statsBloc,
         appDatabase: appDatabase,
         audioPlayer: audioPlayer,
+        settingsController: settingsController,
       );
     } on Object catch (e, stackTrace) {
       logger.error('Ошибка в _initDepend', error: e, stackTrace: stackTrace);
+      rethrow;
+    }
+  }
+
+  SettingsController _initSettingsController() {
+    try {
+      final settingsController = SettingsController(
+        settingsRepository: SettingsRepositoryImpl(sharedPreferences: sharedPreferences),
+      );
+      return settingsController;
+    } on Object catch (e, stackTrace) {
+      logger.error('settings controller', error: e, stackTrace: stackTrace);
       rethrow;
     }
   }
@@ -114,9 +117,7 @@ class CompositionRoot with LoggerMixin {
 
   StatsCalculateNotifier _initStatsNotifier(StatsRepository statsRepository) {
     try {
-      final statsNotifier = StatsCalculateNotifier(
-        statsRepository: statsRepository,
-      );
+      final statsNotifier = StatsCalculateNotifier(statsRepository: statsRepository);
       return statsNotifier;
     } on Object catch (e, stackTrace) {
       logger.error('stats notifier', error: e, stackTrace: stackTrace);
@@ -126,9 +127,7 @@ class CompositionRoot with LoggerMixin {
 
   TempRepository _initTempRepository(SharedPreferences sharedPreferences) {
     try {
-      final tempRepository = TempRepository(
-        sharedPreferences: sharedPreferences,
-      );
+      final tempRepository = TempRepository(sharedPreferences: sharedPreferences);
       return tempRepository;
     } on Object catch (e, stackTrace) {
       logger.error('temp repository', error: e, stackTrace: stackTrace);

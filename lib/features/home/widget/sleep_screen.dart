@@ -97,7 +97,6 @@ class _SleepScreenState extends State<SleepScreen>
         ),
         backgroundColor: Colors.transparent,
       ),
-      backgroundColor: Colors.transparent,
       body: Align(
         child: Column(
           mainAxisAlignment: .center,
@@ -121,7 +120,7 @@ class _SleepScreenState extends State<SleepScreen>
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: ColorConstants.duskPurple,
+                        color: theme.colors.primary,
                         width: 6,
                       ),
                     ),
@@ -134,7 +133,7 @@ class _SleepScreenState extends State<SleepScreen>
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: ColorConstants.nightViolet,
+                        color: theme.colors.secondary,
                         width: 4,
                       ),
                     ),
@@ -145,9 +144,9 @@ class _SleepScreenState extends State<SleepScreen>
                   height: size.height * 0.1,
                   width: size.width * 0.1,
                   child: DecoratedBox(
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: ColorConstants.nightViolet,
+                      color: theme.colors.primaryVariant,
                     ),
                     child: Align(
                       child: StreamBuilder<PlayerState>(
@@ -175,7 +174,7 @@ class _SleepScreenState extends State<SleepScreen>
                                   },
                             icon: Icon(
                               isPlaying ? Icons.pause : Icons.play_arrow,
-                              color: Colors.white,
+                              color: theme.colors.onPrimary,
                               size: 16,
                             ),
                           );
@@ -201,15 +200,15 @@ class _SleepScreenState extends State<SleepScreen>
                 },
                 child: AdaptiveCard(
                   borderRadius: const .all(.circular(24)),
-                  backgroundColor: ColorConstants.pastelIndigo,
+                  backgroundColor: theme.colors.primary,
                   child: Row(
                     mainAxisAlignment: .center,
                     children: [
-                      const Icon(Icons.play_arrow),
+                      Icon(Icons.play_arrow, color: theme.colors.onPrimary),
                       Text(
                         'остановить сон',
                         style: theme.typography.h5.copyWith(
-                          color: Colors.black,
+                          color: theme.colors.onPrimary,
                         ),
                       ),
                     ],

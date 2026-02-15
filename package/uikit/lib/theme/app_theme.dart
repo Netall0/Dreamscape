@@ -24,11 +24,6 @@ class AppTheme extends ThemeExtension<AppTheme> with _$AppThemeTailorMixin {
     colors: AppColors.dark,
     typography: AppFonts.dark,
   );
-
-  static const purple = AppTheme(
-    colors: AppColors.dark,
-    typography: AppFonts.dark,
-  );
 }
 
 extension AppThemeExtension on AppTheme {

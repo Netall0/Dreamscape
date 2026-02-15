@@ -20,73 +20,73 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _ScreenState extends State<HomeScreen> with LoggerMixin {
-  //TODO first running application
-
   @override
   Widget build(BuildContext context) {
     final AppTheme theme = context.appTheme;
     final Size size = MediaQuery.sizeOf(context);
-    // final notificationSender = DependScope.of(
-    //   context,
-    // ).dependModel.notificationsSender;
     final AlarmService alarmService = DependScope.of(context).platformDependContainer.alarmService;
-    final StreamClockController clockStream = DependScope.of(
-      context,
-    ).platformDependContainer.clockNotifier;
+    final StreamClockController clockStream = DependScope.of(context).platformDependContainer.clockNotifier;
     final TempRepository tempRep = DependScope.of(context).dependModel.tempRepository;
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Center(
-        child: Column(
-          children: [
-            SizedBox(height: size.height * .13),
-            Text('hello  friend', style: theme.typography.h1),
-            ClockWidget(clockStream: clockStream, theme: theme),
-            const SizedBox(height: 24),
-            AlarmTimePickerWidget(alarmService: alarmService),
-            const SizedBox(height: 24),
-            Lottie.asset(
-              Assets.lottie.sleepingPolarBear.path,
-              height: (size.width < 500) ? size.height * .4 : size.height * .3,
-            ),
-            SizedBox(
-              width: 200,
-              height: size.height * .1,
-              child: GestureDetector(
-                onTap: () async {
-                  final time = TimeOfDay.now();
-                  const SleepScreenData().go(context);
-                  await tempRep.saveBedTime(
-                    TimeOfDay(
-                      hour: time.hour, //TODO
-                      minute: time.minute,
-                    ),
-                  );
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('bedTime: ${time.hour} : ${time.minute}')),
-                    );
-                  }
-                },
-                child: SizedBox(
-                  height: 40,
-                  width: 200,
-                  child: AdaptiveCard(
-                    borderRadius: const .all(.circular(24)),
-                    backgroundColor: ColorConstants.pastelIndigo,
-                    child: Row(
-                      mainAxisAlignment: .center,
-                      children: [
-                        const Icon(Icons.play_arrow),
-                        Text(' Начать сон', style: theme.typography.h5),
-                      ],
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              children: [
+                SizedBox(height: size.height * .02),
+                Text('Good night', style: theme.typography.h1),
+                const SizedBox(height: 8),
+                Text('Keep your sleep rhythm stable', style: theme.typography.bodyMedium),
+                const SizedBox(height: 20),
+                ClockWidget(clockStream: clockStream, theme: theme),
+                const SizedBox(height: 20),
+                AlarmTimePickerWidget(alarmService: alarmService),
+                const SizedBox(height: 20),
+                Lottie.asset(
+                  Assets.lottie.sleepingPolarBear.path,
+                  height: (size.width < 500) ? size.height * .32 : size.height * .24,
+                ),
+                SizedBox(
+                  width: 220,
+                  height: 62,
+                  child: GestureDetector(
+                    onTap: () async {
+                      final time = TimeOfDay.now();
+                      const SleepScreenData().go(context);
+                      await tempRep.saveBedTime(
+                        TimeOfDay(
+                          hour: time.hour,
+                          minute: time.minute,
+                        ),
+                      );
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Bedtime: ${time.hour}:${time.minute.toString().padLeft(2, '0')}')),
+                        );
+                      }
+                    },
+                    child: AdaptiveCard(
+                      borderRadius: const BorderRadius.all(Radius.circular(24)),
+                      backgroundColor: theme.colors.primary,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.play_arrow, color: theme.colors.onPrimary),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Start sleep',
+                            style: theme.typography.h5.copyWith(color: theme.colors.onPrimary),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

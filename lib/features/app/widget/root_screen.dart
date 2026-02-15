@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uikit/uikit.dart';
 import 'package:uikit/widget/custom_bottom_navigation_bar.dart';
-import 'package:uikit/widget/gradient_background.dart';
+
+import '../../../core/util/extension/app_context_extension.dart';
 
 class RootScreen extends StatefulWidget {
   const RootScreen(this._navigationShell, {super.key});
@@ -16,10 +17,7 @@ class RootScreen extends StatefulWidget {
 class _RootScreenState extends State<RootScreen> {
   final List<CustomBottomNavigationBarItems> items = [
     CustomBottomNavigationBarItems(name: 'home', icons: const Icon(Icons.home)),
-    CustomBottomNavigationBarItems(
-      name: 'stats',
-      icons: const Icon(Icons.graphic_eq),
-    ),
+    CustomBottomNavigationBarItems(name: 'stats', icons: const Icon(Icons.graphic_eq)),
     CustomBottomNavigationBarItems(name: 'profile', icons: const Icon(Icons.person)),
   ];
 
@@ -32,21 +30,19 @@ class _RootScreenState extends State<RootScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBackground(
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: widget._navigationShell,
-        bottomNavigationBar: CustomBottomNavigationBar(
-          activeColor: ColorConstants.cardBackgroundDark,
-          inactiveColor: ColorConstants.backgroundLight,
-          route: '/home',
-          color: Colors.transparent,
-          height: AppSizes.screenHeightOfContext(context) * 0.07,
-          borderValue: AppSizes.radiusMedium,
-          items: items,
-          currentIndex: widget._navigationShell.currentIndex,
-          onTap: (index) => change(index),
-        ),
+    final AppTheme theme = context.appTheme;
+    return Scaffold(
+      body: widget._navigationShell,
+      bottomNavigationBar: CustomBottomNavigationBar(
+        activeColor: theme.colors.primary,
+        inactiveColor: theme.colors.background,
+        route: '/home',
+        color: theme.colors.surface,
+        height: AppSizes.screenHeightOfContext(context) * 0.07,
+        borderValue: AppSizes.radiusMedium,
+        items: items,
+        currentIndex: widget._navigationShell.currentIndex,
+        onTap: (index) => change(index),
       ),
     );
   }

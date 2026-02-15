@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:timezone/standalone.dart';
-import 'package:uikit/colors/color_constant.dart';
 import 'package:uikit/theme/app_theme.dart';
 import 'package:uikit/widget/card.dart';
 
@@ -102,20 +101,19 @@ class _AlarmTimePickerWidgetState extends State<AlarmTimePickerWidget>
     return AdaptiveCard(
       padding: const .symmetric(horizontal: 16),
       borderRadius: const .all(.circular(24)),
-      backgroundColor: ColorConstants.pastelIndigo,
+      backgroundColor: theme.colors.primary,
       child: IntrinsicWidth(
         child: Row(
           mainAxisAlignment: .center,
           children: [
-            const Icon(Icons.notifications),
+            Icon(Icons.notifications, color: theme.colors.onPrimary),
             TextButton(
               onPressed: () => _setTime(),
               child: Text(
                 _selectedTime == null
                     ? 'set your time'
                     : '${_selectedTime!.hour}:${_selectedTime!.minute}',
-                // : 'set your time',
-                style: theme.typography.h6,
+                style: theme.typography.h6.copyWith(color: theme.colors.onPrimary),
               ),
             ),
           ],

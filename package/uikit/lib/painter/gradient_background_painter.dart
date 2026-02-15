@@ -1,24 +1,21 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:uikit/colors/color_constant.dart';
-
-enum DayTime {
-  night('night'),
-  day('day');
-
-  final String value;
-  const DayTime(this.value);
-}
 
 final class GradientBackgroundPainter extends CustomPainter {
   final double t;
-  final DayTime dayTime;
+  final Color primaryA;
+  final Color primaryB;
+  final Color surfaceA;
+  final Color surfaceB;
 
   GradientBackgroundPainter({
     super.repaint,
     required this.t,
-    required this.dayTime,
+    required this.primaryA,
+    required this.primaryB,
+    required this.surfaceA,
+    required this.surfaceB,
   });
 
   @override
@@ -29,12 +26,8 @@ final class GradientBackgroundPainter extends CustomPainter {
       begin: Alignment(-wave, -1),
       end: Alignment(wave, 1),
       colors: [
-        Color.lerp(ColorConstants.duskPurple, ColorConstants.nightViolet, t)!,
-        Color.lerp(
-          ColorConstants.pastelLavender,
-          ColorConstants.pastelPurple,
-          t,
-        )!,
+        Color.lerp(primaryA, primaryB, t)!,
+        Color.lerp(surfaceA, surfaceB, t)!,
       ],
     );
     final paint = Paint()..shader = gradient.createShader(rect);
@@ -43,6 +36,10 @@ final class GradientBackgroundPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant GradientBackgroundPainter oldDelegate) {
-    return oldDelegate.t != t;
+    return oldDelegate.t != t ||
+        oldDelegate.primaryA != primaryA ||
+        oldDelegate.primaryB != primaryB ||
+        oldDelegate.surfaceA != surfaceA ||
+        oldDelegate.surfaceB != surfaceB;
   }
 }
