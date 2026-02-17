@@ -35,10 +35,10 @@ class _RootScreenState extends State<RootScreen> {
       body: widget._navigationShell,
       bottomNavigationBar: CustomBottomNavigationBar(
         activeColor: theme.colors.primary,
-        inactiveColor: theme.colors.background,
+        inactiveColor: theme.colors.textSecondary,
         route: '/home',
         color: theme.colors.surface,
-        height: AppSizes.screenHeightOfContext(context) * 0.07,
+        height: AppSizes.screenHeightOfContext(context) * 0.08,
         borderValue: AppSizes.radiusMedium,
         items: items,
         currentIndex: widget._navigationShell.currentIndex,

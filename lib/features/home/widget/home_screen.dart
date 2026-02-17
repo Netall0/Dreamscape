@@ -3,7 +3,8 @@ import 'package:lottie/lottie.dart';
 import 'package:uikit/uikit.dart';
 
 import '../../../core/gen/assets.gen.dart';
-import '../../../core/repository/temp_repository.dart';
+import '../../../core/data/temp/repository/temp_repository.dart';
+import '../../../core/l10n/app_localizations.g.dart';
 import '../../../core/router/router.dart';
 import '../../../core/util/extension/app_context_extension.dart';
 import '../../../core/util/logger/logger.dart';
@@ -22,13 +23,17 @@ class HomeScreen extends StatefulWidget {
 class _ScreenState extends State<HomeScreen> with LoggerMixin {
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
     final AppTheme theme = context.appTheme;
     final Size size = MediaQuery.sizeOf(context);
     final AlarmService alarmService = DependScope.of(context).platformDependContainer.alarmService;
-    final StreamClockController clockStream = DependScope.of(context).platformDependContainer.clockNotifier;
+    final StreamClockController clockStream = DependScope.of(
+      context,
+    ).platformDependContainer.clockNotifier;
     final TempRepository tempRep = DependScope.of(context).dependModel.tempRepository;
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -36,9 +41,9 @@ class _ScreenState extends State<HomeScreen> with LoggerMixin {
             child: Column(
               children: [
                 SizedBox(height: size.height * .02),
-                Text('Good night', style: theme.typography.h1),
+                Text(l10n.goodNight, style: theme.typography.h1),
                 const SizedBox(height: 8),
-                Text('Keep your sleep rhythm stable', style: theme.typography.bodyMedium),
+                Text(l10n.keepSleepRhythm, style: theme.typography.bodyMedium),
                 const SizedBox(height: 20),
                 ClockWidget(clockStream: clockStream, theme: theme),
                 const SizedBox(height: 20),
@@ -55,17 +60,18 @@ class _ScreenState extends State<HomeScreen> with LoggerMixin {
                     onTap: () async {
                       final time = TimeOfDay.now();
                       const SleepScreenData().go(context);
-                      await tempRep.saveBedTime(
-                        TimeOfDay(
-                          hour: time.hour,
-                          minute: time.minute,
-                        ),
-                      );
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Bedtime: ${time.hour}:${time.minute.toString().padLeft(2, '0')}')),
-                        );
-                      }
+                      await tempRep.saveBedTime(TimeOfDay(hour: time.hour, minute: time.minute));
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                l10n.bedtimeMessage(
+                                  '${time.hour}:${time.minute.toString().padLeft(2, '0')}',
+                                ),
+                              ),
+                            ),
+                          );
+                        }
                     },
                     child: AdaptiveCard(
                       borderRadius: const BorderRadius.all(Radius.circular(24)),
@@ -76,7 +82,7 @@ class _ScreenState extends State<HomeScreen> with LoggerMixin {
                           Icon(Icons.play_arrow, color: theme.colors.onPrimary),
                           const SizedBox(width: 8),
                           Text(
-                            'Start sleep',
+                            l10n.startSleep,
                             style: theme.typography.h5.copyWith(color: theme.colors.onPrimary),
                           ),
                         ],

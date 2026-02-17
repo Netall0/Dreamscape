@@ -12,13 +12,8 @@ class ColorConstants {
   static const backgroundLight = Color(0xFFFFFFFF); // Чистый белый
   static const backgroundDark = Color.fromARGB(255, 0, 0, 0); // Глубокий темный
 
-  static const surfaceLight = Color.fromARGB(
-    255,
-    207,
-    207,
-    207,
-  ); // Очень светло-серый
-  static const surfaceDark = Color(0xFF1E293B); // Темно-серый
+  static const surfaceLight = Color(0xFFF1F5F9); // Светлый слой для отделения
+  static const surfaceDark = Color(0xFF111827); // Темный слой для навбара
 
   // ТЕКСТОВЫЕ ЦВЕТА - максимальный контраст для читаемости
   static const textPrimaryLight = Color(0xFF0F172A); // Почти черный
@@ -30,22 +25,12 @@ class ColorConstants {
   static const textDisabledDark = Color(0xFF64748B); // Средне-серый
 
   // КОМПОНЕНТЫ - четко различимые
-  static const cardBackgroundLight = Color.fromARGB(
-    255,
-    221,
-    219,
-    219,
-  ); // Белый для карточек
-  static const dividerColorLight = Color(0xFFE2E8F0); // Видимый разделитель
+  static const cardBackgroundLight = Color(0xFFFFFFFF); // Карточки белые
+  static const dividerColorLight = Color(0xFFCBD5E1); // Разделитель темнее
   static const shadowColorLight = Color(0x0D000000); // Мягкая тень
 
-  static const cardBackgroundDark = Color.fromARGB(
-    255,
-    25,
-    25,
-    36,
-  ); // Контрастный серый
-  static const dividerColorDark = Color(0xFF475569); // Видимый разделитель
+  static const cardBackgroundDark = Color(0xFF1F2937); // Карточки чуть светлее фона
+  static const dividerColorDark = Color(0xFF334155); // Разделитель ярче
   static const shadowColorDark = Color(0x26000000); // Заметная тень
 
   // ЦВЕТА СОСТОЯНИЙ - яркие и различимые

@@ -5,7 +5,8 @@ import 'package:uikit/uikit.dart';
 import 'package:uikit/widget/custom_round_music_bar.dart';
 
 import '../../../core/gen/assets.gen.dart';
-import '../../../core/repository/temp_repository.dart';
+import '../../../core/data/temp/repository/temp_repository.dart';
+import '../../../core/l10n/app_localizations.g.dart';
 import '../../../core/util/extension/app_context_extension.dart';
 import '../../../core/util/extension/time_of_day_extension.dart';
 import '../../../core/util/logger/logger.dart';
@@ -28,6 +29,7 @@ class SleepScreen extends StatefulWidget {
 class _SleepScreenState extends State<SleepScreen>
     with SingleTickerProviderStateMixin, LoggerMixin {
   late final AudioPlayer _player;
+  final TextEditingController _textConrtoller = TextEditingController();
 
   @override
   void initState() {
@@ -70,21 +72,21 @@ class _SleepScreenState extends State<SleepScreen>
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
     final AppTheme theme = context.appTheme;
     final Size size = MediaQuery.sizeOf(context);
     final StatsListBloc bloc = DependScope.of(context).dependModel.statsBloc;
     final StreamClockController clockStream = DependScope.of(
       context,
     ).platformDependContainer.clockNotifier;
-    final AlarmService alarmService = DependScope.of(
-      context,
-    ).platformDependContainer.alarmService;
+    final AlarmService alarmService = DependScope.of(context).platformDependContainer.alarmService;
     final TempRepository tempRep = DependScope.of(context).dependModel.tempRepository;
     final StatsCalculateNotifier statsNotifier = DependScope.of(context).dependModel.statsNotifier;
 
     //TODO i know
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.mood))],
         leading: IconButton(
@@ -98,125 +100,118 @@ class _SleepScreenState extends State<SleepScreen>
         backgroundColor: Colors.transparent,
       ),
       body: Align(
-        child: Column(
-          mainAxisAlignment: .center,
-          children: [
-            ClockWidget(clockStream: clockStream, theme: theme),
-            const SizedBox(height: 24),
-            AlarmTimePickerWidget(alarmService: alarmService),
-            const SizedBox(height: AppSizes.double20),
-            Stack(
-              alignment: .center,
-              children: [
-                SizedBox(
-                  height: size.height * 0.2,
-                  width: size.width * 0.6,
-                  child: CustomRoundMusicBar(isPlaying: _player.playingStream),
-                ),
-                SizedBox(
-                  height: size.height * 0.4,
-                  width: size.width * 0.4,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: theme.colors.primary,
-                        width: 6,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: .center,
+            children: [
+              ClockWidget(clockStream: clockStream, theme: theme),
+              const SizedBox(height: 24),
+              AlarmTimePickerWidget(alarmService: alarmService),
+              const SizedBox(height: AppSizes.double20),
+              Stack(
+                alignment: .center,
+                children: [
+                  SizedBox(
+                    height: size.height * 0.2,
+                    width: size.width * 0.6,
+                    child: CustomRoundMusicBar(isPlaying: _player.playingStream),
+                  ),
+                  SizedBox(
+                    height: size.height * 0.4,
+                    width: size.width * 0.4,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: theme.colors.primary, width: 6),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: size.height * 0.4,
-                  width: size.width * 0.4,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: theme.colors.secondary,
-                        width: 4,
+                  SizedBox(
+                    height: size.height * 0.4,
+                    width: size.width * 0.4,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: theme.colors.secondary, width: 4),
                       ),
                     ),
                   ),
-                ),
 
-                SizedBox(
-                  height: size.height * 0.1,
-                  width: size.width * 0.1,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: theme.colors.primaryVariant,
-                    ),
-                    child: Align(
-                      child: StreamBuilder<PlayerState>(
-                        stream: _player.playerStateStream,
-                        builder: (context, snapshot) {
-                          final PlayerState? state = snapshot.data;
-
-                          final bool isPlaying = state?.playing ?? false;
-                          final bool isLoading =
-                              state?.processingState ==
-                                  ProcessingState.loading ||
-                              state?.processingState ==
-                                  ProcessingState.buffering;
-
-                          return IconButton(
-                            alignment: .center,
-                            onPressed: isLoading
-                                ? null
-                                : () async {
-                                    if (isPlaying) {
-                                      await _player.pause();
-                                    } else {
-                                      await _player.play();
-                                    }
-                                  },
-                            icon: Icon(
-                              isPlaying ? Icons.pause : Icons.play_arrow,
-                              color: theme.colors.onPrimary,
-                              size: 16,
-                            ),
-                          );
-                        },
+                  SizedBox(
+                    height: size.height * 0.1,
+                    width: size.width * 0.1,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: theme.colors.primaryVariant,
                       ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+                      child: Align(
+                        child: StreamBuilder<PlayerState>(
+                          stream: _player.playerStateStream,
+                          builder: (context, snapshot) {
+                            final PlayerState? state = snapshot.data;
 
-            SizedBox(
-              width: 200,
-              height: size.height * 0.1,
-              child: GestureDetector(
-                onTap: () async {
-                  await _onTapAdding(
-                    tempRep: tempRep,
-                    bloc: bloc,
-                    context: context,
-                    statsNotifier: statsNotifier,
-                  );
-                },
-                child: AdaptiveCard(
-                  borderRadius: const .all(.circular(24)),
-                  backgroundColor: theme.colors.primary,
-                  child: Row(
-                    mainAxisAlignment: .center,
-                    children: [
-                      Icon(Icons.play_arrow, color: theme.colors.onPrimary),
-                      Text(
-                        'остановить сон',
-                        style: theme.typography.h5.copyWith(
-                          color: theme.colors.onPrimary,
+                            final bool isPlaying = state?.playing ?? false;
+                            final bool isLoading =
+                                state?.processingState == ProcessingState.loading ||
+                                state?.processingState == ProcessingState.buffering;
+
+                            return IconButton(
+                              alignment: .center,
+                              onPressed: isLoading
+                                  ? null
+                                  : () async {
+                                      if (isPlaying) {
+                                        await _player.pause();
+                                      } else {
+                                        await _player.play();
+                                      }
+                                    },
+                              icon: Icon(
+                                isPlaying ? Icons.pause : Icons.play_arrow,
+                                color: theme.colors.onPrimary,
+                                size: 16,
+                              ),
+                            );
+                          },
                         ),
                       ),
-                    ],
+                    ),
+                  ),
+                ],
+              ),
+
+              SizedBox(
+                width: 200,
+                height: size.height * 0.1,
+                child: GestureDetector(
+                  onTap: () async {
+                    await _onTapAdding(
+                      textConrtoller: _textConrtoller,
+                      tempRep: tempRep,
+                      bloc: bloc,
+                      context: context,
+                      statsNotifier: statsNotifier,
+                    );
+                  },
+                  child: AdaptiveCard(
+                    borderRadius: const .all(.circular(24)),
+                    backgroundColor: theme.colors.primary,
+                    child: Row(
+                      mainAxisAlignment: .center,
+                      children: [
+                        Icon(Icons.play_arrow, color: theme.colors.onPrimary),
+                        Text(
+                          l10n.stopSleep,
+                          style: theme.typography.h5.copyWith(color: theme.colors.onPrimary),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -227,39 +222,110 @@ class _SleepScreenState extends State<SleepScreen>
     required StatsCalculateNotifier statsNotifier,
     required StatsListBloc bloc,
     required BuildContext context,
+    required TextEditingController textConrtoller,
   }) async {
     final riseTime = TimeOfDay.now(); //TODO
     SleepQuality sleepQuality = SleepQuality.good;
+    final AppTheme theme = context.appTheme;
+    final AppLocalizations l10n = context.l10n;
 
     await showDialog(
       context: context,
-      builder: (context) => AlertDialog.adaptive(
-          title: const Text('chose your sleep quality'),
-          content: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: SleepQuality.values.map((e) => AdaptiveCard(
-                onTap: () {
-                  sleepQuality = e;
-                  context.pop();
-                },
-                padding: const .all(16),
-                margin: const .all(4),
-                child: SizedBox(
-                  height: MediaQuery.sizeOf(context).height * 0.1,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [e.icon, Text(e.name)],
+      builder: (context) => StatefulBuilder(
+        builder: (context, setStateDialog) => AlertDialog.adaptive(
+          title: Text(l10n.writeReviewChooseQuality),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  maxLines: 10,
+                  maxLength: 200,
+                  controller: textConrtoller,
+                  decoration: InputDecoration(
+                    hintText: l10n.writeSleepNotes,
+                    hintStyle: theme.typography.bodySmall.copyWith(
+                      color: theme.colors.textSecondary,
+                    ),
+                    border: const OutlineInputBorder(),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: theme.colors.dividerColor),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: theme.colors.primary),
+                    ),
                   ),
                 ),
-              )).toList(),
-          ),
-        ),
-    );
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
+                  children: SleepQuality.values
+                      .map(
+                        (e) => AdaptiveCard(
+                          backgroundColor: sleepQuality == e
+                              ? theme.colors.primary
+                              : theme.colors.surface,
+                          onTap: () {
+                            setStateDialog(() {
+                              sleepQuality = e;
+                            });
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                            child: Text(
+                              e.name,
+                              style: theme.typography.bodyMedium.copyWith(
+                                color: sleepQuality == e
+                                    ? theme.colors.onPrimary
+                                    : theme.colors.textPrimary,
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                      .toList(),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(onPressed: () => context.pop(), child: Text(l10n.cancel)),
+            TextButton(
+              onPressed: () async {
+                await sendReq(
+                  riseTime,
+                  tempRep,
+                  statsNotifier,
+                  bloc,
+                  sleepQuality,
+                  textConrtoller,
+                  context,
+                );
+                if (context.mounted) {
+                  context.pop();
+                }
+              },
+              child: Text(l10n.done),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> sendReq(
+    TimeOfDay riseTime,
+    TempRepository tempRep,
+    StatsCalculateNotifier statsNotifier,
+    StatsListBloc bloc,
+    SleepQuality sleepQuality,
+    TextEditingController textConrtoller,
+    BuildContext context,
+  ) async {
+    final AppLocalizations l10n = context.l10n;
     logger.debug('time rise ${riseTime.hour}:${riseTime.minute}');
     final TimeOfDay bedTime =
-        await tempRep.getBedTime() ??
-        TimeOfDay(hour: riseTime.hour, minute: riseTime.minute);
+        await tempRep.getBedTime() ?? TimeOfDay(hour: riseTime.hour, minute: riseTime.minute);
 
     final TimeOfDay sleepDuration = bedTime.calculationSleepTime(riseTime);
 
@@ -272,14 +338,12 @@ class _SleepScreenState extends State<SleepScreen>
           riseTime: TimeOfDay(hour: riseTime.hour, minute: riseTime.minute),
           sleepQuality: sleepQuality,
           sleepTime: sleepDuration,
-          sleepNotes: 'хахахахахахахааххах',
+          sleepNotes: textConrtoller.text,
         ),
       ),
     );
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('congratulations!!!, sleep added')),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.sleepAdded)));
 
       context.pop();
     }

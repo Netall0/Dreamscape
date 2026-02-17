@@ -35,8 +35,28 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
   @override
   Widget build(BuildContext context) {
     final AppTheme appTheme = Theme.of(context).extension<AppTheme>() ?? AppTheme.dark;
-    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final bool isDark = appTheme.colors.background.computeLuminance() < 0.5;
     final Color overlayColor = isDark ? Colors.black : Colors.white;
+    final Color primaryA = Color.lerp(
+      appTheme.colors.primary,
+      appTheme.colors.surface,
+      isDark ? 0.25 : 0.45,
+    )!;
+    final Color primaryB = Color.lerp(
+      appTheme.colors.secondary,
+      appTheme.colors.background,
+      isDark ? 0.3 : 0.5,
+    )!;
+    final Color surfaceA = Color.lerp(
+      appTheme.colors.surface,
+      appTheme.colors.background,
+      isDark ? 0.2 : 0.4,
+    )!;
+    final Color surfaceB = Color.lerp(
+      appTheme.colors.background,
+      appTheme.colors.surface,
+      isDark ? 0.2 : 0.35,
+    )!;
 
     return Stack(
       children: [
@@ -46,10 +66,10 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
             return CustomPaint(
               painter: GradientBackgroundPainter(
                 t: _animationController.value,
-                primaryA: appTheme.colors.primary,
-                primaryB: appTheme.colors.secondary,
-                surfaceA: appTheme.colors.surface,
-                surfaceB: appTheme.colors.background,
+                primaryA: primaryA,
+                primaryB: primaryB,
+                surfaceA: surfaceA,
+                surfaceB: surfaceB,
               ),
               child: const SizedBox.expand(),
             );
@@ -59,7 +79,7 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
         BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 60, sigmaY: 60),
           child: Container(
-            color: overlayColor.withValues(alpha: isDark ? 0.16 : 0.08),
+            color: overlayColor.withValues(alpha: isDark ? 0.16 : 0.1),
             width: double.infinity,
             height: double.infinity,
           ),

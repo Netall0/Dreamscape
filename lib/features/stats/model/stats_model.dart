@@ -15,20 +15,7 @@ enum SleepQuality {
   const SleepQuality(this.name, this.icon);
 }
 
-enum AuthException {
-  invalidEmail('Invalid email address', 101),
-  emailAlreadyInUse('Email is already in use', 102),
-  weakPassword('Password is too weak', 103),
-  wrongPassword('Wrong password provided', 104);
-
-  final String message;
-  final int code;
-
-  const AuthException(this.message, this.code);
-}
-
 final class StatsModel {
-
   StatsModel({
     this.id,
     required this.sleepQuality,
@@ -56,9 +43,7 @@ final class StatsModel {
   final TimeOfDay sleepTime;
   final String sleepNotes;
 
-  static int _timeOfDayToMinutes(TimeOfDay time) {
-    return time.hour * 60 + time.minute;
-  }
+  static int _timeOfDayToMinutes(TimeOfDay time) => time.hour * 60 + time.minute;
 
   SleepInfoTableCompanion toSleepInfoTableCompanion(StatsModel sleepModel) =>
       SleepInfoTableCompanion(
@@ -77,14 +62,12 @@ final class StatsModel {
     TimeOfDay? bedTime,
     TimeOfDay? riseTime,
     String? sleepNotes,
-  }) {
-    return StatsModel(
-      id: id ?? this.id,
-      sleepQuality: sleepQuality ?? this.sleepQuality,
-      sleepTime: sleepTime ?? this.sleepTime,
-      bedTime: bedTime ?? this.bedTime,
-      riseTime: riseTime ?? this.riseTime,
-      sleepNotes: sleepNotes ?? this.sleepNotes,
-    );
-  }
+  }) => StatsModel(
+    id: id ?? this.id,
+    sleepQuality: sleepQuality ?? this.sleepQuality,
+    sleepTime: sleepTime ?? this.sleepTime,
+    bedTime: bedTime ?? this.bedTime,
+    riseTime: riseTime ?? this.riseTime,
+    sleepNotes: sleepNotes ?? this.sleepNotes,
+  );
 }

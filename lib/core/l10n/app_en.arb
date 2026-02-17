@@ -1,13 +1,134 @@
-
-
 {
-    "@@locale": "en",
-    "hello": "hello friend",
-    "home": "Home",
-    "settings": "Settings",
-    "save": "Save",
-    "cancel": "Cancel",
-    "loginButton": "Log In",
-    "welcomeMessage": "Welcome back!",
-    "startSleeping": "Start Sleeping"
+  "@@locale": "en",
+  "hello": "hello friend",
+  "home": "Home",
+  "settings": "Settings",
+  "save": "Save",
+  "cancel": "Cancel",
+  "loginButton": "Log In",
+  "welcomeMessage": "Welcome back!",
+  "startSleeping": "Start Sleeping",
+
+  "theme": "Theme",
+  "dark": "Dark",
+  "light": "Light",
+  "backgroundAnimation": "Background animation",
+  "on": "On",
+  "off": "Off",
+  "language": "Language",
+  "languageRussian": "Russian",
+  "languageEnglish": "English",
+
+  "signIn": "Sign in",
+  "signUp": "Sign up",
+  "email": "Email",
+  "password": "Password",
+  "confirmPassword": "Confirm Password",
+  "authFailed": "Auth failed",
+  "noAccountSignUp": "Don't have an account? Sign up",
+  "haveAccountSignIn": "Have an account? Sign in",
+
+  "profile": "Profile",
+  "changeName": "Change name",
+  "name": "Name",
+  "phone": "Phone",
+  "feedback": "Feedback",
+  "signOut": "Sign out",
+  "undefined": "Undefined",
+
+  "goodNight": "Good night",
+  "keepSleepRhythm": "Keep your sleep rhythm stable",
+  "startSleep": "Start sleep",
+  "stopSleep": "Stop sleep",
+  "bedtimeMessage": "Bedtime: {time}",
+  "@bedtimeMessage": {
+    "placeholders": {
+      "time": {}
+    }
+  },
+
+  "setYourTime": "Set your time",
+  "alarmSetMessage": "Alarm set for {time}",
+  "@alarmSetMessage": {
+    "placeholders": {
+      "time": {}
+    }
+  },
+
+  "writeReviewChooseQuality": "Write review and choose your sleep quality",
+  "writeSleepNotes": "Write your notes about sleep",
+  "done": "Done",
+  "sleepAdded": "Congratulations! Sleep added.",
+
+  "yourSleepSessions": "Your Sleep Sessions",
+  "totalSleep": "Total Sleep: {hours} hrs",
+  "@totalSleep": {
+    "placeholders": {
+      "hours": {}
+    }
+  },
+  "averageSleep": "Average Sleep: {hours} hrs",
+  "@averageSleep": {
+    "placeholders": {
+      "hours": {}
+    }
+  },
+  "delete": "Delete",
+  "sleptAt": "Slept at {time}",
+  "@sleptAt": {
+    "placeholders": {
+      "time": {}
+    }
+  },
+  "fromTo": "From {bed} to {rise}",
+  "@fromTo": {
+    "placeholders": {
+      "bed": {},
+      "rise": {}
+    }
+  },
+  "noStatsFound": "No stats found",
+  "errorLoadingStats": "Error loading stats: {message}",
+  "@errorLoadingStats": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "unknownState": "Unknown state",
+  "yourAiAssistant": "Your AI Assistant",
+
+  "sleepAnalysis": "Sleep analysis",
+  "analyzingSleep": "Analyzing your sleep...",
+  "yourData": "Your data:",
+  "sleepHours": "🕐 Sleep: {hours} hours",
+  "@sleepHours": {
+    "placeholders": {
+      "hours": {}
+    }
+  },
+  "moodLabel": "😊 Mood: {mood}",
+  "@moodLabel": {
+    "placeholders": {
+      "mood": {}
+    }
+  },
+  "notesLabel": "📝 {notes}",
+  "@notesLabel": {
+    "placeholders": {
+      "notes": {}
+    }
+  },
+  "aiAnalysis": "AI analysis",
+  "errorPrefix": "Error: {message}",
+  "@errorPrefix": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "errorLabel": "Error: {message}",
+  "@errorLabel": {
+    "placeholders": {
+      "message": {}
+    }
+  }
 }

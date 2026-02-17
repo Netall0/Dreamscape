@@ -13,6 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
 
+  google_generative_ai: ^0.4.7
 
   flutter_localizations:
     sdk: flutter

@@ -5,6 +5,7 @@ import 'package:timezone/standalone.dart';
 import 'package:uikit/theme/app_theme.dart';
 import 'package:uikit/widget/card.dart';
 
+import '../../../core/l10n/app_localizations.g.dart';
 import '../../../core/util/extension/app_context_extension.dart';
 import '../../../core/util/logger/logger.dart';
 import '../../alarm/services/alarm_service.dart';
@@ -17,8 +18,7 @@ class AlarmTimePickerWidget extends StatefulWidget {
   State<AlarmTimePickerWidget> createState() => _AlarmTimePickerWidgetState();
 }
 
-class _AlarmTimePickerWidgetState extends State<AlarmTimePickerWidget>
-    with LoggerMixin {
+class _AlarmTimePickerWidgetState extends State<AlarmTimePickerWidget> with LoggerMixin {
   TZDateTime? _tzDateTime;
   TimeOfDay? _selectedTime;
 
@@ -26,15 +26,11 @@ class _AlarmTimePickerWidgetState extends State<AlarmTimePickerWidget>
 
   @override
   void initState() {
-    _streamSubscription = widget.alarmService.alarmStreamController.listen((
-      data,
-    ) {
+    _streamSubscription = widget.alarmService.alarmStreamController.listen((data) {
       if (mounted) {
         setState(() {
           _tzDateTime = data;
-          _selectedTime = data != null
-              ? TimeOfDay(hour: data.hour, minute: data.minute)
-              : null;
+          _selectedTime = data != null ? TimeOfDay(hour: data.hour, minute: data.minute) : null;
         });
 
         logger.debug('update UI ');
@@ -50,10 +46,7 @@ class _AlarmTimePickerWidgetState extends State<AlarmTimePickerWidget>
     _tzDateTime = widget.alarmService.getAlarmTime();
 
     if (_tzDateTime != null) {
-      _selectedTime = TimeOfDay(
-        hour: _tzDateTime!.hour,
-        minute: _tzDateTime!.minute,
-      );
+      _selectedTime = TimeOfDay(hour: _tzDateTime!.hour, minute: _tzDateTime!.minute);
     }
   }
 
@@ -87,7 +80,9 @@ class _AlarmTimePickerWidgetState extends State<AlarmTimePickerWidget>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Будильник установлен на ${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}',
+              AppLocalizations.of(context)!.alarmSetMessage(
+                '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}',
+              ),
             ),
           ),
         );
@@ -97,23 +92,24 @@ class _AlarmTimePickerWidgetState extends State<AlarmTimePickerWidget>
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
     final AppTheme theme = context.appTheme;
     return AdaptiveCard(
       padding: const .symmetric(horizontal: 16),
       borderRadius: const .all(.circular(24)),
-      backgroundColor: theme.colors.primary,
+      backgroundColor: theme.colors.cardBackground,
       child: IntrinsicWidth(
         child: Row(
           mainAxisAlignment: .center,
           children: [
-            Icon(Icons.notifications, color: theme.colors.onPrimary),
+            Icon(Icons.notifications, color: theme.colors.textPrimary),
             TextButton(
               onPressed: () => _setTime(),
               child: Text(
                 _selectedTime == null
-                    ? 'set your time'
+                    ? l10n.setYourTime
                     : '${_selectedTime!.hour}:${_selectedTime!.minute}',
-                style: theme.typography.h6.copyWith(color: theme.colors.onPrimary),
+                style: theme.typography.h6.copyWith(color: theme.colors.textPrimary),
               ),
             ),
           ],

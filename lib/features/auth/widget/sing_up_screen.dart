@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uikit/uikit.dart';
 
+import '../../../core/l10n/app_localizations.g.dart';
 import '../../../core/util/extension/app_context_extension.dart';
 import '../../initialization/widget/depend_scope.dart';
 import '../controller/bloc/auth_bloc.dart';
@@ -40,6 +41,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
     final AppTheme theme = context.appTheme;
     final AuthBloc bloc = DependScope.of(context).dependModel.authBloc;
     final Size size = MediaQuery.sizeOf(context);
@@ -50,11 +52,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ? ScaffoldMessenger.of(context).showSnackBar(
                 appFlavor!.contains('dev')
                     ? SnackBar(content: Text(state.errorMessage))
-                    : const SnackBar(content: Text('autg Failed')),
+                    : SnackBar(content: Text(l10n.authFailed)),
               )
             : null;
       },
       child: Scaffold(
+        backgroundColor: Colors.transparent,
         body: SingleChildScrollView(
           child: Form(
             key: _formKey,
@@ -75,20 +78,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       mainAxisAlignment: .center,
                       children: [
                         Text(
-                          'Sign up',
+                          l10n.signUp,
                           style: context.appTheme.typography.h1,
                         ),
                         const SizedBox(height: 24),
                         TextFormField(
-                          validator: (val) {
-                            if (val!.isEmpty) {
-                              return 'Please enter email';
-                            }
-                            if (!val.contains('@')) {
-                              return 'Please enter valid email';
-                            }
-                            return null;
-                          },
+                            validator: (val) {
+                              if (val!.isEmpty) {
+                                return l10n.email;
+                              }
+                              if (!val.contains('@')) {
+                                return l10n.email;
+                              }
+                              return null;
+                            },
                           controller: _emailController,
                           style: theme.typography.bodyLarge.copyWith(
                             color: theme.colors.onSurface,
@@ -109,27 +112,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               borderRadius: .circular(16),
                               borderSide: BorderSide(color: theme.colors.onSurface),
                             ),
-                            prefixIcon: Icon(
-                              Icons.email,
-                              color: theme.colors.onSurface,
-                            ),
-                            labelText: 'Email',
-                            labelStyle: theme.typography.h6.copyWith(
-                              color: theme.colors.onSurface,
+                              prefixIcon: Icon(
+                                Icons.email,
+                                color: theme.colors.onSurface,
+                              ),
+                              labelText: l10n.email,
+                              labelStyle: theme.typography.h6.copyWith(
+                                color: theme.colors.onSurface,
+                              ),
                             ),
                           ),
-                        ),
                         const SizedBox(height: 12),
                         TextFormField(
-                          validator: (val) {
-                            if (val!.isEmpty) {
-                              return 'Please enter password';
-                            }
-                            if (val.length < 6) {
-                              return 'Password must be at least 6 characters';
-                            }
-                            return null;
-                          },
+                            validator: (val) {
+                              if (val!.isEmpty) {
+                                return l10n.password;
+                              }
+                              if (val.length < 6) {
+                                return l10n.password;
+                              }
+                              return null;
+                            },
                           controller: _passwordController,
                           style: theme.typography.bodyLarge.copyWith(
                             color: theme.colors.onSurface,
@@ -150,27 +153,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             focusColor: theme.colors.onSurface,
                             hoverColor: theme.colors.onSurface,
                             fillColor: theme.colors.onSurface,
-                            prefixIcon: Icon(
-                              Icons.password,
-                              color: theme.colors.onSurface,
-                            ),
-                            labelText: 'Password',
-                            labelStyle: theme.typography.h6.copyWith(
-                              color: theme.colors.onSurface,
+                              prefixIcon: Icon(
+                                Icons.password,
+                                color: theme.colors.onSurface,
+                              ),
+                              labelText: l10n.password,
+                              labelStyle: theme.typography.h6.copyWith(
+                                color: theme.colors.onSurface,
+                              ),
                             ),
                           ),
-                        ),
                         const SizedBox(height: 24),
                         TextFormField(
-                          validator: (val) {
-                            if (val == null || val.isEmpty) {
-                              return 'confirm password';
-                            }
-                            if (val != _passwordController.text) {
-                              return 'password not match';
-                            }
-                            return null;
-                          },
+                            validator: (val) {
+                              if (val == null || val.isEmpty) {
+                                return l10n.confirmPassword;
+                              }
+                              if (val != _passwordController.text) {
+                                return l10n.confirmPassword;
+                              }
+                              return null;
+                            },
                           controller: _confirmPasswordController,
                           obscureText: _obscureText,
                           style: theme.typography.bodyLarge.copyWith(
@@ -230,13 +233,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                             );
                           },
-                          child: Text(
-                            'Sign Up',
-                            style: theme.typography.h6.copyWith(
-                              color: theme.colors.onSurface,
-                            ),
+                        child: Text(
+                          l10n.signUp,
+                          style: theme.typography.h6.copyWith(
+                            color: theme.colors.onSurface,
                           ),
                         ),
+                      ),
                       ],
                     ),
                   ),
@@ -246,11 +249,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   onPressed: () {
                     context.pop();
                   },
-                  child: Text(
-                    'Have an account? Sign in',
-                    style: theme.typography.h6.copyWith(color: theme.colors.onSurface),
-                  ),
+                child: Text(
+                  l10n.haveAccountSignIn,
+                  style: theme.typography.h6.copyWith(color: theme.colors.onSurface),
                 ),
+              ),
               ],
             ),
           ),

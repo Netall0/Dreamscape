@@ -1,7 +1,7 @@
 import 'package:just_audio/just_audio.dart';
 
 import '../../../core/database/database.dart';
-import '../../../core/repository/temp_repository.dart';
+import '../../../core/data/temp/repository/temp_repository.dart';
 import '../../auth/controller/bloc/auth_bloc.dart';
 import '../../auth/controller/notifier/load_user_info_notifier.dart';
 import '../../settings/controller/settings_controller.dart';

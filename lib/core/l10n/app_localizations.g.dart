@@ -140,6 +140,330 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Start Sleeping'**
   String get startSleeping;
+
+  /// No description provided for @theme.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get theme;
+
+  /// No description provided for @dark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get dark;
+
+  /// No description provided for @light.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get light;
+
+  /// No description provided for @backgroundAnimation.
+  ///
+  /// In en, this message translates to:
+  /// **'Background animation'**
+  String get backgroundAnimation;
+
+  /// No description provided for @on.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get on;
+
+  /// No description provided for @off.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get off;
+
+  /// No description provided for @language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language;
+
+  /// No description provided for @languageRussian.
+  ///
+  /// In en, this message translates to:
+  /// **'Russian'**
+  String get languageRussian;
+
+  /// No description provided for @languageEnglish.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get languageEnglish;
+
+  /// No description provided for @signIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get signIn;
+
+  /// No description provided for @signUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up'**
+  String get signUp;
+
+  /// No description provided for @email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// No description provided for @password.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get password;
+
+  /// No description provided for @confirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Password'**
+  String get confirmPassword;
+
+  /// No description provided for @authFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Auth failed'**
+  String get authFailed;
+
+  /// No description provided for @noAccountSignUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have an account? Sign up'**
+  String get noAccountSignUp;
+
+  /// No description provided for @haveAccountSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Have an account? Sign in'**
+  String get haveAccountSignIn;
+
+  /// No description provided for @profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profile;
+
+  /// No description provided for @changeName.
+  ///
+  /// In en, this message translates to:
+  /// **'Change name'**
+  String get changeName;
+
+  /// No description provided for @name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get name;
+
+  /// No description provided for @phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get phone;
+
+  /// No description provided for @feedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback'**
+  String get feedback;
+
+  /// No description provided for @signOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get signOut;
+
+  /// No description provided for @undefined.
+  ///
+  /// In en, this message translates to:
+  /// **'Undefined'**
+  String get undefined;
+
+  /// No description provided for @goodNight.
+  ///
+  /// In en, this message translates to:
+  /// **'Good night'**
+  String get goodNight;
+
+  /// No description provided for @keepSleepRhythm.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep your sleep rhythm stable'**
+  String get keepSleepRhythm;
+
+  /// No description provided for @startSleep.
+  ///
+  /// In en, this message translates to:
+  /// **'Start sleep'**
+  String get startSleep;
+
+  /// No description provided for @stopSleep.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop sleep'**
+  String get stopSleep;
+
+  /// No description provided for @bedtimeMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Bedtime: {time}'**
+  String bedtimeMessage(Object time);
+
+  /// No description provided for @setYourTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your time'**
+  String get setYourTime;
+
+  /// No description provided for @alarmSetMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Alarm set for {time}'**
+  String alarmSetMessage(Object time);
+
+  /// No description provided for @writeReviewChooseQuality.
+  ///
+  /// In en, this message translates to:
+  /// **'Write review and choose your sleep quality'**
+  String get writeReviewChooseQuality;
+
+  /// No description provided for @writeSleepNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Write your notes about sleep'**
+  String get writeSleepNotes;
+
+  /// No description provided for @done.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get done;
+
+  /// No description provided for @sleepAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Congratulations! Sleep added.'**
+  String get sleepAdded;
+
+  /// No description provided for @yourSleepSessions.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Sleep Sessions'**
+  String get yourSleepSessions;
+
+  /// No description provided for @totalSleep.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Sleep: {hours} hrs'**
+  String totalSleep(Object hours);
+
+  /// No description provided for @averageSleep.
+  ///
+  /// In en, this message translates to:
+  /// **'Average Sleep: {hours} hrs'**
+  String averageSleep(Object hours);
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @sleptAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Slept at {time}'**
+  String sleptAt(Object time);
+
+  /// No description provided for @fromTo.
+  ///
+  /// In en, this message translates to:
+  /// **'From {bed} to {rise}'**
+  String fromTo(Object bed, Object rise);
+
+  /// No description provided for @noStatsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No stats found'**
+  String get noStatsFound;
+
+  /// No description provided for @errorLoadingStats.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading stats: {message}'**
+  String errorLoadingStats(Object message);
+
+  /// No description provided for @unknownState.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown state'**
+  String get unknownState;
+
+  /// No description provided for @yourAiAssistant.
+  ///
+  /// In en, this message translates to:
+  /// **'Your AI Assistant'**
+  String get yourAiAssistant;
+
+  /// No description provided for @sleepAnalysis.
+  ///
+  /// In en, this message translates to:
+  /// **'Sleep analysis'**
+  String get sleepAnalysis;
+
+  /// No description provided for @analyzingSleep.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyzing your sleep...'**
+  String get analyzingSleep;
+
+  /// No description provided for @yourData.
+  ///
+  /// In en, this message translates to:
+  /// **'Your data:'**
+  String get yourData;
+
+  /// No description provided for @sleepHours.
+  ///
+  /// In en, this message translates to:
+  /// **'🕐 Sleep: {hours} hours'**
+  String sleepHours(Object hours);
+
+  /// No description provided for @moodLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'😊 Mood: {mood}'**
+  String moodLabel(Object mood);
+
+  /// No description provided for @notesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'📝 {notes}'**
+  String notesLabel(Object notes);
+
+  /// No description provided for @aiAnalysis.
+  ///
+  /// In en, this message translates to:
+  /// **'AI analysis'**
+  String get aiAnalysis;
+
+  /// No description provided for @errorPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Error: {message}'**
+  String errorPrefix(Object message);
+
+  /// No description provided for @errorLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Error: {message}'**
+  String errorLabel(Object message);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

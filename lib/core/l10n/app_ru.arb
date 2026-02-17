@@ -1,12 +1,135 @@
 {
-    "@@locale": "ru",
-    "hello": "Привет, друг!",
-    "appTitle": "Моё приложение",
-    "home": "Главная",
-    "settings": "Настройки",
-    "save": "Сохранить",
-    "cancel": "Отмена",
-    "loginButton": "Войти",
-    "welcomeMessage": "С возвращением!",
-    "startSleeping": "Начать спать"
+  "@@locale": "ru",
+  "hello": "Привет, друг!",
+  "appTitle": "Моё приложение",
+  "home": "Главная",
+  "settings": "Настройки",
+  "save": "Сохранить",
+  "cancel": "Отмена",
+  "loginButton": "Войти",
+  "welcomeMessage": "С возвращением!",
+  "startSleeping": "Начать спать",
+
+  "theme": "Тема",
+  "dark": "Тёмная",
+  "light": "Светлая",
+  "backgroundAnimation": "Фоновая анимация",
+  "on": "Вкл",
+  "off": "Выкл",
+  "language": "Язык",
+  "languageRussian": "Русский",
+  "languageEnglish": "Английский",
+
+  "signIn": "Войти",
+  "signUp": "Регистрация",
+  "email": "Почта",
+  "password": "Пароль",
+  "confirmPassword": "Подтвердить пароль",
+  "authFailed": "Ошибка авторизации",
+  "noAccountSignUp": "Нет аккаунта? Зарегистрироваться",
+  "haveAccountSignIn": "Есть аккаунт? Войти",
+
+  "profile": "Профиль",
+  "changeName": "Изменить имя",
+  "name": "Имя",
+  "phone": "Телефон",
+  "feedback": "Обратная связь",
+  "signOut": "Выйти",
+  "undefined": "Не указано",
+
+  "goodNight": "Доброй ночи",
+  "keepSleepRhythm": "Соблюдай стабильный режим сна",
+  "startSleep": "Начать сон",
+  "stopSleep": "Остановить сон",
+  "bedtimeMessage": "Отбой: {time}",
+  "@bedtimeMessage": {
+    "placeholders": {
+      "time": {}
+    }
+  },
+
+  "setYourTime": "Задать время",
+  "alarmSetMessage": "Будильник установлен на {time}",
+  "@alarmSetMessage": {
+    "placeholders": {
+      "time": {}
+    }
+  },
+
+  "writeReviewChooseQuality": "Напиши отзыв и выбери качество сна",
+  "writeSleepNotes": "Напиши заметки о сне",
+  "done": "Готово",
+  "sleepAdded": "Сон добавлен.",
+
+  "yourSleepSessions": "Сессии сна",
+  "totalSleep": "Всего сна: {hours} ч",
+  "@totalSleep": {
+    "placeholders": {
+      "hours": {}
+    }
+  },
+  "averageSleep": "Средний сон: {hours} ч",
+  "@averageSleep": {
+    "placeholders": {
+      "hours": {}
+    }
+  },
+  "delete": "Удалить",
+  "sleptAt": "Уснул(а) в {time}",
+  "@sleptAt": {
+    "placeholders": {
+      "time": {}
+    }
+  },
+  "fromTo": "С {bed} до {rise}",
+  "@fromTo": {
+    "placeholders": {
+      "bed": {},
+      "rise": {}
+    }
+  },
+  "noStatsFound": "Статистика не найдена",
+  "errorLoadingStats": "Ошибка загрузки: {message}",
+  "@errorLoadingStats": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "unknownState": "Неизвестное состояние",
+  "yourAiAssistant": "Твой AI помощник",
+
+  "sleepAnalysis": "Анализ сна",
+  "analyzingSleep": "Анализирую твой сон...",
+  "yourData": "Твои данные:",
+  "sleepHours": "🕐 Сон: {hours} часов",
+  "@sleepHours": {
+    "placeholders": {
+      "hours": {}
+    }
+  },
+  "moodLabel": "😊 Настроение: {mood}",
+  "@moodLabel": {
+    "placeholders": {
+      "mood": {}
+    }
+  },
+  "notesLabel": "📝 {notes}",
+  "@notesLabel": {
+    "placeholders": {
+      "notes": {}
+    }
+  },
+  "aiAnalysis": "Анализ от AI",
+  "errorPrefix": "Ошибка: {message}",
+  "@errorPrefix": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "errorLabel": "Ошибка: {message}",
+  "@errorLabel": {
+    "placeholders": {
+      "message": {}
+    }
+  }
 }

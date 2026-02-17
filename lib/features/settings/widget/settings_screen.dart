@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:uikit/theme/app_theme.dart';
 
+import '../../../core/l10n/app_localizations.g.dart';
 import '../../../core/util/extension/app_context_extension.dart';
 import '../../initialization/widget/depend_scope.dart';
 import '../controller/settings_controller.dart';
@@ -17,20 +18,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final AppTheme theme = context.appTheme;
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
     final SettingsController controller = DependScope.of(context).dependModel.settingsController;
     final ThemeModes currentMode = ThemeModes.values.firstWhere(
       (mode) => mode.name == controller.themeMode,
       orElse: () => ThemeModes.light,
     );
+    final String localeCode = controller.localeCode;
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
             SliverAppBar(
               backgroundColor: Colors.transparent,
               centerTitle: true,
-              title: Text('Settings', style: theme.typography.h1),
+              title: Text(l10n.settings, style: theme.typography.h1),
             ),
             const SliverToBoxAdapter(child: SizedBox(height: 24)),
             SliverPadding(
@@ -40,13 +44,77 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Theme', style: theme.typography.h3),
+                      Text(l10n.theme, style: theme.typography.h3),
                       const SizedBox(height: 12),
                       ...ThemeModes.values.map(
                         (mode) => ChoiceWidget(
-                          title: mode.name == ThemeModes.dark.name ? 'Dark' : 'Light',
+                          title: mode.name == ThemeModes.dark.name ? l10n.dark : l10n.light,
                           isSelected: mode == currentMode,
                           onTap: () => controller.setThemeMode(mode.name),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Text(l10n.backgroundAnimation, style: theme.typography.h3),
+                      const SizedBox(height: 8),
+                      DecoratedBox(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: theme.colors.surface,
+                          border: Border.all(color: theme.colors.dividerColor),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  controller.animationEnabled ? l10n.on : l10n.off,
+                                  style: theme.typography.bodyMedium.copyWith(
+                                    color: theme.colors.textPrimary,
+                                  ),
+                                ),
+                              ),
+                              Switch.adaptive(
+                                value: controller.animationEnabled,
+                                onChanged: controller.setAnimationEnabled,
+                                activeColor: theme.colors.primary,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Text(l10n.language, style: theme.typography.h3),
+                      const SizedBox(height: 8),
+                      DecoratedBox(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: theme.colors.surface,
+                          border: Border.all(color: theme.colors.dividerColor),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton<String>(
+                                    value: localeCode,
+                                    isExpanded: true,
+                                    items: [
+                                      DropdownMenuItem(value: 'ru', child: Text(l10n.languageRussian)),
+                                      DropdownMenuItem(value: 'en', child: Text(l10n.languageEnglish)),
+                                    ],
+                                    onChanged: (value) {
+                                      if (value != null) {
+                                        controller.setLocaleCode(value);
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],

@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uikit/uikit.dart';
 
 import '../../../core/router/router.dart';
+import '../../../core/l10n/app_localizations.g.dart';
 import '../../../core/util/extension/app_context_extension.dart';
 import '../../../core/util/logger/logger.dart';
 import '../../initialization/widget/depend_scope.dart';
@@ -44,11 +45,13 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
     final AppTheme style = context.appTheme;
     final LoadInfoNotifier userInfoNotifier = DependScope.of(context).dependModel.userInfoNotifier;
     final AuthBloc bloc = DependScope.of(context).dependModel.authBloc;
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         child: SingleChildScrollView(
@@ -90,7 +93,7 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    Text('profile', style: style.typography.h2, textAlign: TextAlign.center),
+                    Text(l10n.profile, style: style.typography.h2, textAlign: TextAlign.center),
                     Text(
                       _currentUser!.createdAt.split('T').first,
                       style: style.typography.h3,
@@ -114,16 +117,16 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
                             await showDialog(
                               context: context,
                               builder: (context) => AlertDialog.adaptive(
-                                title: const Text('change name'),
+                                title: Text(l10n.changeName),
                                 content: TextField(controller: emailController),
 
                                 actions: [
                                   TextButton(
-                                    child: const Text('cancel'),
+                                    child: Text(l10n.cancel),
                                     onPressed: () => Navigator.pop(context),
                                   ),
                                   TextButton(
-                                    child: const Text('save'),
+                                    child: Text(l10n.save),
                                     onPressed: () async {
                                       await userInfoNotifier.setUserName(emailController.text);
                                       if (context.mounted) {
@@ -137,19 +140,19 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
                           }
                         },
                         child: RowGeneralWidget(
-                          text: userInfoNotifier.userName ?? 'name',
+                          text: userInfoNotifier.userName ?? l10n.name,
                           icon: Icons.person,
                         ),
                       ),
                       RowGeneralWidget(text: _currentUser.email ?? '', icon: Icons.email),
-                      const RowGeneralWidget(text: 'password', icon: Icons.password),
+                      RowGeneralWidget(text: l10n.password, icon: Icons.password),
                       RowGeneralWidget(
                         text: (_currentUser.phone == null || _currentUser.phone!.trim().isEmpty)
-                            ? 'undefined'
+                            ? l10n.undefined
                             : _currentUser.phone ?? '',
                         icon: Icons.phone,
                       ),
-                      const RowGeneralWidget(text: 'feedback', icon: Icons.help),
+                      RowGeneralWidget(text: l10n.feedback, icon: Icons.help),
                     ],
                   ),
                 ),
@@ -159,7 +162,7 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
                 onTap: () => bloc.add(const AuthLogoutRequested()),
 
                 backgroundColor: style.colors.cardBackground,
-                child: const RowGeneralWidget(text: 'sign out', icon: Icons.logout_outlined),
+                child: RowGeneralWidget(text: l10n.signOut, icon: Icons.logout_outlined),
               ),
             ],
           ),

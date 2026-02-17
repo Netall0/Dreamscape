@@ -7,6 +7,7 @@ import 'package:uikit/overlay/widget/dimmed_overlay.dart';
 import 'package:uikit/uikit.dart';
 import 'package:uikit/widget/gradient_background.dart';
 
+import '../../../core/l10n/app_localizations.g.dart';
 import '../../../core/router/router.dart';
 import '../../auth/controller/bloc/auth_bloc.dart';
 import '../../initialization/model/depend_container.dart';
@@ -54,21 +55,32 @@ class _AppMaterialState extends State<AppMaterial> {
       theme: ThemeData(
         useMaterial3: true,
         scaffoldBackgroundColor: Colors.transparent,
+        brightness: Brightness.light,
         extensions: const [AppTheme.light],
       ),
       darkTheme: ThemeData(
         useMaterial3: true,
         scaffoldBackgroundColor: Colors.transparent,
+        brightness: Brightness.dark,
         extensions: const [AppTheme.dark],
       ),
       themeMode: widget.dependContainer.settingsController.themeMode == 'light'
           ? ThemeMode.light
           : ThemeMode.dark,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: Locale(widget.dependContainer.settingsController.localeCode),
       debugShowCheckedModeBanner: false,
       scrollBehavior: MyScrollBehavior(),
       builder: (context, child) => Stack(
         children: [
-          AnimatedBackground(child: child!),
+          if (widget.dependContainer.settingsController.animationEnabled)
+            AnimatedBackground(child: child!)
+          else
+            ColoredBox(
+              color: (Theme.of(context).extension<AppTheme>() ?? AppTheme.light).colors.background,
+              child: child!,
+            ),
           AnimatedBuilder(
             animation: _dimmedOverlayNotifier,
             builder: (context, child) => DimmedOverlay(_dimmedOverlayNotifier.dimLevel),

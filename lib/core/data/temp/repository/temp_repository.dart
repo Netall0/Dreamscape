@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../util/logger/logger.dart';
+import '../../../util/logger/logger.dart';
 import 'i_temp_repository.dart';
 
 final class TempRepository with LoggerMixin implements ITempRepository {

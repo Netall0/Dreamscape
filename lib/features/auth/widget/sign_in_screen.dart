@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uikit/uikit.dart';
 
+import '../../../core/l10n/app_localizations.g.dart';
 import '../../../core/util/extension/app_context_extension.dart';
 import '../../initialization/widget/depend_scope.dart';
 import '../controller/bloc/auth_bloc.dart';
@@ -28,6 +29,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
     final AppTheme theme = context.appTheme;
     final AuthBloc bloc = DependScope.of(context).dependModel.authBloc;
     final Size size = MediaQuery.sizeOf(context);
@@ -38,12 +40,13 @@ class _SignInScreenState extends State<SignInScreen> {
             ? ScaffoldMessenger.of(context).showSnackBar(
                 appFlavor!.contains('dev')
                     ? SnackBar(content: Text(state.errorMessage))
-                    : const SnackBar(content: Text('autg Failed')),
+                    : SnackBar(content: Text(l10n.authFailed)),
               )
             // ignore: unnecessary_statements
             : null;
       },
       child: Scaffold(
+        backgroundColor: Colors.transparent,
         body: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -61,7 +64,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   child: Column(
                     mainAxisAlignment: .center,
                     children: [
-                      Text('Sign in', style: context.appTheme.typography.h1),
+                      Text(l10n.signIn, style: context.appTheme.typography.h1),
                       const SizedBox(height: 24),
                       TextField(
                         controller: _emailController,
@@ -83,7 +86,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             borderSide: BorderSide(color: theme.colors.onSurface),
                           ),
                           prefixIcon: Icon(Icons.email, color: theme.colors.onSurface),
-                          labelText: 'Email',
+                          labelText: l10n.email,
                           labelStyle: theme.typography.h6.copyWith(color: theme.colors.onSurface),
                         ),
                       ),
@@ -108,7 +111,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           hoverColor: theme.colors.onSurface,
                           fillColor: theme.colors.onSurface,
                           prefixIcon: Icon(Icons.password, color: theme.colors.onSurface),
-                          labelText: 'Password',
+                          labelText: l10n.password,
                           labelStyle: theme.typography.h6.copyWith(color: theme.colors.onSurface),
                         ),
                       ),
@@ -127,7 +130,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           );
                         },
                         child: Text(
-                          'Sign in',
+                          l10n.signIn,
                           style: theme.typography.h6.copyWith(color: theme.colors.onSurface),
                         ),
                       ),
@@ -141,7 +144,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   context.push('/signin/signup');
                 },
                 child: Text(
-                  "Don't have an account? Sign up",
+                  l10n.noAccountSignUp,
                   style: theme.typography.h6.copyWith(color: theme.colors.onSurface),
                 ),
               ),
