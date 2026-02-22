@@ -131,5 +131,60 @@
     "placeholders": {
       "message": {}
     }
-  }
+  },
+  "sessionsCount": "Сессий: {count}",
+  "@sessionsCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "shortestSleep": "Минимальный сон: {hours} ч",
+  "@shortestSleep": {
+    "placeholders": {
+      "hours": {}
+    }
+  },
+  "longestSleep": "Максимальный сон: {hours} ч",
+  "@longestSleep": {
+    "placeholders": {
+      "hours": {}
+    }
+  },
+  "lastSleep": "Последний сон: {hours} ч, {quality}",
+  "@lastSleep": {
+    "placeholders": {
+      "hours": {},
+      "quality": {}
+    }
+  },
+  "syncPhoneDataTitle": "Обновить данные с телефона?",
+  "syncPhoneDataMessage": "Загрузить последние данные здоровья с телефона/часов?",
+  "updateData": "Обновить",
+  "notNow": "Позже",
+  "syncPhoneDataSuccess": "Данные телефона обновлены",
+  "syncPhoneDataFailed": "Не удалось обновить данные телефона",
+  "phoneDataTitle": "Данные телефона/часов",
+  "stepsLabel": "Шаги: {steps}",
+  "@stepsLabel": {
+    "placeholders": {
+      "steps": {}
+    }
+  },
+  "caloriesLabel": "Калории: {calories}",
+  "@caloriesLabel": {
+    "placeholders": {
+      "calories": {}
+    }
+  },
+  "avgHeartRateLabel": "Средний пульс: {heartRate}",
+  "@avgHeartRateLabel": {
+    "placeholders": {
+      "heartRate": {}
+    }
+  },
+  "noPhoneDataTitle": "Пока нет данных здоровья",
+  "noPhoneDataMessage": "За сегодня нет данных с телефона/часов. Загрузить тестовые данные для проверки экрана?",
+  "loadTestData": "Загрузить тестовые",
+  "testDataLoaded": "Тестовые данные загружены",
+  "testDataLoadFailed": "Не удалось загрузить тестовые данные"
 }

@@ -1,0 +1,15 @@
+name: permit_plugin
+description: Native permission handling for Flutter.
+publish_to: none
+version: 1.0.0+1
+environment:
+  sdk: ">=2.17.0 <3.0.0"
+dependencies:
+  flutter:
+    sdk: flutter
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: permit.plugin
+        pluginClass: PermitPlugin

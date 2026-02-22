@@ -27,7 +27,9 @@ final class TempRepository with LoggerMixin implements ITempRepository {
   Future<TimeOfDay?> getBedTime() async {
     try {
       final int? minutes = _sharedPreferences.getInt(_bedTimeKey);
-      if (minutes == null) return null;
+      if (minutes == null) {
+        return null;
+      }
       return TimeOfDay(hour: minutes ~/ 60, minute: minutes % 60);
     } on Object catch (e, st) {
       logger.error('Error getting bed time: $e', stackTrace: st);

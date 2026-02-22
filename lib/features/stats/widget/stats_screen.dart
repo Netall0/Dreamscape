@@ -3,9 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:uikit/uikit.dart';
 
+import '../../../core/data/watch/watch_service.dart';
+import '../../../core/l10n/app_localizations.g.dart';
 import '../../../core/util/extension/app_context_extension.dart';
 import '../../../core/util/logger/logger.dart';
-import '../../../core/l10n/app_localizations.g.dart';
 import '../../initialization/widget/depend_scope.dart';
 import '../controller/bloc/stats_list_bloc.dart';
 import '../controller/notifier/stats_calculate_notifier.dart';
@@ -20,6 +21,129 @@ class StatsScreen extends StatefulWidget {
 }
 
 class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
+  final WatchService _watchService = WatchService();
+  Map<String, dynamic>? _phoneHealthData;
+  bool _isSyncingPhoneData = false;
+  bool _askedForPhoneSync = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCachedPhoneData();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _askForPhoneDataSync());
+  }
+
+  Future<void> _loadCachedPhoneData() async {
+    final Map<String, dynamic> cachedData = await _watchService.loadDailySnapshot();
+    if (!mounted || cachedData.isEmpty) {
+      return;
+    }
+    setState(() {
+      _phoneHealthData = cachedData;
+    });
+  }
+
+  Future<void> _askForPhoneDataSync() async {
+    if (!mounted || _askedForPhoneSync) {
+      return;
+    }
+    _askedForPhoneSync = true;
+
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final bool shouldSync =
+        await showDialog<bool>(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+              title: Text(l10n.syncPhoneDataTitle),
+              content: Text(l10n.syncPhoneDataMessage),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: Text(l10n.notNow),
+                ),
+                FilledButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  child: Text(l10n.updateData),
+                ),
+              ],
+            ),
+        ) ??
+        false;
+
+    if (shouldSync) {
+      await _syncPhoneData();
+    }
+  }
+
+  Future<void> _syncPhoneData() async {
+    if (_isSyncingPhoneData) {
+      return;
+    }
+
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    setState(() {
+      _isSyncingPhoneData = true;
+    });
+
+    try {
+      final HealthAuthResult authResult = await _watchService.requestAuthorization();
+      if (!authResult.granted) {
+        if (!mounted) {
+          return;
+        }
+        final String reason = switch (authResult.reason) {
+          HealthAuthFailureReason.healthConnectNotAvailable =>
+            'Health Connect не установлен или недоступен. Установи/обнови его и повтори синхронизацию.',
+          HealthAuthFailureReason.activityRecognitionDenied =>
+            'Разрешение на распознавание активности отклонено.',
+          HealthAuthFailureReason.activityRecognitionPermanentlyDenied =>
+            'Разрешение на распознавание активности отклонено навсегда. Открой настройки приложения.',
+          HealthAuthFailureReason.healthPermissionDenied =>
+            'Доступ к данным здоровья не предоставлен в Health Connect/Google Fit.',
+          null => 'Неизвестная причина.',
+        };
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${l10n.syncPhoneDataFailed} $reason')),
+        );
+        return;
+      }
+
+      final Map<String, dynamic> healthData = await _watchService.fetchTodayData();
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _phoneHealthData = healthData;
+      });
+
+      if (_watchService.isDataEmpty(healthData)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.noPhoneDataMessage)),
+        );
+        return;
+      } else {
+        await _watchService.saveDailySnapshot(healthData);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.syncPhoneDataSuccess)),
+        );
+      }
+    } on Object catch (e, st) {
+      logger.error('Phone sync failed: $e', stackTrace: st);
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.syncPhoneDataFailed)));
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSyncingPhoneData = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
@@ -30,7 +154,7 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      floatingActionButtonLocation: .centerFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: SizedBox(
         height: 50,
         width: size.width * 0.6,
@@ -41,14 +165,19 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
           ),
           child: FloatingActionButton(
             onPressed: () {
+              final List<StatsModel> sessions = switch (bloc.state) {
+                StatsLoaded(:final List<StatsModel> statsModelList) => statsModelList,
+                _ => <StatsModel>[],
+              };
               Navigator.push(
                 context,
                 // ignore: inference_failure_on_instance_creation
                 MaterialPageRoute(
                   builder: (_) => SleepResultScreen(
-                    sleepHours: statsNotifier.totalSleepHours,
-                    mood: l10n.goodNight,
-                    description: l10n.keepSleepRhythm,
+                    sessions: sessions,
+                    totalSleepHours: statsNotifier.totalSleepHours,
+                    averageSleepHours: statsNotifier.averageSleepHours,
+                    phoneHealthData: _phoneHealthData,
                   ),
                 ),
               );
@@ -68,6 +197,18 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
             pinned: true,
             backgroundColor: Colors.transparent,
             expandedHeight: 100,
+            actions: [
+              IconButton(
+                onPressed: _isSyncingPhoneData ? null : _syncPhoneData,
+                icon: _isSyncingPhoneData
+                    ? const SizedBox.square(
+                        dimension: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.sync),
+                tooltip: l10n.updateData,
+              ),
+            ],
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
                 l10n.yourSleepSessions,
@@ -102,6 +243,49 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
                           l10n.averageSleep(averageSleepHours.toStringAsFixed(1)),
                           style: theme.typography.h4,
                         ),
+                        const SizedBox(height: 8),
+                        Text(
+                          l10n.sessionsCount(statsNotifier.sessionCount.toString()),
+                          style: theme.typography.h5,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          l10n.shortestSleep(
+                            statsNotifier.shortestSleepHours.toStringAsFixed(1),
+                          ),
+                          style: theme.typography.h5,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          l10n.longestSleep(
+                            statsNotifier.longestSleepHours.toStringAsFixed(1),
+                          ),
+                          style: theme.typography.h5,
+                        ),
+                        if (_phoneHealthData != null) ...[
+                          const SizedBox(height: 12),
+                          Text(l10n.phoneDataTitle, style: theme.typography.h4),
+                          const SizedBox(height: 8),
+                          Text(
+                            l10n.stepsLabel('${_phoneHealthData!['steps'] ?? 0}'),
+                            style: theme.typography.h5,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            l10n.caloriesLabel('${_phoneHealthData!['calories'] ?? 0}'),
+                            style: theme.typography.h5,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            l10n.avgHeartRateLabel('${_phoneHealthData!['avgHeartRate'] ?? 0}'),
+                            style: theme.typography.h5,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            l10n.sleepHours('${_phoneHealthData!['sleepHours'] ?? 0}'),
+                            style: theme.typography.h5,
+                          ),
+                        ],
                       ],
                     ),
                   ),

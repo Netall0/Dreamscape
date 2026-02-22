@@ -217,4 +217,76 @@ class AppLocalizationsEn extends AppLocalizations {
   String errorLabel(Object message) {
     return 'Error: $message';
   }
+
+  @override
+  String sessionsCount(Object count) {
+    return 'Sessions: $count';
+  }
+
+  @override
+  String shortestSleep(Object hours) {
+    return 'Shortest sleep: $hours h';
+  }
+
+  @override
+  String longestSleep(Object hours) {
+    return 'Longest sleep: $hours h';
+  }
+
+  @override
+  String lastSleep(Object hours, Object quality) {
+    return 'Last sleep: $hours h, $quality';
+  }
+
+  @override
+  String get syncPhoneDataTitle => 'Update phone health data?';
+
+  @override
+  String get syncPhoneDataMessage => 'Load latest data from phone/watch now?';
+
+  @override
+  String get updateData => 'Update';
+
+  @override
+  String get notNow => 'Not now';
+
+  @override
+  String get syncPhoneDataSuccess => 'Phone health data updated';
+
+  @override
+  String get syncPhoneDataFailed => 'Failed to update phone health data';
+
+  @override
+  String get phoneDataTitle => 'Phone/watch data';
+
+  @override
+  String stepsLabel(Object steps) {
+    return 'Steps: $steps';
+  }
+
+  @override
+  String caloriesLabel(Object calories) {
+    return 'Calories: $calories';
+  }
+
+  @override
+  String avgHeartRateLabel(Object heartRate) {
+    return 'Avg heart rate: $heartRate';
+  }
+
+  @override
+  String get noPhoneDataTitle => 'No health data yet';
+
+  @override
+  String get noPhoneDataMessage =>
+      'No phone/watch data found for today. Load test data to verify the screen now?';
+
+  @override
+  String get loadTestData => 'Load test data';
+
+  @override
+  String get testDataLoaded => 'Test health data loaded';
+
+  @override
+  String get testDataLoadFailed => 'Failed to load test health data';
 }

@@ -48,5 +48,5 @@ final class AuthError extends AuthState {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is AuthAuthenticated && errorMessage == other.errorMessage;
+      other is AuthError && errorMessage == other.errorMessage;
 }

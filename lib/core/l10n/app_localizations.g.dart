@@ -464,6 +464,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error: {message}'**
   String errorLabel(Object message);
+
+  /// No description provided for @sessionsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Sessions: {count}'**
+  String sessionsCount(Object count);
+
+  /// No description provided for @shortestSleep.
+  ///
+  /// In en, this message translates to:
+  /// **'Shortest sleep: {hours} h'**
+  String shortestSleep(Object hours);
+
+  /// No description provided for @longestSleep.
+  ///
+  /// In en, this message translates to:
+  /// **'Longest sleep: {hours} h'**
+  String longestSleep(Object hours);
+
+  /// No description provided for @lastSleep.
+  ///
+  /// In en, this message translates to:
+  /// **'Last sleep: {hours} h, {quality}'**
+  String lastSleep(Object hours, Object quality);
+
+  /// No description provided for @syncPhoneDataTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update phone health data?'**
+  String get syncPhoneDataTitle;
+
+  /// No description provided for @syncPhoneDataMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Load latest data from phone/watch now?'**
+  String get syncPhoneDataMessage;
+
+  /// No description provided for @updateData.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get updateData;
+
+  /// No description provided for @notNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get notNow;
+
+  /// No description provided for @syncPhoneDataSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone health data updated'**
+  String get syncPhoneDataSuccess;
+
+  /// No description provided for @syncPhoneDataFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update phone health data'**
+  String get syncPhoneDataFailed;
+
+  /// No description provided for @phoneDataTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone/watch data'**
+  String get phoneDataTitle;
+
+  /// No description provided for @stepsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Steps: {steps}'**
+  String stepsLabel(Object steps);
+
+  /// No description provided for @caloriesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Calories: {calories}'**
+  String caloriesLabel(Object calories);
+
+  /// No description provided for @avgHeartRateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg heart rate: {heartRate}'**
+  String avgHeartRateLabel(Object heartRate);
+
+  /// No description provided for @noPhoneDataTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No health data yet'**
+  String get noPhoneDataTitle;
+
+  /// No description provided for @noPhoneDataMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'No phone/watch data found for today. Load test data to verify the screen now?'**
+  String get noPhoneDataMessage;
+
+  /// No description provided for @loadTestData.
+  ///
+  /// In en, this message translates to:
+  /// **'Load test data'**
+  String get loadTestData;
+
+  /// No description provided for @testDataLoaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Test health data loaded'**
+  String get testDataLoaded;
+
+  /// No description provided for @testDataLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load test health data'**
+  String get testDataLoadFailed;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

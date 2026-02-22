@@ -114,11 +114,13 @@ final class AuthRepository with LoggerMixin implements IAuthRepository {
   @override
   Future<void> signInWithEmail(String email, String password) async {
     try {
-      await _supabase.auth.signInWithPassword(password: password, email: email);
+      await _runWithRetry(
+        () => _supabase.auth.signInWithPassword(password: password, email: email),
+      );
       logger.info('sign in successful');
     } on Object catch (e, st) {
       logger.error('failed in sign in ', error: e, stackTrace: st);
-      rethrow;
+      throw Exception(_mapAuthError(e));
     }
   }
 
@@ -131,18 +133,18 @@ final class AuthRepository with LoggerMixin implements IAuthRepository {
   @override
   Future<void> signUpWithEmail(String email, String password) async {
     try {
-      await _supabase.auth.signUp(password: password, email: email);
+      await _runWithRetry(
+        () => _supabase.auth.signUp(password: password, email: email),
+      );
       logger.info('sign up successful');
     } on Object catch (e, st) {
       logger.error('failed in sign Up', error: e, stackTrace: st);
-      rethrow;
+      throw Exception(_mapAuthError(e));
     }
   }
 
   @override
-  Future<String?> getUserName() async {
-    return _supabase.auth.currentUser?.userMetadata?['name'].toString();
-  }
+  Future<String?> getUserName() async => _supabase.auth.currentUser?.userMetadata?['name'].toString();
 
   @override
   Future<void> setUserName(String newUserName) async {
@@ -154,5 +156,37 @@ final class AuthRepository with LoggerMixin implements IAuthRepository {
       logger.error('error in setting user name', error: e, stackTrace: st);
       rethrow;
     }
+  }
+
+  String _mapAuthError(Object error) {
+    if (error is AuthRetryableFetchException || error is SocketException) {
+      return 'Сеть недоступна или блокируется (VPN/прокси). Отключи VPN или смени сервер и повтори.';
+    }
+    if (error is AuthApiException) {
+      return error.message;
+    }
+    return error.toString();
+  }
+
+  Future<T> _runWithRetry<T>(Future<T> Function() action) async {
+    Object? lastError;
+    StackTrace? lastStackTrace;
+
+    for (var attempt = 0; attempt < 3; attempt++) {
+      try {
+        return await action();
+      } on Object catch (e, st) {
+        lastError = e;
+        lastStackTrace = st;
+        if (e is! AuthRetryableFetchException && e is! SocketException) {
+          rethrow;
+        }
+        if (attempt < 2) {
+          await Future<void>.delayed(Duration(milliseconds: 400 * (attempt + 1)));
+        }
+      }
+    }
+
+    Error.throwWithStackTrace(lastError!, lastStackTrace!);
   }
 }

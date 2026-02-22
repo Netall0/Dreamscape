@@ -52,7 +52,7 @@ class AuthSignInRequested extends AuthEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is AuthChechRequested &&
+      other is AuthSignInRequested &&
           email == other.email &&
           password == other.password;
 }
@@ -86,7 +86,7 @@ class AuthLogoutRequested extends AuthEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is AuthChechRequested &&
+      other is AuthLogoutRequested &&
           email == other.email &&
           password == other.password;
 }

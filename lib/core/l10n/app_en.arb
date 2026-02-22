@@ -130,5 +130,60 @@
     "placeholders": {
       "message": {}
     }
-  }
+  },
+  "sessionsCount": "Sessions: {count}",
+  "@sessionsCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "shortestSleep": "Shortest sleep: {hours} h",
+  "@shortestSleep": {
+    "placeholders": {
+      "hours": {}
+    }
+  },
+  "longestSleep": "Longest sleep: {hours} h",
+  "@longestSleep": {
+    "placeholders": {
+      "hours": {}
+    }
+  },
+  "lastSleep": "Last sleep: {hours} h, {quality}",
+  "@lastSleep": {
+    "placeholders": {
+      "hours": {},
+      "quality": {}
+    }
+  },
+  "syncPhoneDataTitle": "Update phone health data?",
+  "syncPhoneDataMessage": "Load latest data from phone/watch now?",
+  "updateData": "Update",
+  "notNow": "Not now",
+  "syncPhoneDataSuccess": "Phone health data updated",
+  "syncPhoneDataFailed": "Failed to update phone health data",
+  "phoneDataTitle": "Phone/watch data",
+  "stepsLabel": "Steps: {steps}",
+  "@stepsLabel": {
+    "placeholders": {
+      "steps": {}
+    }
+  },
+  "caloriesLabel": "Calories: {calories}",
+  "@caloriesLabel": {
+    "placeholders": {
+      "calories": {}
+    }
+  },
+  "avgHeartRateLabel": "Avg heart rate: {heartRate}",
+  "@avgHeartRateLabel": {
+    "placeholders": {
+      "heartRate": {}
+    }
+  },
+  "noPhoneDataTitle": "No health data yet",
+  "noPhoneDataMessage": "No phone/watch data found for today. Load test data to verify the screen now?",
+  "loadTestData": "Load test data",
+  "testDataLoaded": "Test health data loaded",
+  "testDataLoadFailed": "Failed to load test health data"
 }

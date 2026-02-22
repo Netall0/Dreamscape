@@ -50,10 +50,14 @@ class _SleepScreenState extends State<SleepScreen>
 
     try {
       await _player.setAsset(Assets.sound.rain);
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
 
       await _player.setLoopMode(LoopMode.one);
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
 
       _player.play();
 

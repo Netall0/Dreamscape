@@ -217,4 +217,76 @@ class AppLocalizationsRu extends AppLocalizations {
   String errorLabel(Object message) {
     return 'Ошибка: $message';
   }
+
+  @override
+  String sessionsCount(Object count) {
+    return 'Сессий: $count';
+  }
+
+  @override
+  String shortestSleep(Object hours) {
+    return 'Минимальный сон: $hours ч';
+  }
+
+  @override
+  String longestSleep(Object hours) {
+    return 'Максимальный сон: $hours ч';
+  }
+
+  @override
+  String lastSleep(Object hours, Object quality) {
+    return 'Последний сон: $hours ч, $quality';
+  }
+
+  @override
+  String get syncPhoneDataTitle => 'Обновить данные с телефона?';
+
+  @override
+  String get syncPhoneDataMessage => 'Загрузить последние данные здоровья с телефона/часов?';
+
+  @override
+  String get updateData => 'Обновить';
+
+  @override
+  String get notNow => 'Позже';
+
+  @override
+  String get syncPhoneDataSuccess => 'Данные телефона обновлены';
+
+  @override
+  String get syncPhoneDataFailed => 'Не удалось обновить данные телефона';
+
+  @override
+  String get phoneDataTitle => 'Данные телефона/часов';
+
+  @override
+  String stepsLabel(Object steps) {
+    return 'Шаги: $steps';
+  }
+
+  @override
+  String caloriesLabel(Object calories) {
+    return 'Калории: $calories';
+  }
+
+  @override
+  String avgHeartRateLabel(Object heartRate) {
+    return 'Средний пульс: $heartRate';
+  }
+
+  @override
+  String get noPhoneDataTitle => 'Пока нет данных здоровья';
+
+  @override
+  String get noPhoneDataMessage =>
+      'За сегодня нет данных с телефона/часов. Загрузить тестовые данные для проверки экрана?';
+
+  @override
+  String get loadTestData => 'Загрузить тестовые';
+
+  @override
+  String get testDataLoaded => 'Тестовые данные загружены';
+
+  @override
+  String get testDataLoadFailed => 'Не удалось загрузить тестовые данные';
 }

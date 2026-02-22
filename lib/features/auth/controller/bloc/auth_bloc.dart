@@ -18,6 +18,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> with LoggerMixin {
       super(const AuthInitial()) {
     _authSubscription = authRepository.getAuthStateChanges().listen(
       (user) => add(AuthUserChanged(user)),
+      onError: (Object error, StackTrace stackTrace) {
+        logger.error('Auth state stream failed: $error', stackTrace: stackTrace);
+        add(const AuthUserChanged(null));
+      },
     );
 
     on<AuthEvent>((event, emit) {
@@ -48,7 +52,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> with LoggerMixin {
     try {
       await _authRepository.signOut();
     } on Object catch (e) {
-      emit(AuthError(errorMessage: e.toString()));
+      emit(AuthError(errorMessage: _toErrorMessage(e)));
     }
   }
 
@@ -60,7 +64,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> with LoggerMixin {
     try {
       await _authRepository.signUpWithEmail(event.email, event.password);
     } on Object catch (e) {
-      emit(AuthError(errorMessage: e.toString()));
+      emit(AuthError(errorMessage: _toErrorMessage(e)));
     }
   }
 
@@ -72,7 +76,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> with LoggerMixin {
     try {
       await _authRepository.signInWithEmail(event.email, event.password);
     } on Object catch (e) {
-      emit(AuthError(errorMessage: e.toString()));
+      emit(AuthError(errorMessage: _toErrorMessage(e)));
     }
   }
 
@@ -88,13 +92,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> with LoggerMixin {
           : emit(AuthAuthenticated(user: user));
     } on Object catch (e, st) {
       logger.error('Error in _authChechRequested: $e', stackTrace: st);
-      emit(AuthError(errorMessage: e.toString()));
+      emit(AuthError(errorMessage: _toErrorMessage(e)));
     }
+  }
+
+  String _toErrorMessage(Object error) {
+    final String raw = error.toString();
+    return raw.replaceFirst('Exception: ', '').trim();
   }
 
   @override
   Future<void> close() {
-    _authSubscription.cancel();
+    unawaited(_authSubscription.cancel());
     return super.close();
   }
 }

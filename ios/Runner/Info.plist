@@ -4,6 +4,10 @@
   <dict>
     <key>NSPhotoLibraryUsageDescription</key>
     <string></string>
+    <key>NSHealthShareUsageDescription</key>
+    <string>Нам нужен доступ к данным о сне</string>
+    <key>NSHealthUpdateUsageDescription</key>
+    <string>Нам нужен доступ к данным о сне</string>
     <key>CFBundleDevelopmentRegion</key>
     <string>$(DEVELOPMENT_LANGUAGE)</string>
     <key>CFBundleDisplayName</key>
