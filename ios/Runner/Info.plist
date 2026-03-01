@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
   <dict>
+    <key>NSHealthShareUsageDescription</key>
+    <string>We read your health data to show stats in the app.</string>
+    <key>NSHealthUpdateUsageDescription</key>
+    <string>We may write health data when you enable related features.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string></string>
     <key>CFBundleDevelopmentRegion</key>

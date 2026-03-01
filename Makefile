@@ -42,7 +42,7 @@ clean:
 # ========================
 # Dev run (pass keys in command line)
 run-dev:
-	$(FLUTTER) run --debug --flavor dev lib/targets/dev.dart \
+	$(FLUTTER) run --debug --flavor dev lib/core/targets/dev.dart \
 		--dart-define=SUPABASE_URL=$(SUPABASE_URL) \
 		--dart-define=SUPABASE_ANON_KEY=$(SUPABASE_ANON_KEY)
 # Prod run (pass keys in command line)
@@ -54,11 +54,11 @@ run-prod:
 # Builds
 # ========================
 build-apk:
-	$(FLUTTER) build apk --release --flavor prod lib/main_prod.dart \
+	$(FLUTTER) build apk --release --flavor prod lib/core/targets/prod.dart \
 		--dart-define=SUPABASE_URL=$(SUPABASE_URL) \
 		--dart-define=SUPABASE_ANON_KEY=$(ANON_KEY)
 build-ios:
-	$(FLUTTER) build ipa --release --flavor prod lib/main_prod.dart \
+	$(FLUTTER) build ipa --release --flavor prod lib/core/targets/prod.dart \
 		--dart-define=SUPABASE_URL=$(SUPABASE_URL) \
 		--dart-define=SUPABASE_ANON_KEY=$(ANON_KEY)
 # ========================

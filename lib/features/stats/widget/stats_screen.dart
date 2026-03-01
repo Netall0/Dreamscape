@@ -19,6 +19,35 @@ class StatsScreen extends StatefulWidget {
 
 class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _addStats();
+    });
+
+    logger.debug('init_state');
+  }
+
+  Future<void> _addStats() => showDialog(
+    context: context,
+    builder: (context) => AlertDialog.adaptive(
+      title: const Text('Add Stats'),
+      content: const Text('Do you want to add stats from Health?'),
+      actions: [
+        TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('No')),
+        ElevatedButton(
+          onPressed: () {
+            DependScope.of(context).dependModel.statsBloc.add(StatsEventAddFromHealth());
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('')));
+            Navigator.of(context).pop();
+          },
+          child: const Text('Yes'),
+        ),
+      ],
+    ),
+  );
+
+  @override
   Widget build(BuildContext context) {
     final AppTheme theme = context.appTheme;
     final StatsListBloc bloc = DependScope.of(context).dependModel.statsBloc;
@@ -130,13 +159,16 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
                 child: Center(child: CircularProgressIndicator.adaptive()),
               ),
               StatsEmpty() => SliverList(
-                delegate: SliverChildBuilderDelegate(childCount: 1, (context, index) => AdaptiveCard(
+                delegate: SliverChildBuilderDelegate(
+                  childCount: 1,
+                  (context, index) => AdaptiveCard(
                     margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     padding: const EdgeInsets.all(16),
                     backgroundColor: theme.colors.cardBackground,
                     border: Border.all(color: theme.colors.dividerColor),
                     child: Text('No stats found', style: theme.typography.h4),
-                  )),
+                  ),
+                ),
               ),
               StatsError(:final message) => SliverFillRemaining(
                 child: Center(

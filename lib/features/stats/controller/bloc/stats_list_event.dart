@@ -20,3 +20,5 @@ final class StatsEventAddStats extends StatsEvent {
   StatsEventAddStats({required this.statsModel});
   final StatsModel statsModel;
 }
+
+final class StatsEventAddFromHealth extends StatsEvent {}

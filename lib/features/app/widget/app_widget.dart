@@ -26,11 +26,13 @@ class _AppMaterialState extends State<AppMaterial> {
   late final GoRouter _router;
   final DimmerOverlayNotifier _dimmedOverlayNotifier = DimmerOverlayNotifier();
   late final AuthBloc _authBloc;
+  
 
   @override
   void initState() {
     _authBloc = DependScope.of(context).dependModel.authBloc;
     _router = AppRouter.router(_authBloc, _dimmedOverlayNotifier);
+
     super.initState();
   }
 

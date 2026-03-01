@@ -76,9 +76,7 @@ class _SleepScreenState extends State<SleepScreen>
     final StreamClockController clockStream = DependScope.of(
       context,
     ).platformDependContainer.clockNotifier;
-    final AlarmService alarmService = DependScope.of(
-      context,
-    ).platformDependContainer.alarmService;
+    final AlarmService alarmService = DependScope.of(context).platformDependContainer.alarmService;
     final TempRepository tempRep = DependScope.of(context).dependModel.tempRepository;
     final StatsCalculateNotifier statsNotifier = DependScope.of(context).dependModel.statsNotifier;
 
@@ -119,10 +117,7 @@ class _SleepScreenState extends State<SleepScreen>
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(
-                        color: theme.colors.primary,
-                        width: 6,
-                      ),
+                      border: Border.all(color: theme.colors.primary, width: 6),
                     ),
                   ),
                 ),
@@ -132,10 +127,7 @@ class _SleepScreenState extends State<SleepScreen>
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(
-                        color: theme.colors.secondary,
-                        width: 4,
-                      ),
+                      border: Border.all(color: theme.colors.secondary, width: 4),
                     ),
                   ),
                 ),
@@ -156,10 +148,8 @@ class _SleepScreenState extends State<SleepScreen>
 
                           final bool isPlaying = state?.playing ?? false;
                           final bool isLoading =
-                              state?.processingState ==
-                                  ProcessingState.loading ||
-                              state?.processingState ==
-                                  ProcessingState.buffering;
+                              state?.processingState == ProcessingState.loading ||
+                              state?.processingState == ProcessingState.buffering;
 
                           return IconButton(
                             alignment: .center,
@@ -207,9 +197,7 @@ class _SleepScreenState extends State<SleepScreen>
                       Icon(Icons.play_arrow, color: theme.colors.onPrimary),
                       Text(
                         'остановить сон',
-                        style: theme.typography.h5.copyWith(
-                          color: theme.colors.onPrimary,
-                        ),
+                        style: theme.typography.h5.copyWith(color: theme.colors.onPrimary),
                       ),
                     ],
                   ),
@@ -234,32 +222,32 @@ class _SleepScreenState extends State<SleepScreen>
     await showDialog(
       context: context,
       builder: (context) => AlertDialog.adaptive(
-          title: const Text('chose your sleep quality'),
-          content: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: SleepQuality.values.map((e) => AdaptiveCard(
-                onTap: () {
-                  sleepQuality = e;
-                  context.pop();
-                },
-                padding: const .all(16),
-                margin: const .all(4),
-                child: SizedBox(
-                  height: MediaQuery.sizeOf(context).height * 0.1,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [e.icon, Text(e.name)],
+        title: const Text('chose your sleep quality'),
+        content: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: SleepQuality.values
+              .map(
+                (e) => AdaptiveCard(
+                  onTap: () {
+                    sleepQuality = e;
+                    context.pop();
+                  },
+                  padding: const .all(16),
+                  margin: const .all(4),
+                  child: SizedBox(
+                    height: MediaQuery.sizeOf(context).height * 0.1,
+                    child: Column(mainAxisSize: MainAxisSize.min, children: [e.icon, Text(e.name)]),
                   ),
                 ),
-              )).toList(),
-          ),
+              )
+              .toList(),
         ),
+      ),
     );
 
     logger.debug('time rise ${riseTime.hour}:${riseTime.minute}');
     final TimeOfDay bedTime =
-        await tempRep.getBedTime() ??
-        TimeOfDay(hour: riseTime.hour, minute: riseTime.minute);
+        await tempRep.getBedTime() ?? TimeOfDay(hour: riseTime.hour, minute: riseTime.minute);
 
     final TimeOfDay sleepDuration = bedTime.calculationSleepTime(riseTime);
 
@@ -268,6 +256,7 @@ class _SleepScreenState extends State<SleepScreen>
     bloc.add(
       StatsEventAddStats(
         statsModel: StatsModel(
+          sleepData: DateTime.now(),
           bedTime: bedTime,
           riseTime: TimeOfDay(hour: riseTime.hour, minute: riseTime.minute),
           sleepQuality: sleepQuality,
@@ -277,9 +266,9 @@ class _SleepScreenState extends State<SleepScreen>
       ),
     );
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('congratulations!!!, sleep added')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('congratulations!!!, sleep added')));
 
       context.pop();
     }

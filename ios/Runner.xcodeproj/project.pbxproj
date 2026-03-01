@@ -339,6 +339,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 94B8449F4AD06A3F99B2D5D9 /* devProfile.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = "Profile-dev";
@@ -347,6 +348,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 786BD791356A27C820DE1013 /* devDebug.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = "Debug-dev";
@@ -409,6 +411,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
@@ -547,6 +550,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = B072AC2D2465A95CD454B192 /* prodRelease.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = "Release-prod";
@@ -625,6 +629,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4298B8CF5A939693E5E5D7DA /* prodProfile.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = "Profile-prod";
@@ -893,6 +898,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
@@ -915,6 +921,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
@@ -1079,6 +1086,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = B0DE248333C890DFBC458804 /* devRelease.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = "Release-dev";
@@ -1087,6 +1095,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A89475BFD4F9B76C40582622 /* prodDebug.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = "Debug-prod";

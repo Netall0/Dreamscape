@@ -4,6 +4,8 @@ import 'package:drift/drift.dart';
 class SleepInfoTable extends Table {
   IntColumn get id => integer().autoIncrement()();
 
+  IntColumn get sleepData => integer().nullable()();
+
   IntColumn get bedTime => integer().nullable()();
   IntColumn get riseTime => integer().nullable()();
 

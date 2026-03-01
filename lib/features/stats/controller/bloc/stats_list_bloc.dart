@@ -16,17 +16,27 @@ class StatsListBloc extends Bloc<StatsEvent, StatsState> with LoggerMixin {
         StatsEventAddStats() => _onAddStats(event, emit),
         StatsEventClearAll() => _onClearAll(event, emit),
         StatsEventDeleteById() => _onDeleteById(event, emit),
+        StatsEventAddFromHealth() => _onAddFromHealth(event, emit),
         _ => null,
       },
-      // transformer:
+      //TODO transformer for debouncing, throttling, sequential processing
     );
   }
   final StatsRepository _statsRepository;
 
-  Future<void> _onDeleteById(
-    StatsEventDeleteById event,
-    Emitter<StatsState> emit,
-  ) async {
+  Future<void> _onAddFromHealth(StatsEventAddFromHealth event, Emitter<StatsState> emit) async {
+    try {
+      await _statsRepository.healthRequestPermission();
+      await _statsRepository.addFromHealth();
+      logger.debug('StatsModel added from health data');
+      emit(StatsLoaded(await _statsRepository.getSleepModel()));
+    } on Object catch (e, st) {
+      emit(StatsError(e.toString()));
+      logger.error('Error in _onAddFromHealth: $e', stackTrace: st);
+    }
+  }
+
+  Future<void> _onDeleteById(StatsEventDeleteById event, Emitter<StatsState> emit) async {
     try {
       await _statsRepository.deleteSleepModel(event.id);
       logger.debug('StatsModel deleted with id: ${event.id}');
@@ -42,10 +52,7 @@ class StatsListBloc extends Bloc<StatsEvent, StatsState> with LoggerMixin {
     }
   }
 
-  Future<void> _onClearAll(
-    StatsEventClearAll event,
-    Emitter<StatsState> emit,
-  ) async {
+  Future<void> _onClearAll(StatsEventClearAll event, Emitter<StatsState> emit) async {
     try {
       await _statsRepository.clearAll();
       logger.debug('All stats cleared');
@@ -56,10 +63,7 @@ class StatsListBloc extends Bloc<StatsEvent, StatsState> with LoggerMixin {
     }
   }
 
-  Future<void> _onAddStats(
-    StatsEventAddStats event,
-    Emitter<StatsState> emit,
-  ) async {
+  Future<void> _onAddStats(StatsEventAddStats event, Emitter<StatsState> emit) async {
     try {
       await _statsRepository.addSleepModel(event.statsModel);
       logger.debug('StatsModel added: ${event.statsModel}');
@@ -70,10 +74,7 @@ class StatsListBloc extends Bloc<StatsEvent, StatsState> with LoggerMixin {
     }
   }
 
-  Future<void> _onLoadStats(
-    StatsEventLoadStats event,
-    Emitter<StatsState> emit,
-  ) async {
+  Future<void> _onLoadStats(StatsEventLoadStats event, Emitter<StatsState> emit) async {
     emit(StatsLoading());
     try {
       final List<StatsModel> statsModelList = await _statsRepository.getSleepModel();
