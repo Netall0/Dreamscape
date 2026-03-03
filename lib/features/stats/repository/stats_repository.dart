@@ -144,7 +144,16 @@ final class StatsRepository with LoggerMixin implements IStatsRepository {
         types: _types,
       );
 
-      final List<HealthDataPoint> unique = _health.removeDuplicates(data);
+      final List<HealthDataPoint> unique = _health
+          .removeDuplicates(data)
+          .fold<Map<String, HealthDataPoint>>(<String, HealthDataPoint>{}, (acc, p) {
+            final key =
+                '${p.type.name}_${p.dateFrom.millisecondsSinceEpoch}_${p.dateTo.millisecondsSinceEpoch}_${p.value}';
+            acc.putIfAbsent(key, () => p);
+            return acc;
+          })
+          .values
+          .toList(growable: false);
 
       final int steps = unique
           .where((p) => p.type == HealthDataType.STEPS)
@@ -177,7 +186,7 @@ final class StatsRepository with LoggerMixin implements IStatsRepository {
       final int sleepData = midnight.millisecondsSinceEpoch;
 
       final sleepModel = StatsModel(
-        sleepData: DateTime.fromMillisecondsSinceEpoch(sleepData),
+        sleepDate: DateTime.fromMillisecondsSinceEpoch(sleepData),
         sleepQuality: SleepQuality.normal,
         sleepTime: TimeOfDay(hour: sleepMinutes ~/ 60, minute: sleepMinutes % 60),
         bedTime: TimeOfDay(hour: midnight.hour, minute: midnight.minute),
@@ -187,14 +196,12 @@ final class StatsRepository with LoggerMixin implements IStatsRepository {
             'Imported from Health app - Steps: $steps, Calories: ${calories.toStringAsFixed(2)}, Avg Heart Rate: ${avgHeartRate.toStringAsFixed(2)} bpm, Sleep Duration: ${sleepMinutes ~/ 60}h ${sleepMinutes % 60}m, Awake Duration: ${wakeMinutes ~/ 60}h ${wakeMinutes % 60}m',
       );
 
-      final today = DateTime.now();
-
       final SleepInfoTableData? existingData = await _appDatabase.sleepDao.getSleepInfoByDate(
-        today,
+        DateTime.fromMillisecondsSinceEpoch(sleepData),
       );
 
       if (existingData != null) {
-        await _updateSleepModel(sleepModel);
+        await _updateSleepModel(sleepModel.copyWith(id: existingData.id));
         return;
       }
 
@@ -216,7 +223,5 @@ final class StatsRepository with LoggerMixin implements IStatsRepository {
     }
   }
 }
-
-
 
 //TODO mock mock mock repository for testing

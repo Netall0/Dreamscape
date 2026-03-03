@@ -17,7 +17,7 @@ enum SleepQuality {
 final class StatsModel {
   StatsModel({
     this.id,
-    required this.sleepData,
+    required this.sleepDate,
     required this.sleepQuality,
     required this.sleepTime,
     required this.bedTime,
@@ -27,7 +27,7 @@ final class StatsModel {
 
   factory StatsModel.fromDriftRow(SleepInfoTableData row) => StatsModel(
     id: row.id,
-    sleepData: row.sleepData != null ? DateTime.fromMillisecondsSinceEpoch(row.sleepData!) : null,
+    sleepDate: row.sleepData != null ? DateTime.fromMillisecondsSinceEpoch(row.sleepData!) : null,
     sleepQuality: SleepQuality.values.firstWhere(
       (element) => element.name == row.sleepQuality,
       orElse: () => SleepQuality.normal,
@@ -38,7 +38,7 @@ final class StatsModel {
     sleepTime: (row.sleepDurationMinutes ?? 0).toTimeOfDayToMiutes(),
   );
   final int? id;
-  final DateTime? sleepData;
+  final DateTime? sleepDate;
   final SleepQuality sleepQuality;
   final TimeOfDay bedTime;
   final TimeOfDay riseTime;
@@ -50,6 +50,7 @@ final class StatsModel {
   SleepInfoTableCompanion toSleepInfoTableCompanion(StatsModel sleepModel) =>
       SleepInfoTableCompanion(
         id: id != null ? Value(sleepModel.id!) : const Value.absent(),
+        sleepData: Value(sleepModel.sleepDate?.millisecondsSinceEpoch),
         sleepQuality: Value(sleepModel.sleepQuality.name),
         sleepDurationMinutes: Value(_timeOfDayToMinutes(sleepModel.sleepTime)),
         bedTime: Value(_timeOfDayToMinutes(sleepModel.bedTime)),
@@ -67,7 +68,7 @@ final class StatsModel {
     String? sleepNotes,
   }) => StatsModel(
     id: id ?? this.id,
-    sleepData: sleepData ?? this.sleepData,
+    sleepDate: sleepData ?? this.sleepDate,
     sleepQuality: sleepQuality ?? this.sleepQuality,
     sleepTime: sleepTime ?? this.sleepTime,
     bedTime: bedTime ?? this.bedTime,

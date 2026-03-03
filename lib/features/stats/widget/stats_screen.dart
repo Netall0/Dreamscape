@@ -37,9 +37,24 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
         TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('No')),
         ElevatedButton(
           onPressed: () {
-            DependScope.of(context).dependModel.statsBloc.add(StatsEventAddFromHealth());
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('')));
-            Navigator.of(context).pop();
+            try {
+              DependScope.of(context).dependModel.statsBloc.add(StatsEventAddFromHealth());
+              logger.debug('StatsEventAddFromHealth added to bloc');
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(const SnackBar(content: Text('Stats added from Health')));
+            } on Object catch (e, stackTrace) {
+              logger.error(
+                'Failed to add StatsEventAddFromHealth',
+                error: e,
+                stackTrace: stackTrace,
+              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text('error adding stats: $e')));
+            } finally {
+              Navigator.of(context).pop();
+            }
           },
           child: const Text('Yes'),
         ),
@@ -57,6 +72,13 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
+            actions: [
+              IconButton(
+                onPressed: _addStats,
+                icon: const Icon(Icons.add),
+                tooltip: 'Add Stats from Health',
+              ),
+            ],
             pinned: true,
             backgroundColor: Colors.transparent,
             expandedHeight: 100,

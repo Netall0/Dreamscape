@@ -256,7 +256,7 @@ class _SleepScreenState extends State<SleepScreen>
     bloc.add(
       StatsEventAddStats(
         statsModel: StatsModel(
-          sleepData: DateTime.now(),
+          sleepDate: DateTime.now(),
           bedTime: bedTime,
           riseTime: TimeOfDay(hour: riseTime.hour, minute: riseTime.minute),
           sleepQuality: sleepQuality,
