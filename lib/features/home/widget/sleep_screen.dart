@@ -343,6 +343,7 @@ class _SleepScreenState extends State<SleepScreen>
           sleepQuality: sleepQuality,
           sleepTime: sleepDuration,
           sleepNotes: textConrtoller.text,
+          sleepDate: DateTime.now(),
         ),
       ),
     );

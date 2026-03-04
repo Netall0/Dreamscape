@@ -71,25 +71,24 @@ class _SleepResultScreenState extends State<SleepResultScreen> {
     final String bedTime = _formatTime(session.bedTime);
     final String riseTime = _formatTime(session.riseTime);
     final String duration = _formatTime(session.sleepTime);
-    final String notes = session.sleepNotes.trim().isEmpty ? 'без заметок' : session.sleepNotes.trim();
+    final String notes = session.sleepNotes.trim().isEmpty
+        ? 'без заметок'
+        : session.sleepNotes.trim();
     return 'сон: $duration, качество: ${session.sleepQuality.name}, отбой: $bedTime, подъем: $riseTime, заметки: $notes';
   }
 
   Map<String, int> _buildMoodDistribution() {
-    final Map<String, int> distribution = <String, int>{};
-    for (final session in widget.sessions) {
+    final distribution = <String, int>{};
+    for (final StatsModel session in widget.sessions) {
       distribution.update(session.sleepQuality.name, (value) => value + 1, ifAbsent: () => 1);
     }
     return distribution;
   }
 
-  String _formatTime(TimeOfDay time) {
-    return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
-  }
+  String _formatTime(TimeOfDay time) =>
+      '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
 
-  double _toHours(TimeOfDay duration) {
-    return duration.hour + duration.minute / 60.0;
-  }
+  double _toHours(TimeOfDay duration) => duration.hour + duration.minute / 60.0;
 
   void _animateText() {
     var charIndex = 0;
@@ -183,7 +182,9 @@ class _SleepResultScreenState extends State<SleepResultScreen> {
                             style: theme.typography.bodyMedium,
                           ),
                           Text(
-                            l10n.avgHeartRateLabel('${widget.phoneHealthData!['avgHeartRate'] ?? 0}'),
+                            l10n.avgHeartRateLabel(
+                              '${widget.phoneHealthData!['avgHeartRate'] ?? 0}',
+                            ),
                             style: theme.typography.bodyMedium,
                           ),
                         ],

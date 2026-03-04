@@ -11,5 +11,7 @@ abstract interface class IStatsRepository {
   Future<void> deleteSleepModel(int id);
   Future<void> clearAll();
 
-  /// Creates a new SleepModel based on temporary data.
+  //health methods
+  Future<void> healthRequestPermission();
+  Future<void> addFromHealth();
 }

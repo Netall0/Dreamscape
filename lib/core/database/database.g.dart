@@ -22,6 +22,17 @@ class $SleepInfoTableTable extends SleepInfoTable
       'PRIMARY KEY AUTOINCREMENT',
     ),
   );
+  static const VerificationMeta _sleepDataMeta = const VerificationMeta(
+    'sleepData',
+  );
+  @override
+  late final GeneratedColumn<int> sleepData = GeneratedColumn<int>(
+    'sleep_data',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _bedTimeMeta = const VerificationMeta(
     'bedTime',
   );
@@ -77,6 +88,7 @@ class $SleepInfoTableTable extends SleepInfoTable
   @override
   List<GeneratedColumn> get $columns => [
     id,
+    sleepData,
     bedTime,
     riseTime,
     sleepDurationMinutes,
@@ -97,6 +109,12 @@ class $SleepInfoTableTable extends SleepInfoTable
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('sleep_data')) {
+      context.handle(
+        _sleepDataMeta,
+        sleepData.isAcceptableOrUnknown(data['sleep_data']!, _sleepDataMeta),
+      );
     }
     if (data.containsKey('bed_time')) {
       context.handle(
@@ -147,6 +165,10 @@ class $SleepInfoTableTable extends SleepInfoTable
         DriftSqlType.int,
         data['${effectivePrefix}id'],
       )!,
+      sleepData: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sleep_data'],
+      ),
       bedTime: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}bed_time'],
@@ -179,6 +201,7 @@ class $SleepInfoTableTable extends SleepInfoTable
 class SleepInfoTableData extends DataClass
     implements Insertable<SleepInfoTableData> {
   final int id;
+  final int? sleepData;
   final int? bedTime;
   final int? riseTime;
   final int? sleepDurationMinutes;
@@ -186,6 +209,7 @@ class SleepInfoTableData extends DataClass
   final String? notes;
   const SleepInfoTableData({
     required this.id,
+    this.sleepData,
     this.bedTime,
     this.riseTime,
     this.sleepDurationMinutes,
@@ -196,6 +220,9 @@ class SleepInfoTableData extends DataClass
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
+    if (!nullToAbsent || sleepData != null) {
+      map['sleep_data'] = Variable<int>(sleepData);
+    }
     if (!nullToAbsent || bedTime != null) {
       map['bed_time'] = Variable<int>(bedTime);
     }
@@ -217,6 +244,9 @@ class SleepInfoTableData extends DataClass
   SleepInfoTableCompanion toCompanion(bool nullToAbsent) {
     return SleepInfoTableCompanion(
       id: Value(id),
+      sleepData: sleepData == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sleepData),
       bedTime: bedTime == null && nullToAbsent
           ? const Value.absent()
           : Value(bedTime),
@@ -242,6 +272,7 @@ class SleepInfoTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return SleepInfoTableData(
       id: serializer.fromJson<int>(json['id']),
+      sleepData: serializer.fromJson<int?>(json['sleepData']),
       bedTime: serializer.fromJson<int?>(json['bedTime']),
       riseTime: serializer.fromJson<int?>(json['riseTime']),
       sleepDurationMinutes: serializer.fromJson<int?>(
@@ -256,6 +287,7 @@ class SleepInfoTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
+      'sleepData': serializer.toJson<int?>(sleepData),
       'bedTime': serializer.toJson<int?>(bedTime),
       'riseTime': serializer.toJson<int?>(riseTime),
       'sleepDurationMinutes': serializer.toJson<int?>(sleepDurationMinutes),
@@ -266,6 +298,7 @@ class SleepInfoTableData extends DataClass
 
   SleepInfoTableData copyWith({
     int? id,
+    Value<int?> sleepData = const Value.absent(),
     Value<int?> bedTime = const Value.absent(),
     Value<int?> riseTime = const Value.absent(),
     Value<int?> sleepDurationMinutes = const Value.absent(),
@@ -273,6 +306,7 @@ class SleepInfoTableData extends DataClass
     Value<String?> notes = const Value.absent(),
   }) => SleepInfoTableData(
     id: id ?? this.id,
+    sleepData: sleepData.present ? sleepData.value : this.sleepData,
     bedTime: bedTime.present ? bedTime.value : this.bedTime,
     riseTime: riseTime.present ? riseTime.value : this.riseTime,
     sleepDurationMinutes: sleepDurationMinutes.present
@@ -284,6 +318,7 @@ class SleepInfoTableData extends DataClass
   SleepInfoTableData copyWithCompanion(SleepInfoTableCompanion data) {
     return SleepInfoTableData(
       id: data.id.present ? data.id.value : this.id,
+      sleepData: data.sleepData.present ? data.sleepData.value : this.sleepData,
       bedTime: data.bedTime.present ? data.bedTime.value : this.bedTime,
       riseTime: data.riseTime.present ? data.riseTime.value : this.riseTime,
       sleepDurationMinutes: data.sleepDurationMinutes.present
@@ -300,6 +335,7 @@ class SleepInfoTableData extends DataClass
   String toString() {
     return (StringBuffer('SleepInfoTableData(')
           ..write('id: $id, ')
+          ..write('sleepData: $sleepData, ')
           ..write('bedTime: $bedTime, ')
           ..write('riseTime: $riseTime, ')
           ..write('sleepDurationMinutes: $sleepDurationMinutes, ')
@@ -312,6 +348,7 @@ class SleepInfoTableData extends DataClass
   @override
   int get hashCode => Object.hash(
     id,
+    sleepData,
     bedTime,
     riseTime,
     sleepDurationMinutes,
@@ -323,6 +360,7 @@ class SleepInfoTableData extends DataClass
       identical(this, other) ||
       (other is SleepInfoTableData &&
           other.id == this.id &&
+          other.sleepData == this.sleepData &&
           other.bedTime == this.bedTime &&
           other.riseTime == this.riseTime &&
           other.sleepDurationMinutes == this.sleepDurationMinutes &&
@@ -332,6 +370,7 @@ class SleepInfoTableData extends DataClass
 
 class SleepInfoTableCompanion extends UpdateCompanion<SleepInfoTableData> {
   final Value<int> id;
+  final Value<int?> sleepData;
   final Value<int?> bedTime;
   final Value<int?> riseTime;
   final Value<int?> sleepDurationMinutes;
@@ -339,6 +378,7 @@ class SleepInfoTableCompanion extends UpdateCompanion<SleepInfoTableData> {
   final Value<String?> notes;
   const SleepInfoTableCompanion({
     this.id = const Value.absent(),
+    this.sleepData = const Value.absent(),
     this.bedTime = const Value.absent(),
     this.riseTime = const Value.absent(),
     this.sleepDurationMinutes = const Value.absent(),
@@ -347,6 +387,7 @@ class SleepInfoTableCompanion extends UpdateCompanion<SleepInfoTableData> {
   });
   SleepInfoTableCompanion.insert({
     this.id = const Value.absent(),
+    this.sleepData = const Value.absent(),
     this.bedTime = const Value.absent(),
     this.riseTime = const Value.absent(),
     this.sleepDurationMinutes = const Value.absent(),
@@ -355,6 +396,7 @@ class SleepInfoTableCompanion extends UpdateCompanion<SleepInfoTableData> {
   });
   static Insertable<SleepInfoTableData> custom({
     Expression<int>? id,
+    Expression<int>? sleepData,
     Expression<int>? bedTime,
     Expression<int>? riseTime,
     Expression<int>? sleepDurationMinutes,
@@ -363,6 +405,7 @@ class SleepInfoTableCompanion extends UpdateCompanion<SleepInfoTableData> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (sleepData != null) 'sleep_data': sleepData,
       if (bedTime != null) 'bed_time': bedTime,
       if (riseTime != null) 'rise_time': riseTime,
       if (sleepDurationMinutes != null)
@@ -374,6 +417,7 @@ class SleepInfoTableCompanion extends UpdateCompanion<SleepInfoTableData> {
 
   SleepInfoTableCompanion copyWith({
     Value<int>? id,
+    Value<int?>? sleepData,
     Value<int?>? bedTime,
     Value<int?>? riseTime,
     Value<int?>? sleepDurationMinutes,
@@ -382,6 +426,7 @@ class SleepInfoTableCompanion extends UpdateCompanion<SleepInfoTableData> {
   }) {
     return SleepInfoTableCompanion(
       id: id ?? this.id,
+      sleepData: sleepData ?? this.sleepData,
       bedTime: bedTime ?? this.bedTime,
       riseTime: riseTime ?? this.riseTime,
       sleepDurationMinutes: sleepDurationMinutes ?? this.sleepDurationMinutes,
@@ -395,6 +440,9 @@ class SleepInfoTableCompanion extends UpdateCompanion<SleepInfoTableData> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<int>(id.value);
+    }
+    if (sleepData.present) {
+      map['sleep_data'] = Variable<int>(sleepData.value);
     }
     if (bedTime.present) {
       map['bed_time'] = Variable<int>(bedTime.value);
@@ -418,6 +466,7 @@ class SleepInfoTableCompanion extends UpdateCompanion<SleepInfoTableData> {
   String toString() {
     return (StringBuffer('SleepInfoTableCompanion(')
           ..write('id: $id, ')
+          ..write('sleepData: $sleepData, ')
           ..write('bedTime: $bedTime, ')
           ..write('riseTime: $riseTime, ')
           ..write('sleepDurationMinutes: $sleepDurationMinutes, ')
@@ -443,6 +492,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
 typedef $$SleepInfoTableTableCreateCompanionBuilder =
     SleepInfoTableCompanion Function({
       Value<int> id,
+      Value<int?> sleepData,
       Value<int?> bedTime,
       Value<int?> riseTime,
       Value<int?> sleepDurationMinutes,
@@ -452,6 +502,7 @@ typedef $$SleepInfoTableTableCreateCompanionBuilder =
 typedef $$SleepInfoTableTableUpdateCompanionBuilder =
     SleepInfoTableCompanion Function({
       Value<int> id,
+      Value<int?> sleepData,
       Value<int?> bedTime,
       Value<int?> riseTime,
       Value<int?> sleepDurationMinutes,
@@ -470,6 +521,11 @@ class $$SleepInfoTableTableFilterComposer
   });
   ColumnFilters<int> get id => $composableBuilder(
     column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sleepData => $composableBuilder(
+    column: $table.sleepData,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -513,6 +569,11 @@ class $$SleepInfoTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get sleepData => $composableBuilder(
+    column: $table.sleepData,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get bedTime => $composableBuilder(
     column: $table.bedTime,
     builder: (column) => ColumnOrderings(column),
@@ -550,6 +611,9 @@ class $$SleepInfoTableTableAnnotationComposer
   });
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get sleepData =>
+      $composableBuilder(column: $table.sleepData, builder: (column) => column);
 
   GeneratedColumn<int> get bedTime =>
       $composableBuilder(column: $table.bedTime, builder: (column) => column);
@@ -609,6 +673,7 @@ class $$SleepInfoTableTableTableManager
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
+                Value<int?> sleepData = const Value.absent(),
                 Value<int?> bedTime = const Value.absent(),
                 Value<int?> riseTime = const Value.absent(),
                 Value<int?> sleepDurationMinutes = const Value.absent(),
@@ -616,6 +681,7 @@ class $$SleepInfoTableTableTableManager
                 Value<String?> notes = const Value.absent(),
               }) => SleepInfoTableCompanion(
                 id: id,
+                sleepData: sleepData,
                 bedTime: bedTime,
                 riseTime: riseTime,
                 sleepDurationMinutes: sleepDurationMinutes,
@@ -625,6 +691,7 @@ class $$SleepInfoTableTableTableManager
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
+                Value<int?> sleepData = const Value.absent(),
                 Value<int?> bedTime = const Value.absent(),
                 Value<int?> riseTime = const Value.absent(),
                 Value<int?> sleepDurationMinutes = const Value.absent(),
@@ -632,6 +699,7 @@ class $$SleepInfoTableTableTableManager
                 Value<String?> notes = const Value.absent(),
               }) => SleepInfoTableCompanion.insert(
                 id: id,
+                sleepData: sleepData,
                 bedTime: bedTime,
                 riseTime: riseTime,
                 sleepDurationMinutes: sleepDurationMinutes,

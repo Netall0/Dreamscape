@@ -9,30 +9,27 @@ part 'sleep_dao.g.dart';
 class SleepDao extends DatabaseAccessor<AppDatabase> with _$SleepDaoMixin {
   SleepDao(super.db);
 
-  Future<List<SleepInfoTableData>> getAllSleepInfo() =>
-      select(sleepInfoTable).get();
+  Future<List<SleepInfoTableData>> getAllSleepInfo() => select(sleepInfoTable).get();
 
-  Future<int> insertSleepInfo(SleepInfoTableCompanion entry) {
-    return into(sleepInfoTable).insert(entry);
+  Future<SleepInfoTableData?> getSleepInfoByDate(DateTime date) {
+    final int dateInMillis = date.millisecondsSinceEpoch;
+    return (select(
+      sleepInfoTable,
+    )..where((tbl) => tbl.sleepData.equals(dateInMillis))).getSingleOrNull();
   }
 
-  Future<bool> updateSleepInfo(SleepInfoTableCompanion entry) {
-    return update(sleepInfoTable).replace(entry);
-  }
+  Future<int> insertSleepInfo(SleepInfoTableCompanion entry) => into(sleepInfoTable).insert(entry);
 
-  Future<int> saveSleepInfo(SleepInfoTableCompanion entry) {
-    return into(sleepInfoTable).insert(entry, mode: InsertMode.insertOrReplace);
-  }
+  Future<bool> updateSleepInfo(SleepInfoTableCompanion entry) =>
+      update(sleepInfoTable).replace(entry);
 
-  Future<int> deleteSleepInfo(int id) {
-    return (delete(sleepInfoTable)..where((tbl) => tbl.id.equals(id))).go();
-  }
+  Future<int> saveSleepInfo(SleepInfoTableCompanion entry) =>
+      into(sleepInfoTable).insert(entry, mode: InsertMode.insertOrReplace);
 
-  Future<int> clearAll() {
-    return delete(sleepInfoTable).go();
-  }
+  Future<int> deleteSleepInfo(int id) =>
+      (delete(sleepInfoTable)..where((tbl) => tbl.id.equals(id))).go();
 
-  Stream<List<SleepInfoTableData>> watchAllSleepInfo() {
-    return select(sleepInfoTable).watch();
-  }
+  Future<int> clearAll() => delete(sleepInfoTable).go();
+
+  Stream<List<SleepInfoTableData>> watchAllSleepInfo() => select(sleepInfoTable).watch();
 }
