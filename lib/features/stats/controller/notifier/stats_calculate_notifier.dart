@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../../repository/stats_repository.dart';
+import '../../repository/i_stats_repository.dart';
 
 final class StatsCalculateNotifier extends ChangeNotifier {
-
-  StatsCalculateNotifier({required StatsRepository statsRepository})
+  StatsCalculateNotifier({required IStatsRepository statsRepository})
     : _statsRepository = statsRepository;
-  final StatsRepository _statsRepository;
+  final IStatsRepository _statsRepository;
 
   double get totalSleepHours => _totalSleepHours;
   double get averageSleepHours => _averageSleepHours;

@@ -10,6 +10,18 @@ APP_NAME  := MyApp
 # ========================
 # Help commands
 # ========================
+
+
+
+# ========================
+# Basic commands
+SUPABASE_URL ?= 
+SUPABASE_ANON_KEY ?= 
+OPENAI_API_KEY ?= 
+USE_FAKE_REPOS ?= false
+# ========================
+
+
 help:
 	@echo "Available commands:"
 	@echo "  get               - Install dependencies"
@@ -44,12 +56,16 @@ clean:
 run-dev:
 	$(FLUTTER) run --debug --flavor dev lib/core/targets/dev.dart \
 		--dart-define=SUPABASE_URL=$(SUPABASE_URL) \
-		--dart-define=SUPABASE_ANON_KEY=$(SUPABASE_ANON_KEY)
-# Prod run (pass keys in command line)
+		--dart-define=SUPABASE_ANON_KEY=$(SUPABASE_ANON_KEY) \
+		--dart-define=OPENAI_API_KEY=$(OPENAI_API_KEY) \
+		--dart-define=USE_FAKE_REPOS=$(USE_FAKE_REPOS)
+
 run-prod:
 	$(FLUTTER) run --release --flavor prod lib/targets/prod.dart \
 		--dart-define=SUPABASE_URL=$(SUPABASE_URL) \
-		--dart-define=SUPABASE_ANON_KEY=$(ANON_KEY)
+		--dart-define=SUPABASE_ANON_KEY=$(SUPABASE_ANON_KEY) \
+		--dart-define=OPENAI_API_KEY=$(OPENAI_API_KEY) \
+		--dart-define=USE_FAKE_REPOS=false
 # ========================
 # Builds
 # ========================

@@ -47,121 +47,124 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
     final AppTheme style = context.appTheme;
     final LoadInfoNotifier userInfoNotifier = DependScope.of(context).dependModel.userInfoNotifier;
     final AuthBloc bloc = DependScope.of(context).dependModel.authBloc;
+    final Size size = MediaQuery.sizeOf(context);
 
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              AdaptiveCard(
-                padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-                backgroundColor: style.colors.cardBackground,
-                child: Column(
-                  children: [
-                    const SizedBox(height: 24),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        InkWell(
-                          onTap: () => SettingScreenData().go(context),
-                          child: Icon(Icons.settings, color: style.colors.textPrimary),
-                        ),
-                      ],
-                    ),
-                    ListenableBuilder(
-                      listenable: userInfoNotifier,
-                      builder: (context, child) => GestureDetector(
-                        onTap: userInfoNotifier.isLoading ? null : userInfoNotifier.pickAvatar,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            CircleAvatar(
-                              radius: 50,
-                              backgroundColor: style.colors.surface,
-                              backgroundImage: _avatarProvider(
-                                userInfoNotifier.localAvatar,
-                                userInfoNotifier.remoteAvatarUrl,
-                              ),
-                            ),
-                            if (userInfoNotifier.isLoading) const CircularProgressIndicator(),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text('profile', style: style.typography.h2, textAlign: TextAlign.center),
-                    Text(
-                      _currentUser!.createdAt.split('T').first,
-                      style: style.typography.h3,
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
-              ListenableBuilder(
-                listenable: userInfoNotifier,
-                builder: (context, child) => AdaptiveCard(
+    return SafeArea(
+      child: Scaffold(
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                AdaptiveCard(
+                  padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
                   backgroundColor: style.colors.cardBackground,
                   child: Column(
                     children: [
-                      const SizedBox(height: 8),
-                      GestureDetector(
-                        onTap: () async {
-                          if (mounted) {
-                            // ignore: inference_failure_on_function_invocation
-                            await showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog.adaptive(
-                                title: const Text('change name'),
-                                content: TextField(controller: emailController),
-
-                                actions: [
-                                  TextButton(
-                                    child: const Text('cancel'),
-                                    onPressed: () => Navigator.pop(context),
-                                  ),
-                                  TextButton(
-                                    child: const Text('save'),
-                                    onPressed: () async {
-                                      await userInfoNotifier.setUserName(emailController.text);
-                                      if (context.mounted) {
-                                        context.pop();
-                                      }
-                                    },
-                                  ),
-                                ],
+                      const SizedBox(height: 24),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          InkWell(
+                            onTap: () => SettingScreenData().go(context),
+                            child: Icon(Icons.settings, color: style.colors.textPrimary),
+                          ),
+                        ],
+                      ),
+                      ListenableBuilder(
+                        listenable: userInfoNotifier,
+                        builder: (context, child) => GestureDetector(
+                          onTap: userInfoNotifier.isLoading ? null : userInfoNotifier.pickAvatar,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              CircleAvatar(
+                                radius: 50,
+                                backgroundColor: style.colors.surface,
+                                backgroundImage: _avatarProvider(
+                                  userInfoNotifier.localAvatar,
+                                  userInfoNotifier.remoteAvatarUrl,
+                                ),
                               ),
-                            );
-                          }
-                        },
-                        child: RowGeneralWidget(
-                          text: userInfoNotifier.userName ?? 'name',
-                          icon: Icons.person,
+                              if (userInfoNotifier.isLoading) const CircularProgressIndicator(),
+                            ],
+                          ),
                         ),
                       ),
-                      RowGeneralWidget(text: _currentUser.email ?? '', icon: Icons.email),
-                      const RowGeneralWidget(text: 'password', icon: Icons.password),
-                      RowGeneralWidget(
-                        text: (_currentUser.phone == null || _currentUser.phone!.trim().isEmpty)
-                            ? 'undefined'
-                            : _currentUser.phone ?? '',
-                        icon: Icons.phone,
+                      const SizedBox(height: 8),
+                      Text('profile', style: style.typography.h2, textAlign: TextAlign.center),
+                      Text(
+                        _currentUser!.createdAt.split('T').first,
+                        style: style.typography.h3,
+                        textAlign: TextAlign.center,
                       ),
-                      const RowGeneralWidget(text: 'feedback', icon: Icons.help),
                     ],
                   ),
                 ),
-              ),
-              const SizedBox(height: 24),
-              AdaptiveCard(
-                onTap: () => bloc.add(const AuthLogoutRequested()),
+                const SizedBox(height: 24),
+                ListenableBuilder(
+                  listenable: userInfoNotifier,
+                  builder: (context, child) => AdaptiveCard(
+                    backgroundColor: style.colors.cardBackground,
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 8),
+                        GestureDetector(
+                          onTap: () async {
+                            if (mounted) {
+                              // ignore: inference_failure_on_function_invocation
+                              await showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog.adaptive(
+                                  title: const Text('change name'),
+                                  content: TextField(controller: emailController),
 
-                backgroundColor: style.colors.cardBackground,
-                child: const RowGeneralWidget(text: 'sign out', icon: Icons.logout_outlined),
-              ),
-            ],
+                                  actions: [
+                                    TextButton(
+                                      child: const Text('cancel'),
+                                      onPressed: () => Navigator.pop(context),
+                                    ),
+                                    TextButton(
+                                      child: const Text('save'),
+                                      onPressed: () async {
+                                        await userInfoNotifier.setUserName(emailController.text);
+                                        if (context.mounted) {
+                                          context.pop();
+                                        }
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+                          },
+                          child: RowGeneralWidget(
+                            text: userInfoNotifier.userName ?? 'name',
+                            icon: Icons.person,
+                          ),
+                        ),
+                        RowGeneralWidget(text: _currentUser.email ?? '', icon: Icons.email),
+                        const RowGeneralWidget(text: 'password', icon: Icons.password),
+                        RowGeneralWidget(
+                          text: (_currentUser.phone == null || _currentUser.phone!.trim().isEmpty)
+                              ? 'undefined'
+                              : _currentUser.phone ?? '',
+                          icon: Icons.phone,
+                        ),
+                        const RowGeneralWidget(text: 'feedback', icon: Icons.help),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                AdaptiveCard(
+                  onTap: () => bloc.add(const AuthLogoutRequested()),
+
+                  backgroundColor: style.colors.cardBackground,
+                  child: const RowGeneralWidget(text: 'sign out', icon: Icons.logout_outlined),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -126,9 +126,11 @@ class _SignInScreenState extends State<SignInScreen> {
                             ),
                           );
                         },
-                        child: Text(
-                          'Sign in',
-                          style: theme.typography.h6.copyWith(color: theme.colors.onSurface),
+                        child: Expanded(
+                          child: Text(
+                            'Sign in',
+                            style: theme.typography.h6.copyWith(color: theme.colors.onSurface),
+                          ),
                         ),
                       ),
                     ],

@@ -18,8 +18,7 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   bool _obscureText = false;
@@ -74,10 +73,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     child: Column(
                       mainAxisAlignment: .center,
                       children: [
-                        Text(
-                          'Sign up',
-                          style: context.appTheme.typography.h1,
-                        ),
+                        Text('Sign up', style: context.appTheme.typography.h1),
                         const SizedBox(height: 24),
                         TextFormField(
                           validator: (val) {
@@ -90,9 +86,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             return null;
                           },
                           controller: _emailController,
-                          style: theme.typography.bodyLarge.copyWith(
-                            color: theme.colors.onSurface,
-                          ),
+                          style: theme.typography.bodyLarge.copyWith(color: theme.colors.onSurface),
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
                               borderRadius: .circular(16),
@@ -109,14 +103,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               borderRadius: .circular(16),
                               borderSide: BorderSide(color: theme.colors.onSurface),
                             ),
-                            prefixIcon: Icon(
-                              Icons.email,
-                              color: theme.colors.onSurface,
-                            ),
+                            prefixIcon: Icon(Icons.email, color: theme.colors.onSurface),
                             labelText: 'Email',
-                            labelStyle: theme.typography.h6.copyWith(
-                              color: theme.colors.onSurface,
-                            ),
+                            labelStyle: theme.typography.h6.copyWith(color: theme.colors.onSurface),
                           ),
                         ),
                         const SizedBox(height: 12),
@@ -131,9 +120,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             return null;
                           },
                           controller: _passwordController,
-                          style: theme.typography.bodyLarge.copyWith(
-                            color: theme.colors.onSurface,
-                          ),
+                          style: theme.typography.bodyLarge.copyWith(color: theme.colors.onSurface),
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
                               borderRadius: .circular(16),
@@ -150,14 +137,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             focusColor: theme.colors.onSurface,
                             hoverColor: theme.colors.onSurface,
                             fillColor: theme.colors.onSurface,
-                            prefixIcon: Icon(
-                              Icons.password,
-                              color: theme.colors.onSurface,
-                            ),
+                            prefixIcon: Icon(Icons.password, color: theme.colors.onSurface),
                             labelText: 'Password',
-                            labelStyle: theme.typography.h6.copyWith(
-                              color: theme.colors.onSurface,
-                            ),
+                            labelStyle: theme.typography.h6.copyWith(color: theme.colors.onSurface),
                           ),
                         ),
                         const SizedBox(height: 24),
@@ -173,9 +155,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           },
                           controller: _confirmPasswordController,
                           obscureText: _obscureText,
-                          style: theme.typography.bodyLarge.copyWith(
-                            color: theme.colors.onSurface,
-                          ),
+                          style: theme.typography.bodyLarge.copyWith(color: theme.colors.onSurface),
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
                               borderRadius: .circular(16),
@@ -192,10 +172,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             focusColor: theme.colors.onSurface,
                             hoverColor: theme.colors.onSurface,
                             fillColor: theme.colors.onSurface,
-                            prefixIcon: Icon(
-                              Icons.password,
-                              color: theme.colors.onSurface,
-                            ),
+                            prefixIcon: Icon(Icons.password, color: theme.colors.onSurface),
                             suffixIcon: IconButton(
                               onPressed: () {
                                 _toggle();
@@ -207,22 +184,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
 
                             labelText: 'Confirm Password',
-                            labelStyle: theme.typography.h6.copyWith(
-                              color: theme.colors.onSurface,
-                            ),
+                            labelStyle: theme.typography.h6.copyWith(color: theme.colors.onSurface),
                           ),
                         ),
                         const SizedBox(height: 24),
                         AdaptiveButton.secondary(
                           sideColor: theme.colors.onSurface,
-                          padding: .symmetric(
-                            horizontal: size.width * .3,
-                            vertical: 16,
-                          ),
+                          padding: .symmetric(horizontal: size.width * .3, vertical: 16),
                           color: Colors.transparent.withAlpha(1),
 
                           onPressed: () {
-                            if (!_formKey.currentState!.validate()) return;
+                            if (!_formKey.currentState!.validate()) {
+                              return;
+                            }
                             bloc.add(
                               AuthSignUpRequested(
                                 email: _emailController.text.trim(),
@@ -230,10 +204,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                             );
                           },
-                          child: Text(
-                            'Sign Up',
-                            style: theme.typography.h6.copyWith(
-                              color: theme.colors.onSurface,
+                          child: Expanded(
+                            child: Text(
+                              'Sign Up',
+                              style: theme.typography.h6.copyWith(color: theme.colors.onSurface),
                             ),
                           ),
                         ),

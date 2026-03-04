@@ -1,13 +1,14 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/util/logger/logger.dart';
 import '../../model/stats_model.dart';
+import '../../repository/i_stats_repository.dart';
 import '../../repository/stats_repository.dart';
 
 part 'stats_list_event.dart';
 part 'stats_list_state.dart';
 
 class StatsListBloc extends Bloc<StatsEvent, StatsState> with LoggerMixin {
-  StatsListBloc({required StatsRepository statsRepository})
+  StatsListBloc({required IStatsRepository statsRepository})
     : _statsRepository = statsRepository,
       super(StatsInitial()) {
     on<StatsEvent>(
@@ -22,7 +23,7 @@ class StatsListBloc extends Bloc<StatsEvent, StatsState> with LoggerMixin {
       //TODO transformer for debouncing, throttling, sequential processing
     );
   }
-  final StatsRepository _statsRepository;
+  final IStatsRepository _statsRepository;
 
   Future<void> _onAddFromHealth(StatsEventAddFromHealth event, Emitter<StatsState> emit) async {
     try {

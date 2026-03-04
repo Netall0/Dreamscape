@@ -51,7 +51,9 @@ class _SleepScreenState extends State<SleepScreen>
       if (!mounted) return;
 
       await _player.setLoopMode(LoopMode.one);
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
 
       _player.play();
 

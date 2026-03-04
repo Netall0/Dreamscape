@@ -42,6 +42,7 @@ dependencies:
   flutter_localization: ^0.3.3
   health: ^13.3.1
   mocktail: ^1.0.4
+  crystal_navigation_bar: ^1.1.0
 
 dev_dependencies:
   drift_dev: ^2.30.0

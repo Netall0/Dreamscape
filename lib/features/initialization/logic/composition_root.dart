@@ -1,6 +1,8 @@
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../core/config/app_config.dart';
 import '../../../core/database/database.dart';
 import '../../../core/repository/temp_repository.dart';
 import '../../../core/util/logger/logger.dart';
@@ -11,6 +13,9 @@ import '../../settings/controller/settings_controller.dart';
 import '../../settings/repository/settings_repository.dart';
 import '../../stats/controller/bloc/stats_list_bloc.dart';
 import '../../stats/controller/notifier/stats_calculate_notifier.dart';
+import '../../stats/repository/fake_stats_repository.dart';
+import '../../stats/repository/i_stats_repository.dart';
+import '../../stats/repository/stats_repository.dart';
 import '../../stats/repository/stats_repository.dart';
 import '../model/depend_container.dart';
 import '../model/platform_depend_container.dart';
@@ -43,7 +48,7 @@ class CompositionRoot with LoggerMixin {
     final AudioPlayer audioPlayer =
         await _initAudioPlayer(); //AudioPlayer()..setReleaseMode(ReleaseMode.STOP);
     final AppDatabase appDatabase = _initAppDatabase();
-    final StatsRepository statsRepository = _initStatsRepository(sharedPreferences, appDatabase);
+    final IStatsRepository statsRepository = _initStatsRepository(sharedPreferences, appDatabase);
     final authRepository = AuthRepository();
 
     final TempRepository tempRepository = _initTempRepository(sharedPreferences);
@@ -105,7 +110,7 @@ class CompositionRoot with LoggerMixin {
     }
   }
 
-  StatsListBloc _initStatsBloc(StatsRepository statsRepository) {
+  StatsListBloc _initStatsBloc(IStatsRepository statsRepository) {
     try {
       final statsBloc = StatsListBloc(statsRepository: statsRepository);
       return statsBloc;
@@ -115,7 +120,7 @@ class CompositionRoot with LoggerMixin {
     }
   }
 
-  StatsCalculateNotifier _initStatsNotifier(StatsRepository statsRepository) {
+  StatsCalculateNotifier _initStatsNotifier(IStatsRepository statsRepository) {
     try {
       final statsNotifier = StatsCalculateNotifier(statsRepository: statsRepository);
       return statsNotifier;
@@ -145,12 +150,17 @@ class CompositionRoot with LoggerMixin {
     }
   }
 
-  StatsRepository _initStatsRepository(
+  IStatsRepository _initStatsRepository(
     SharedPreferences sharedPreferences,
     AppDatabase appDatabase,
   ) {
     try {
-      final homeSleepRepository = StatsRepository(appDatabase: appDatabase);
+      final IStatsRepository homeSleepRepository;
+      if (AppConfig.fakeStatsRepository) {
+        homeSleepRepository = FakeStatsRepository();
+      } else {
+        homeSleepRepository = StatsRepository(appDatabase: appDatabase);
+      }
       return homeSleepRepository;
     } on Object catch (e, stackTrace) {
       logger.error('home sleep service', error: e, stackTrace: stackTrace);

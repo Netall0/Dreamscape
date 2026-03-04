@@ -19,8 +19,6 @@ final class DependScope extends InheritedWidget {
       : context.getInheritedWidgetOfExactType<DependScope>()!;
 
   @override
-  bool updateShouldNotify(covariant DependScope oldWidget) {
-    return dependModel != oldWidget.dependModel ||
+  bool updateShouldNotify(covariant DependScope oldWidget) => dependModel != oldWidget.dependModel ||
         platformDependContainer != oldWidget.platformDependContainer;
-  }
 }
