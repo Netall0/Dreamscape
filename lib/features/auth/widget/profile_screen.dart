@@ -47,7 +47,7 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
     final AppTheme style = context.appTheme;
     final LoadInfoNotifier userInfoNotifier = DependScope.of(context).dependModel.userInfoNotifier;
     final AuthBloc bloc = DependScope.of(context).dependModel.authBloc;
-    final Size size = MediaQuery.sizeOf(context);
+    MediaQuery.sizeOf(context);
 
     return SafeArea(
       child: Scaffold(
@@ -56,50 +56,32 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                AdaptiveCard(
-                  padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-                  backgroundColor: style.colors.cardBackground,
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 24),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          InkWell(
-                            onTap: () => SettingScreenData().go(context),
-                            child: Icon(Icons.settings, color: style.colors.textPrimary),
-                          ),
-                        ],
-                      ),
-                      ListenableBuilder(
-                        listenable: userInfoNotifier,
-                        builder: (context, child) => GestureDetector(
-                          onTap: userInfoNotifier.isLoading ? null : userInfoNotifier.pickAvatar,
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              CircleAvatar(
-                                radius: 50,
-                                backgroundColor: style.colors.surface,
-                                backgroundImage: _avatarProvider(
-                                  userInfoNotifier.localAvatar,
-                                  userInfoNotifier.remoteAvatarUrl,
-                                ),
-                              ),
-                              if (userInfoNotifier.isLoading) const CircularProgressIndicator(),
-                            ],
+                ListenableBuilder(
+                  listenable: userInfoNotifier,
+                  builder: (context, child) => GestureDetector(
+                    onTap: userInfoNotifier.isLoading ? null : userInfoNotifier.pickAvatar,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        CircleAvatar(
+                          radius: 50,
+                          backgroundColor: style.colors.surface,
+                          backgroundImage: _avatarProvider(
+                            userInfoNotifier.localAvatar,
+                            userInfoNotifier.remoteAvatarUrl,
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text('profile', style: style.typography.h2, textAlign: TextAlign.center),
-                      Text(
-                        _currentUser!.createdAt.split('T').first,
-                        style: style.typography.h3,
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
+                        if (userInfoNotifier.isLoading) const CircularProgressIndicator(),
+                      ],
+                    ),
                   ),
+                ),
+                const SizedBox(height: 8),
+                Text('profile', style: style.typography.h2, textAlign: TextAlign.center),
+                Text(
+                  _currentUser!.createdAt.split('T').first,
+                  style: style.typography.h3,
+                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 24),
                 ListenableBuilder(

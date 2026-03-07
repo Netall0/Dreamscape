@@ -6,6 +6,7 @@ import 'package:uikit/widget/custom_round_music_bar.dart';
 
 import '../../../core/gen/assets.gen.dart';
 import '../../../core/repository/temp_repository.dart';
+import '../../../core/router/router.dart';
 import '../../../core/util/extension/app_context_extension.dart';
 import '../../../core/util/extension/time_of_day_extension.dart';
 import '../../../core/util/logger/logger.dart';
@@ -221,31 +222,7 @@ class _SleepScreenState extends State<SleepScreen>
     final riseTime = TimeOfDay.now(); //TODO
     SleepQuality sleepQuality = SleepQuality.good;
 
-    await showDialog(
-      context: context,
-      builder: (context) => AlertDialog.adaptive(
-        title: const Text('chose your sleep quality'),
-        content: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: SleepQuality.values
-              .map(
-                (e) => AdaptiveCard(
-                  onTap: () {
-                    sleepQuality = e;
-                    context.pop();
-                  },
-                  padding: const .all(16),
-                  margin: const .all(4),
-                  child: SizedBox(
-                    height: MediaQuery.sizeOf(context).height * 0.1,
-                    child: Column(mainAxisSize: MainAxisSize.min, children: [e.icon, Text(e.name)]),
-                  ),
-                ),
-              )
-              .toList(),
-        ),
-      ),
-    );
+    context.push('/sleep-dialog', extra: sleepQuality);
 
     logger.debug('time rise ${riseTime.hour}:${riseTime.minute}');
     final TimeOfDay bedTime =

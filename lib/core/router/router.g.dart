@@ -6,7 +6,11 @@ part of 'router.dart';
 // GoRouterGenerator
 // **************************************************************************
 
-List<RouteBase> get $appRoutes => [$rootRouteData, $signInRoute];
+List<RouteBase> get $appRoutes => [
+  $rootRouteData,
+  $signInRoute,
+  $sleepDialogRoute,
+];
 
 RouteBase get $rootRouteData => StatefulShellRouteData.$route(
   factory: $RootRouteDataExtension._fromState,
@@ -33,14 +37,16 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
     StatefulShellBranchData.$branch(
       routes: [
         GoRouteData.$route(
+          path: '/settings',
+          factory: $SettingScreenData._fromState,
+        ),
+      ],
+    ),
+    StatefulShellBranchData.$branch(
+      routes: [
+        GoRouteData.$route(
           path: '/profile',
           factory: $ProfileScreenData._fromState,
-          routes: [
-            GoRouteData.$route(
-              path: 'settings',
-              factory: $SettingScreenData._fromState,
-            ),
-          ],
         ),
       ],
     ),
@@ -112,12 +118,12 @@ mixin $StatsData on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin $ProfileScreenData on GoRouteData {
-  static ProfileScreenData _fromState(GoRouterState state) =>
-      ProfileScreenData();
+mixin $SettingScreenData on GoRouteData {
+  static SettingScreenData _fromState(GoRouterState state) =>
+      SettingScreenData();
 
   @override
-  String get location => GoRouteData.$location('/profile');
+  String get location => GoRouteData.$location('/settings');
 
   @override
   void go(BuildContext context) => context.go(location);
@@ -133,12 +139,12 @@ mixin $ProfileScreenData on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin $SettingScreenData on GoRouteData {
-  static SettingScreenData _fromState(GoRouterState state) =>
-      SettingScreenData();
+mixin $ProfileScreenData on GoRouteData {
+  static ProfileScreenData _fromState(GoRouterState state) =>
+      ProfileScreenData();
 
   @override
-  String get location => GoRouteData.$location('/profile/settings');
+  String get location => GoRouteData.$location('/profile');
 
   @override
   void go(BuildContext context) => context.go(location);
@@ -187,6 +193,38 @@ mixin $SignUpRoute on GoRouteData {
 
   @override
   String get location => GoRouteData.$location('/signin/signup');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $sleepDialogRoute => GoRouteData.$route(
+  path: '/sleep-dialog',
+  factory: $SleepDialogRoute._fromState,
+);
+
+mixin $SleepDialogRoute on GoRouteData {
+  static SleepDialogRoute _fromState(GoRouterState state) => SleepDialogRoute(
+    sleepQuality: state.uri.queryParameters['sleep-quality']!,
+  );
+
+  SleepDialogRoute get _self => this as SleepDialogRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/sleep-dialog',
+    queryParams: {'sleep-quality': _self.sleepQuality},
+  );
 
   @override
   void go(BuildContext context) => context.go(location);

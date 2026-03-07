@@ -140,6 +140,7 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
                       motion: const ScrollMotion(),
                       children: [
                         SlidableAction(
+                          //TODO: Dssmissible
                           onPressed: (_) {
                             statsNotifier.setStats();
                             logger.debug('Delete button pressed');
@@ -159,7 +160,7 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
                         borderRadius: BorderRadius.circular(12),
                         side: BorderSide(color: theme.colors.dividerColor),
                       ),
-                      child: ListTile(
+                      child: ExpansionTile(
                         leading: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [model.sleepQuality.icon, Text(model.sleepQuality.name)],
@@ -172,6 +173,18 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
                           'From ${model.bedTime.hour.toString().padLeft(2, '0')}:${model.bedTime.minute.toString().padLeft(2, '0')} to ${model.riseTime.hour.toString().padLeft(2, '0')}:${model.riseTime.minute.toString().padLeft(2, '0')}',
                           style: theme.typography.h6,
                         ),
+                        children: [
+                          if (model.sleepNotes.isNotEmpty)
+                            Padding(
+                              padding: const .all(16),
+                              child: Expanded(
+                                child: Text(
+                                  'Notes: ${model.sleepNotes}',
+                                  style: theme.typography.h4,
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
                     ),
                   );

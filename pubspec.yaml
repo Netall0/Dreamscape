@@ -43,6 +43,7 @@ dependencies:
   health: ^13.3.1
   mocktail: ^1.0.4
   crystal_navigation_bar: ^1.1.0
+  stream_transform: ^2.1.1
 
 dev_dependencies:
   drift_dev: ^2.30.0

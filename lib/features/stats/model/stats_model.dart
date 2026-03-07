@@ -14,6 +14,13 @@ enum SleepQuality {
   final Icon icon;
 }
 
+extension SleepQualityExtension on String {
+  static SleepQuality fromName(String name) => SleepQuality.values.firstWhere(
+    (element) => element.name == name,
+    orElse: () => SleepQuality.normal,
+  );
+}
+
 final class StatsModel {
   StatsModel({
     this.id,
