@@ -21,6 +21,8 @@ import 'navigator_observer.dart';
 
 part 'router.g.dart';
 
+typedef SleepQualityCallback = void Function(SleepQuality quality);
+
 final class AppRouter {
   static GoRouter router(AuthBloc authBloc, DimmerOverlayNotifier dimmedOverlayNotifier) =>
       GoRouter(
@@ -188,18 +190,55 @@ class DialogPage<T> extends Page<T> {
       DialogRoute<T>(context: context, builder: (context) => child, settings: this);
 }
 
-// sleep dialog
+//add from wathch dialog
 
-final class DialogExtra {
-  DialogExtra({required this.sleepQuality});
-  SleepQuality sleepQuality;
+final class EditNameExtras {
+  EditNameExtras({
+    required this.userInfoNotifier,
+    required this.emailController,
+    required this.voidCallback,
+  });
+
+  final LoadInfoNotifier userInfoNotifier;
+  final TextEditingController emailController;
+  final VoidCallback voidCallback;
 }
+
+@TypedGoRoute<AddFromWatchRoute>(path: '/edit-name')
+class AddFromWatchRoute extends GoRouteData with $AddFromWatchRoute {
+  @override
+  Page<void> buildPage(BuildContext context, GoRouterState state) {
+    final args = state.extra! as EditNameExtras;
+
+    return DialogPage(
+      child: AlertDialog.adaptive(
+        title: const Text('change name'),
+        content: TextField(controller: args.emailController),
+
+        actions: [
+          TextButton(child: const Text('cancel'), onPressed: () => context.pop()),
+          TextButton(
+            child: const Text('save'),
+            onPressed: () async {
+              if (context.mounted) {
+                context.pop();
+              }
+              args.userInfoNotifier.setUserName(args.emailController.text);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// sleep dialog
 
 @TypedGoRoute<SleepDialogRoute>(path: '/sleep-dialog')
 class SleepDialogRoute extends GoRouteData with $SleepDialogRoute {
   @override
-  Page<String?> buildPage(BuildContext context, GoRouterState state) {
-    final args = state.extra! as DialogExtra;
+  Page<void> buildPage(BuildContext context, GoRouterState state) {
+    final args = state.extra! as SleepQualityCallback;
     return DialogPage(
       child: AlertDialog.adaptive(
         title: const Text('chose your sleep quality'),
@@ -209,8 +248,7 @@ class SleepDialogRoute extends GoRouteData with $SleepDialogRoute {
               .map(
                 (e) => AdaptiveCard(
                   onTap: () {
-                    args.sleepQuality = e;
-                    context.pop(e.name);
+                    args(e);
                   },
                   padding: const .all(16),
                   margin: const .all(4),

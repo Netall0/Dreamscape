@@ -93,32 +93,15 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
                         const SizedBox(height: 8),
                         GestureDetector(
                           onTap: () async {
-                            if (mounted) {
-                              // ignore: inference_failure_on_function_invocation
-                              await showDialog(
-                                context: context,
-                                builder: (context) => AlertDialog.adaptive(
-                                  title: const Text('change name'),
-                                  content: TextField(controller: emailController),
-
-                                  actions: [
-                                    TextButton(
-                                      child: const Text('cancel'),
-                                      onPressed: () => Navigator.pop(context),
-                                    ),
-                                    TextButton(
-                                      child: const Text('save'),
-                                      onPressed: () async {
-                                        await userInfoNotifier.setUserName(emailController.text);
-                                        if (context.mounted) {
-                                          context.pop();
-                                        }
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }
+                            context.push(
+                              '/edit-name',
+                              extra: EditNameExtras(
+                                voidCallback: () => context.pop(),
+                                userInfoNotifier: userInfoNotifier,
+                                emailController: emailController,
+                              ),
+                              
+                            );
                           },
                           child: RowGeneralWidget(
                             text: userInfoNotifier.userName ?? 'name',
@@ -161,16 +144,14 @@ class RowGeneralWidget extends StatelessWidget {
   final IconData icon;
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: [
-          Icon(icon, color: context.appTheme.colors.textPrimary),
-          const SizedBox(width: 24),
-          Expanded(child: Text(text, style: context.appTheme.typography.h3)),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.all(16),
+    child: Row(
+      children: [
+        Icon(icon, color: context.appTheme.colors.textPrimary),
+        const SizedBox(width: 24),
+        Expanded(child: Text(text, style: context.appTheme.typography.h3)),
+      ],
+    ),
+  );
 }

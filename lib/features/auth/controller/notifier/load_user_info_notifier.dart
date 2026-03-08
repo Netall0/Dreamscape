@@ -7,9 +7,7 @@ import '../../../../core/util/logger/logger.dart';
 import '../../repository/auth_repository.dart';
 
 final class LoadInfoNotifier extends ChangeNotifier with LoggerMixin {
-
-  LoadInfoNotifier({required AuthRepository authRepository})
-    : _authRepository = authRepository;
+  LoadInfoNotifier({required AuthRepository authRepository}) : _authRepository = authRepository;
   final AuthRepository _authRepository;
 
   final ImagePicker _picker = ImagePicker();
@@ -52,7 +50,9 @@ final class LoadInfoNotifier extends ChangeNotifier with LoggerMixin {
   Future<void> pickAvatar() async {
     try {
       final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-      if (image == null) return;
+      if (image == null) {
+        return;
+      }
 
       final file = File(image.path);
 
@@ -67,7 +67,9 @@ final class LoadInfoNotifier extends ChangeNotifier with LoggerMixin {
       String? url;
       for (var i = 0; i < 3; i++) {
         url = await _authRepository.getAvatarUrl();
-        if (url != null) break;
+        if (url != null) {
+          break;
+        }
         await Future.delayed(const Duration(milliseconds: 200));
       }
 

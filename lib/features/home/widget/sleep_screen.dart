@@ -220,9 +220,15 @@ class _SleepScreenState extends State<SleepScreen>
     required BuildContext context,
   }) async {
     final riseTime = TimeOfDay.now(); //TODO
-    SleepQuality sleepQuality = SleepQuality.good;
+    SleepQuality sleepQuality = SleepQuality.bad;
 
-    context.push('/sleep-dialog', extra: sleepQuality);
+    await context.push(
+      '/sleep-dialog',
+      extra: (SleepQuality sleep) {
+        sleepQuality = sleep;
+        context.pop();
+      },
+    );
 
     logger.debug('time rise ${riseTime.hour}:${riseTime.minute}');
     final TimeOfDay bedTime =
@@ -253,5 +259,9 @@ class _SleepScreenState extends State<SleepScreen>
     }
     await statsNotifier.setStats();
     await tempRep.clearTempData();
+
+    if (context.mounted) {
+      context.pop();
+    }
   }
 }

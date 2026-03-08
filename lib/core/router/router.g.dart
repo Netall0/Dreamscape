@@ -9,6 +9,7 @@ part of 'router.dart';
 List<RouteBase> get $appRoutes => [
   $rootRouteData,
   $signInRoute,
+  $addFromWatchRoute,
   $sleepDialogRoute,
 ];
 
@@ -208,23 +209,42 @@ mixin $SignUpRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
+RouteBase get $addFromWatchRoute => GoRouteData.$route(
+  path: '/edit-name',
+  factory: $AddFromWatchRoute._fromState,
+);
+
+mixin $AddFromWatchRoute on GoRouteData {
+  static AddFromWatchRoute _fromState(GoRouterState state) =>
+      AddFromWatchRoute();
+
+  @override
+  String get location => GoRouteData.$location('/edit-name');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
 RouteBase get $sleepDialogRoute => GoRouteData.$route(
   path: '/sleep-dialog',
   factory: $SleepDialogRoute._fromState,
 );
 
 mixin $SleepDialogRoute on GoRouteData {
-  static SleepDialogRoute _fromState(GoRouterState state) => SleepDialogRoute(
-    sleepQuality: state.uri.queryParameters['sleep-quality']!,
-  );
-
-  SleepDialogRoute get _self => this as SleepDialogRoute;
+  static SleepDialogRoute _fromState(GoRouterState state) => SleepDialogRoute();
 
   @override
-  String get location => GoRouteData.$location(
-    '/sleep-dialog',
-    queryParams: {'sleep-quality': _self.sleepQuality},
-  );
+  String get location => GoRouteData.$location('/sleep-dialog');
 
   @override
   void go(BuildContext context) => context.go(location);
