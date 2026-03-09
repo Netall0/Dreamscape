@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:go_router/go_router.dart';
 import 'package:uikit/uikit.dart';
 
+import '../../../core/service/ai_sleep_service.dart';
 import '../../../core/util/extension/app_context_extension.dart';
 import '../../../core/util/logger/logger.dart';
 import '../../initialization/widget/depend_scope.dart';
@@ -28,47 +30,28 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
     logger.debug('init_state');
   }
 
-  Future<void> _addStats() => showDialog(
-    context: context,
-    builder: (context) => AlertDialog.adaptive(
-      title: const Text('Add Stats'),
-      content: const Text('Do you want to add stats from Health?'),
-      actions: [
-        TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('No')),
-        ElevatedButton(
-          onPressed: () {
-            try {
-              DependScope.of(context).dependModel.statsBloc.add(StatsEventAddFromHealth());
-              logger.debug('StatsEventAddFromHealth added to bloc');
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(const SnackBar(content: Text('Stats added from Health')));
-            } on Object catch (e, stackTrace) {
-              logger.error(
-                'Failed to add StatsEventAddFromHealth',
-                error: e,
-                stackTrace: stackTrace,
-              );
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text('error adding stats: $e')));
-            } finally {
-              Navigator.of(context).pop();
-            }
-          },
-          child: const Text('Yes'),
-        ),
-      ],
-    ),
-  );
+  Future<void> _addStats() async {
+    context.push('/add-from-health-device');
+  }
+
+  late final List<StatsModel> _stats;
 
   @override
   Widget build(BuildContext context) {
     final AppTheme theme = context.appTheme;
     final StatsListBloc bloc = DependScope.of(context).dependModel.statsBloc;
     final StatsCalculateNotifier statsNotifier = DependScope.of(context).dependModel.statsNotifier;
+    final AiSleepService aiSleepService = DependScope.of(context).dependModel.aiSleepService;
 
     return Scaffold(
+      floatingActionButtonLocation: .centerDocked,
+      floatingActionButton: SizedBox(
+        width: 200,
+        // child: ElevatedButton.icon(
+        //   onPressed: ()=>  context.push(''),
+        //   icon: const Icon(Icons.analytics),
+        // ),
+      ),
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
@@ -135,6 +118,7 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
               StatsLoaded() => SliverList(
                 delegate: SliverChildBuilderDelegate((context, index) {
                   final StatsModel model = state.statsModelList[index];
+                  _stats = state.statsModelList;
                   return Slidable(
                     endActionPane: ActionPane(
                       motion: const ScrollMotion(),

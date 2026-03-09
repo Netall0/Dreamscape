@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -5,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/config/app_config.dart';
 import '../../../core/database/database.dart';
 import '../../../core/repository/temp_repository.dart';
+import '../../../core/service/ai_sleep_service.dart';
 import '../../../core/util/logger/logger.dart';
 import '../../auth/controller/bloc/auth_bloc.dart';
 import '../../auth/controller/notifier/load_user_info_notifier.dart';
@@ -61,6 +63,8 @@ class CompositionRoot with LoggerMixin {
 
     final SettingsController settingsController = _initSettingsController();
 
+    final aiSleepService = AiSleepService(); //TODO inject with dio instance
+
     try {
       return DependContainer(
         authBloc: authBloc,
@@ -71,6 +75,7 @@ class CompositionRoot with LoggerMixin {
         appDatabase: appDatabase,
         audioPlayer: audioPlayer,
         settingsController: settingsController,
+        aiSleepService: aiSleepService,
       );
     } on Object catch (e, stackTrace) {
       logger.error('Ошибка в _initDepend', error: e, stackTrace: stackTrace);
@@ -178,8 +183,6 @@ class CompositionRoot with LoggerMixin {
     }
   }
 }
-
-
 
 
 

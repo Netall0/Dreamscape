@@ -44,6 +44,7 @@ dependencies:
   mocktail: ^1.0.4
   crystal_navigation_bar: ^1.1.0
   stream_transform: ^2.1.1
+  dio: ^5.9.2
 
 dev_dependencies:
   drift_dev: ^2.30.0

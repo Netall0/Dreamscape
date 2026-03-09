@@ -14,9 +14,12 @@ import '../../features/auth/widget/sign_in_screen.dart';
 import '../../features/auth/widget/sing_up_screen.dart';
 import '../../features/home/widget/home_screen.dart';
 import '../../features/home/widget/sleep_screen.dart';
+import '../../features/initialization/widget/depend_scope.dart';
 import '../../features/settings/widget/settings_screen.dart';
+import '../../features/stats/controller/bloc/stats_list_bloc.dart';
 import '../../features/stats/model/stats_model.dart';
 import '../../features/stats/widget/stats_screen.dart';
+import '../util/logger/logger.dart';
 import 'navigator_observer.dart';
 
 part 'router.g.dart';
@@ -190,8 +193,48 @@ class DialogPage<T> extends Page<T> {
       DialogRoute<T>(context: context, builder: (context) => child, settings: this);
 }
 
-//add from wathch dialog
+//add from watch
 
+final class AddFromHealthDeviceExtras {}
+
+@TypedGoRoute<AddFromWatchRoute>(path: '/add-from-health-device')
+class AddFromWatchRoute extends GoRouteData with $AddFromWatchRoute, LoggerMixin {
+  @override
+  Page<void> buildPage(BuildContext context, GoRouterState state) => DialogPage(
+    child: AlertDialog.adaptive(
+      title: const Text('Add Stats'),
+      content: const Text('Do you want to add stats from Health?'),
+      actions: [
+        TextButton(onPressed: () => context.pop(), child: const Text('No')),
+        ElevatedButton(
+          onPressed: () {
+            try {
+              DependScope.of(context).dependModel.statsBloc.add(StatsEventAddFromHealth());
+              logger.debug('StatsEventAddFromHealth added to bloc');
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(const SnackBar(content: Text('Stats added from Health')));
+            } on Object catch (e, stackTrace) {
+              logger.error(
+                'Failed to add StatsEventAddFromHealth',
+                error: e,
+                stackTrace: stackTrace,
+              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text('error adding stats: $e')));
+            } finally {
+              Navigator.of(context).pop();
+            }
+          },
+          child: const Text('Yes'),
+        ),
+      ],
+    ),
+  );
+}
+
+//add from wathch dialog
 final class EditNameExtras {
   EditNameExtras({
     required this.userInfoNotifier,
@@ -204,8 +247,8 @@ final class EditNameExtras {
   final VoidCallback voidCallback;
 }
 
-@TypedGoRoute<AddFromWatchRoute>(path: '/edit-name')
-class AddFromWatchRoute extends GoRouteData with $AddFromWatchRoute {
+@TypedGoRoute<EditNameRoute>(path: '/edit-name')
+class EditNameRoute extends GoRouteData with $EditNameRoute {
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
     final args = state.extra! as EditNameExtras;

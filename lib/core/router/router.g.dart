@@ -10,6 +10,7 @@ List<RouteBase> get $appRoutes => [
   $rootRouteData,
   $signInRoute,
   $addFromWatchRoute,
+  $editNameRoute,
   $sleepDialogRoute,
 ];
 
@@ -210,13 +211,36 @@ mixin $SignUpRoute on GoRouteData {
 }
 
 RouteBase get $addFromWatchRoute => GoRouteData.$route(
-  path: '/edit-name',
+  path: '/add-from-health-device',
   factory: $AddFromWatchRoute._fromState,
 );
 
 mixin $AddFromWatchRoute on GoRouteData {
   static AddFromWatchRoute _fromState(GoRouterState state) =>
       AddFromWatchRoute();
+
+  @override
+  String get location => GoRouteData.$location('/add-from-health-device');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $editNameRoute =>
+    GoRouteData.$route(path: '/edit-name', factory: $EditNameRoute._fromState);
+
+mixin $EditNameRoute on GoRouteData {
+  static EditNameRoute _fromState(GoRouterState state) => EditNameRoute();
 
   @override
   String get location => GoRouteData.$location('/edit-name');
