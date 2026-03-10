@@ -18,6 +18,7 @@ import '../../features/initialization/widget/depend_scope.dart';
 import '../../features/settings/widget/settings_screen.dart';
 import '../../features/stats/controller/bloc/stats_list_bloc.dart';
 import '../../features/stats/model/stats_model.dart';
+import '../../features/stats/widget/analyze_stats_screen.dart';
 import '../../features/stats/widget/stats_screen.dart';
 import '../util/logger/logger.dart';
 import 'navigator_observer.dart';
@@ -96,7 +97,12 @@ class BlocListenable<T> extends ChangeNotifier {
 
     // stats
     TypedStatefulShellBranch<StatsShellBranchData>(
-      routes: <TypedRoute<RouteData>>[TypedGoRoute<StatsData>(path: '/stats')],
+      routes: <TypedRoute<RouteData>>[
+        TypedGoRoute<StatsData>(
+          path: '/stats',
+          routes: [TypedGoRoute<AnalyzeStatsData>(path: 'analyze-stats')],
+        ),
+      ],
     ),
 
     //settings
@@ -155,6 +161,12 @@ class StatsShellBranchData extends StatefulShellBranchData {}
 class StatsData extends GoRouteData with $StatsData {
   @override
   Widget build(BuildContext context, GoRouterState state) => const StatsScreen();
+}
+
+class AnalyzeStatsData extends GoRouteData with $AnalyzeStatsData {
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const AnalyzeStatsScreen(sleepHistory: []); //TODO pass real sleep history
 }
 
 // ProfileBranch

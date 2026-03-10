@@ -13,7 +13,6 @@ final class SettingsController extends ChangeNotifier {
 
   final SettingsRepository _settingsRepository;
 
-  static const String _themeModeKey = 'theme_mode';
 
   String get themeMode => _settingsRepository.getThemeMode();
 

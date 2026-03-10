@@ -2,7 +2,7 @@ import 'package:just_audio/just_audio.dart';
 
 import '../../../core/database/database.dart';
 import '../../../core/repository/temp_repository.dart';
-import '../../../core/service/ai_sleep_service.dart';
+import '../../../core/service/ai/controller/ai_controller.dart';
 import '../../auth/controller/bloc/auth_bloc.dart';
 import '../../auth/controller/notifier/load_user_info_notifier.dart';
 import '../../settings/controller/settings_controller.dart';
@@ -19,10 +19,10 @@ final class DependContainer {
     required this.appDatabase,
     required this.tempRepository,
     required this.settingsController,
-    required this.aiSleepService,
+    required this.aiSleepController,
   });
   final AudioPlayer audioPlayer;
-  final AiSleepService aiSleepService;
+  final AiSleepController aiSleepController;
   final AppDatabase appDatabase;
   final StatsListBloc statsBloc;
   final TempRepository tempRepository;

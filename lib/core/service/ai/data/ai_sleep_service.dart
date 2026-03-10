@@ -1,8 +1,11 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:dio/dio.dart';
 
-import '../../features/stats/model/stats_model.dart';
-import '../config/app_config.dart';
-import '../util/logger/logger.dart';
+import '../../../../features/stats/model/stats_model.dart';
+import '../../../config/app_config.dart';
+import '../../../util/logger/logger.dart';
 import 'i_ai_sleep_service.dart';
 
 final class AiSleepService with LoggerMixin implements IAiSleepService {
@@ -14,9 +17,7 @@ final class AiSleepService with LoggerMixin implements IAiSleepService {
           connectTimeout: const Duration(seconds: 20),
           receiveTimeout: const Duration(seconds: 40),
         ),
-      ) {
-    _dio.options.headers['Authorization'] = 'Bearer $_apiKey';
-  }
+      );
 
   final Dio _dio;
 
@@ -25,6 +26,106 @@ final class AiSleepService with LoggerMixin implements IAiSleepService {
   static const List<String> _baseUrls = <String>['https://routerai.ru/api/v1'];
 
   static const String _model = 'meta-llama/llama-3.3-70b-instruct';
+
+  Stream<String> analyzeSleepHistoryStream(List<StatsModel> sleepHistory) async* {
+    final prompt =
+        '''
+Ты - эксперт по анализу качества сна. Проанализируй историю сна пользователя и дай структурированную оценку на основе всех записей.
+
+**ОБЩАЯ СТАТИСТИКА:**
+
+${sleepHistory.join('\n')}
+(повтори данные в виде списка, не обобщая, но при анализе учти все записи)
+
+
+
+**ИНСТРУКЦИИ:**
+1. Оцени общий тренд качества сна по шкале от 1 до 10
+2. Выдели ключевые закономерности по времени, длительности и качеству
+3. Укажи сильные и слабые стороны режима сна
+4. Дай 3-5 конкретных рекомендаций на основе истории
+5. Назови потенциальные риски, если тренд не улучшится
+6. Ссылайся на конкретные данные из истории, а не на одну сессию
+
+**ФОРМАТ ОТВЕТА:**
+Пиши по-русски, профессионально и кратко.
+Структура ответа:
+1) "Оценка сна: X/10"
+2) "Что вижу по данным:"
+3) "Риски:"
+4) "Что делать дальше:"
+
+''';
+    final Map<String, Object> body = {
+      'model': _model,
+      'stream': true,
+      'messages': [
+        {'role': 'system', 'content': 'Ты эксперт по сну. Отвечай строго по-русски.'},
+        {'role': 'user', 'content': prompt},
+      ],
+      'max_tokens': 1400,
+      'temperature': 0.7,
+    };
+
+    late final Response<ResponseBody> response;
+
+    try {
+      response = await _dio.post<ResponseBody>(
+        '/chat/completions',
+        data: body,
+        options: Options(responseType: ResponseType.stream),
+      );
+    } on Object catch (e) {
+      logger.error('Stream request failed: $e');
+      rethrow;
+    }
+
+    final Stream<Uint8List>? stream = response.data?.stream;
+
+    if (stream == null) {
+      logger.error('No stream in response');
+      return;
+    }
+
+    final buffer = StringBuffer();
+
+    await for (final Uint8List chunk in stream) {
+      final String raw = utf8.decode(chunk);
+
+      for (final String line in raw.split('\n')) {
+        final String trimmed = line.trim();
+
+        if (trimmed.isEmpty || !trimmed.startsWith('data: ')) {
+          continue;
+        }
+
+        final String data = trimmed.substring(5).trim();
+
+        if (data == '[DONE]') {
+          return;
+        }
+
+        try {
+          final json = jsonDecode(data) as Map<String, Object?>;
+
+          final delta = (json['choices'] as List?)?.firstOrNull?['delta']?['content'] as String?;
+
+          if (delta != null && delta.isNotEmpty) {
+            buffer.write(delta);
+            yield delta;
+          }
+
+          logger.info(buffer.toString());
+        } on FormatException catch (e) {
+          logger.error('Format error parsing line: $line, error: $e');
+          continue;
+        } on Object catch (e) {
+          logger.error('Failed to parse line: $line, error: $e');
+          continue;
+        }
+      }
+    }
+  }
 
   @override
   Future<String> analyzeSleepHistory(List<StatsModel> sleepHistory) async {
@@ -98,12 +199,12 @@ $sleepData
       for (var attempt = 0; attempt < 3; attempt++) {
         try {
           return await _dio.post(
-            '$baseUrl/chat/completions',
+            '/chat/completions',
             data: data,
             options: Options(
               headers: <String, String>{
                 'HTTP-Referer': 'https://dreamscape.app',
-                'X-Title': 'Dreamscape',
+                'X-Title': 'Dreamscape', //TODO app config
               },
             ),
           );

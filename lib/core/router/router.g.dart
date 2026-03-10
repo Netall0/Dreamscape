@@ -33,7 +33,16 @@ RouteBase get $rootRouteData => StatefulShellRouteData.$route(
     ),
     StatefulShellBranchData.$branch(
       routes: [
-        GoRouteData.$route(path: '/stats', factory: $StatsData._fromState),
+        GoRouteData.$route(
+          path: '/stats',
+          factory: $StatsData._fromState,
+          routes: [
+            GoRouteData.$route(
+              path: 'analyze-stats',
+              factory: $AnalyzeStatsData._fromState,
+            ),
+          ],
+        ),
       ],
     ),
     StatefulShellBranchData.$branch(
@@ -105,6 +114,26 @@ mixin $StatsData on GoRouteData {
 
   @override
   String get location => GoRouteData.$location('/stats');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $AnalyzeStatsData on GoRouteData {
+  static AnalyzeStatsData _fromState(GoRouterState state) => AnalyzeStatsData();
+
+  @override
+  String get location => GoRouteData.$location('/stats/analyze-stats');
 
   @override
   void go(BuildContext context) => context.go(location);

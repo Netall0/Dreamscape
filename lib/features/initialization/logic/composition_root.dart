@@ -6,7 +6,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/config/app_config.dart';
 import '../../../core/database/database.dart';
 import '../../../core/repository/temp_repository.dart';
-import '../../../core/service/ai_sleep_service.dart';
+import '../../../core/service/ai/controller/ai_controller.dart';
+import '../../../core/service/ai/data/ai_sleep_service.dart';
 import '../../../core/util/logger/logger.dart';
 import '../../auth/controller/bloc/auth_bloc.dart';
 import '../../auth/controller/notifier/load_user_info_notifier.dart';
@@ -63,7 +64,8 @@ class CompositionRoot with LoggerMixin {
 
     final SettingsController settingsController = _initSettingsController();
 
-    final aiSleepService = AiSleepService(); //TODO inject with dio instance
+    final AiSleepController aiSleepService =
+        _initAiSleepController(); //TODO inject with dio instance
 
     try {
       return DependContainer(
@@ -75,10 +77,21 @@ class CompositionRoot with LoggerMixin {
         appDatabase: appDatabase,
         audioPlayer: audioPlayer,
         settingsController: settingsController,
-        aiSleepService: aiSleepService,
+        aiSleepController: aiSleepService,
       );
     } on Object catch (e, stackTrace) {
       logger.error('Ошибка в _initDepend', error: e, stackTrace: stackTrace);
+      rethrow;
+    }
+  }
+
+  AiSleepController _initAiSleepController() {
+    try {
+      final aiSleepService = AiSleepService();
+      final aiSleepController = AiSleepController(aiSleepService: aiSleepService);
+      return aiSleepController;
+    } on Object catch (e, stackTrace) {
+      logger.error('ai sleep controller', error: e, stackTrace: stackTrace);
       rethrow;
     }
   }

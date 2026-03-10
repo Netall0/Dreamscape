@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:uikit/uikit.dart';
 
@@ -25,7 +26,9 @@ class _ScreenState extends State<HomeScreen> with LoggerMixin {
     final AppTheme theme = context.appTheme;
     final Size size = MediaQuery.sizeOf(context);
     final AlarmService alarmService = DependScope.of(context).platformDependContainer.alarmService;
-    final StreamClockController clockStream = DependScope.of(context).platformDependContainer.clockNotifier;
+    final StreamClockController clockStream = DependScope.of(
+      context,
+    ).platformDependContainer.clockNotifier;
     final TempRepository tempRep = DependScope.of(context).dependModel.tempRepository;
 
     return Scaffold(
@@ -54,16 +57,15 @@ class _ScreenState extends State<HomeScreen> with LoggerMixin {
                   child: GestureDetector(
                     onTap: () async {
                       final time = TimeOfDay.now();
-                      const SleepScreenData().go(context);
-                      await tempRep.saveBedTime(
-                        TimeOfDay(
-                          hour: time.hour,
-                          minute: time.minute,
-                        ),
-                      );
+                      context.push('/home/sleep');
+                      await tempRep.saveBedTime(TimeOfDay(hour: time.hour, minute: time.minute));
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Bedtime: ${time.hour}:${time.minute.toString().padLeft(2, '0')}')),
+                          SnackBar(
+                            content: Text(
+                              'Bedtime: ${time.hour}:${time.minute.toString().padLeft(2, '0')}',
+                            ),
+                          ),
                         );
                       }
                     },

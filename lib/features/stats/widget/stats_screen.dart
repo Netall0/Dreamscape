@@ -4,7 +4,9 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uikit/uikit.dart';
 
-import '../../../core/service/ai_sleep_service.dart';
+import '../../../core/config/app_config.dart';
+import '../../../core/constants/icons.dart';
+import '../../../core/service/ai/data/ai_sleep_service.dart';
 import '../../../core/util/extension/app_context_extension.dart';
 import '../../../core/util/logger/logger.dart';
 import '../../initialization/widget/depend_scope.dart';
@@ -41,16 +43,23 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
     final AppTheme theme = context.appTheme;
     final StatsListBloc bloc = DependScope.of(context).dependModel.statsBloc;
     final StatsCalculateNotifier statsNotifier = DependScope.of(context).dependModel.statsNotifier;
-    final AiSleepService aiSleepService = DependScope.of(context).dependModel.aiSleepService;
 
     return Scaffold(
       floatingActionButtonLocation: .centerDocked,
       floatingActionButton: SizedBox(
         width: 200,
-        // child: ElevatedButton.icon(
-        //   onPressed: ()=>  context.push(''),
-        //   icon: const Icon(Icons.analytics),
-        // ),
+        child: FloatingActionButton.extended(
+          backgroundColor: theme.colors.primary,
+          onPressed: () {
+            context.push('/stats/analyze-stats');
+          },
+          label: const Row(
+            children: [
+              Icon(AppIcons.ai, color: Colors.black),
+              Text('review from AI'),
+            ],
+          ),
+        ),
       ),
       body: CustomScrollView(
         slivers: [
