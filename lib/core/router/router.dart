@@ -20,6 +20,8 @@ import '../../features/stats/controller/bloc/stats_list_bloc.dart';
 import '../../features/stats/model/stats_model.dart';
 import '../../features/stats/widget/analyze_stats_screen.dart';
 import '../../features/stats/widget/stats_screen.dart';
+import '../service/ai/data/ai_sleep_service.dart';
+import '../service/ai/scope/ai_scope_wrapper.dart';
 import '../util/logger/logger.dart';
 import 'navigator_observer.dart';
 
@@ -165,8 +167,10 @@ class StatsData extends GoRouteData with $StatsData {
 
 class AnalyzeStatsData extends GoRouteData with $AnalyzeStatsData {
   @override
-  Widget build(BuildContext context, GoRouterState state) =>
-      const AnalyzeStatsScreen(sleepHistory: []); //TODO pass real sleep history
+  Widget build(BuildContext context, GoRouterState state) => AiScopeWrapper(
+    aiSleepService: AiSleepService(),
+    child: const AnalyzeStatsScreen(sleepHistory: []),
+  ); //TODO pass real sleep history
 }
 
 // ProfileBranch
