@@ -36,8 +36,6 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
     context.push('/add-from-health-device');
   }
 
-  late final List<StatsModel> _stats;
-
   @override
   Widget build(BuildContext context) {
     final AppTheme theme = context.appTheme;
@@ -51,7 +49,12 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
         child: FloatingActionButton.extended(
           backgroundColor: theme.colors.primary,
           onPressed: () {
-            context.push('/stats/analyze-stats');
+            context.push(
+              '/stats/analyze-stats',
+              extra: bloc.state is StatsLoaded
+                  ? (bloc.state as StatsLoaded).statsModelList
+                  : <StatsModel>[],
+            );
           },
           label: const Row(
             children: [
@@ -127,7 +130,6 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
               StatsLoaded() => SliverList(
                 delegate: SliverChildBuilderDelegate((context, index) {
                   final StatsModel model = state.statsModelList[index];
-                  _stats = state.statsModelList;
                   return Slidable(
                     endActionPane: ActionPane(
                       motion: const ScrollMotion(),

@@ -167,10 +167,13 @@ class StatsData extends GoRouteData with $StatsData {
 
 class AnalyzeStatsData extends GoRouteData with $AnalyzeStatsData {
   @override
-  Widget build(BuildContext context, GoRouterState state) => AiScopeWrapper(
-    aiSleepService: AiSleepService(),
-    child: const AnalyzeStatsScreen(sleepHistory: []),
-  ); //TODO pass real sleep history
+  Widget build(BuildContext context, GoRouterState state) {
+    final sleepHistory = state.extra! as List<StatsModel>;
+    return AiScopeWrapper(
+      aiSleepService: AiSleepService(),
+      child: AnalyzeStatsScreen(sleepHistory: sleepHistory),
+    );
+  } //TODO pass real sleep history
 }
 
 // ProfileBranch
