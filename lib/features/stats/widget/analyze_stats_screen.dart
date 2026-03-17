@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:uikit/theme/app_theme.dart';
+import 'package:uikit/widget/card.dart';
 
 import '../../../core/service/ai/controller/ai_controller.dart';
 import '../../../core/service/ai/scope/ai_scope.dart';
@@ -18,51 +19,53 @@ class AnalyzeStatsScreen extends StatefulWidget {
 }
 
 class _AnalyzeStatsScreenState extends State<AnalyzeStatsScreen> {
-  late final StreamSubscription<String>? sub;
   late final AiSleepController _controller;
+  bool _analysisStarted = false;
 
   @override
-  void initState() {
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _controller = AiScope.of(context);
-
-    _startAnalysis();
-    super.initState(); //TOD
-  }
-
-  @override
-  void dispose() {
-    sub?.cancel();
-    super.dispose();
+    if (!_analysisStarted) {
+      _analysisStarted = true;
+      _startAnalysis();
+    }
   }
 
   void _startAnalysis() {
-    sub = _controller.analyzeSleepHistoryStream(widget.sleepHistory).listen((_) {
-      setState(() {});
-    });
+    _controller.analyzeSleepHistoryStream(widget.sleepHistory).drain<void>();
   }
 
   @override
   Widget build(BuildContext context) {
     final AppTheme theme = context.appTheme;
+
     return Scaffold(
       appBar: AppBar(title: const Text('Анализ сна')),
       body: ListenableBuilder(
         listenable: _controller,
         builder: (context, _) => SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
           child: Column(
-            crossAxisAlignment: .start,
             children: [
-              if (_controller.isLoading || _controller.buffer.isEmpty)
-                const Center(child: CircularProgressIndicator())
-              else if (_controller.error != null)
-                Center(child: Text(_controller.error!))
-              else if (_controller.isDone) ...[
-                Text(_controller.buffer, style: theme.typography.h3),
-              ] else
-                Text(
-                  _controller.buffer + (_controller.isDone ? '' : ' ▍'),
-                  style: theme.typography.h3,
+              switch (_controller) {
+                final AiSleepController c when c.error != null => AdaptiveCard.outlined(
+                  child: Text(c.error!),
                 ),
+
+                final AiSleepController c when c.isLoading && c.buffer.isEmpty => const Center(
+                  child: CircularProgressIndicator(),
+                ),
+
+                final AiSleepController c when c.buffer.isNotEmpty => AdaptiveCard.outlined(
+                  child: Padding(
+                    padding: const .all(16),
+                    child: Text(c.buffer + (c.isDone ? '' : ' ▍'), style: theme.typography.h3),
+                  ),
+                ),
+
+                _ => const Center(child: Text('Подготовка анализа...')),
+              },
             ],
           ),
         ),

@@ -254,8 +254,6 @@ class _SleepScreenState extends State<SleepScreen>
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('congratulations!!!, sleep added')));
-
-      context.pop();
     }
     await statsNotifier.setStats();
     await tempRep.clearTempData();

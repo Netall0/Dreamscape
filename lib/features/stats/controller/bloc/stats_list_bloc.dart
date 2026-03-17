@@ -29,7 +29,12 @@ class StatsListBloc extends Bloc<StatsEvent, StatsState> with LoggerMixin {
       await _statsRepository.healthRequestPermission();
       await _statsRepository.addFromHealth();
       logger.debug('StatsModel added from health data');
-      emit(StatsLoaded(await _statsRepository.getSleepModel()));
+      final List<StatsModel> list = await _statsRepository.getSleepModel();
+      if (list.isEmpty) {
+        emit(StatsEmpty());
+      } else {
+        emit(StatsLoaded(list));
+      }
     } on Object catch (e, st) {
       emit(StatsError(e.toString()));
       logger.error('Error in _onAddFromHealth: $e', stackTrace: st);
@@ -67,7 +72,12 @@ class StatsListBloc extends Bloc<StatsEvent, StatsState> with LoggerMixin {
     try {
       await _statsRepository.addSleepModel(event.statsModel);
       logger.debug('StatsModel added: ${event.statsModel}');
-      emit(StatsLoaded(await _statsRepository.getSleepModel()));
+      final List<StatsModel> list = await _statsRepository.getSleepModel();
+      if (list.isEmpty) {
+        emit(StatsEmpty());
+      } else {
+        emit(StatsLoaded(list));
+      }
     } on Object catch (e, st) {
       emit(StatsError(e.toString()));
       logger.error('Error in _onAddStats: $e', stackTrace: st);

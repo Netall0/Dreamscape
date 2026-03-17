@@ -168,7 +168,8 @@ class StatsData extends GoRouteData with $StatsData {
 class AnalyzeStatsData extends GoRouteData with $AnalyzeStatsData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    final sleepHistory = state.extra! as List<StatsModel>;
+    final Object? extra = state.extra;
+    final List<StatsModel> sleepHistory = extra is List<StatsModel> ? extra : const <StatsModel>[];
     return AiScopeWrapper(
       aiSleepService: AiSleepService(),
       child: AnalyzeStatsScreen(sleepHistory: sleepHistory),
@@ -243,7 +244,9 @@ class AddFromWatchRoute extends GoRouteData with $AddFromWatchRoute, LoggerMixin
                 context,
               ).showSnackBar(SnackBar(content: Text('error adding stats: $e')));
             } finally {
-              Navigator.of(context).pop();
+              if (context.mounted) {
+                context.pop();
+              }
             }
           },
           child: const Text('Yes'),
@@ -326,3 +329,6 @@ class SleepDialogRoute extends GoRouteData with $SleepDialogRoute {
     );
   }
 }
+
+
+//TODO navigation bug

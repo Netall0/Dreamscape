@@ -22,6 +22,10 @@ final class StatsRepository with LoggerMixin implements IStatsRepository {
     HealthDataType.SLEEP_AWAKE,
     HealthDataType.ACTIVE_ENERGY_BURNED,
   ];
+
+  static final List<HealthDataType> _optionalTypes = [
+    HealthDataType.SLEEP_IN_BED,
+  ];
   //stats methods
 
   @override
@@ -138,11 +142,21 @@ final class StatsRepository with LoggerMixin implements IStatsRepository {
       final now = tz.TZDateTime.now(tz.local);
       final midnight = tz.TZDateTime(tz.local, now.year, now.month, now.day);
 
-      final List<HealthDataPoint> data = await _health.getHealthDataFromTypes(
-        startTime: midnight,
-        endTime: now,
-        types: _types,
-      );
+      List<HealthDataPoint> data;
+      try {
+        data = await _health.getHealthDataFromTypes(
+          startTime: midnight,
+          endTime: now,
+          types: [..._types, ..._optionalTypes],
+        );
+      } on Object catch (e) {
+        logger.error('Health optional types not available, retrying without: $e');
+        data = await _health.getHealthDataFromTypes(
+          startTime: midnight,
+          endTime: now,
+          types: _types,
+        );
+      }
 
       final List<HealthDataPoint> unique = _health
           .removeDuplicates(data)
@@ -175,22 +189,60 @@ final class StatsRepository with LoggerMixin implements IStatsRepository {
           ? heartRates.reduce((a, b) => a + b) / heartRates.length
           : 0.0;
 
-      final int sleepMinutes = unique
+      final int sleepAsleepMinutes = unique
           .where((p) => p.type == HealthDataType.SLEEP_ASLEEP)
           .fold<int>(0, (sum, p) => sum + p.dateTo.difference(p.dateFrom).inMinutes);
+
+      final int sleepInBedMinutes = unique
+          .where((p) => p.type == HealthDataType.SLEEP_IN_BED)
+          .fold<int>(0, (sum, p) => sum + p.dateTo.difference(p.dateFrom).inMinutes);
+
+      final int sleepMinutes = sleepAsleepMinutes > 0 ? sleepAsleepMinutes : sleepInBedMinutes;
 
       final int wakeMinutes = unique
           .where((p) => p.type == HealthDataType.SLEEP_AWAKE)
           .fold<int>(0, (sum, p) => sum + p.dateTo.difference(p.dateFrom).inMinutes);
 
-      final int sleepData = midnight.millisecondsSinceEpoch;
+      final List<HealthDataPoint> sleepPoints = unique
+          .where(
+            (p) =>
+                p.type == HealthDataType.SLEEP_ASLEEP ||
+                p.type == HealthDataType.SLEEP_AWAKE ||
+                p.type == HealthDataType.SLEEP_IN_BED,
+          )
+          .toList(growable: false);
+
+      DateTime sleepStart = midnight;
+      DateTime sleepEnd = now;
+
+      if (sleepPoints.isNotEmpty) {
+        sleepStart = sleepPoints.first.dateFrom;
+        sleepEnd = sleepPoints.first.dateTo;
+        for (final p in sleepPoints) {
+          if (p.dateFrom.isBefore(sleepStart)) {
+            sleepStart = p.dateFrom;
+          }
+          if (p.dateTo.isAfter(sleepEnd)) {
+            sleepEnd = p.dateTo;
+          }
+        }
+      }
+
+      final int sleepData = DateTime(
+        sleepStart.year,
+        sleepStart.month,
+        sleepStart.day,
+      ).millisecondsSinceEpoch;
+
+      final int sleepHours = (sleepMinutes ~/ 60).clamp(0, 23);
+      final int sleepMins = (sleepMinutes % 60).clamp(0, 59);
 
       final sleepModel = StatsModel(
         sleepDate: DateTime.fromMillisecondsSinceEpoch(sleepData),
         sleepQuality: SleepQuality.normal,
-        sleepTime: TimeOfDay(hour: sleepMinutes ~/ 60, minute: sleepMinutes % 60),
-        bedTime: TimeOfDay(hour: midnight.hour, minute: midnight.minute),
-        riseTime: TimeOfDay(hour: now.hour, minute: now.minute),
+        sleepTime: TimeOfDay(hour: sleepHours, minute: sleepMins),
+        bedTime: TimeOfDay(hour: sleepStart.hour, minute: sleepStart.minute),
+        riseTime: TimeOfDay(hour: sleepEnd.hour, minute: sleepEnd.minute),
 
         sleepNotes:
             'Imported from Health app - Steps: $steps, Calories: ${calories.toStringAsFixed(2)}, Avg Heart Rate: ${avgHeartRate.toStringAsFixed(2)} bpm, Sleep Duration: ${sleepMinutes ~/ 60}h ${sleepMinutes % 60}m, Awake Duration: ${wakeMinutes ~/ 60}h ${wakeMinutes % 60}m',
@@ -217,7 +269,12 @@ final class StatsRepository with LoggerMixin implements IStatsRepository {
   Future<void> healthRequestPermission() async {
     try {
       await _health.configure();
-      await _health.requestAuthorization(_types);
+      try {
+        await _health.requestAuthorization([..._types, ..._optionalTypes]);
+      } on Object catch (e) {
+        logger.error('Optional health types not available, retrying base types: $e');
+        await _health.requestAuthorization(_types);
+      }
     } on Object catch (e, st) {
       logger.error('Error requesting health permissions: $e', stackTrace: st);
     }

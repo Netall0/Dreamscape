@@ -14,8 +14,8 @@ final class AiSleepService with LoggerMixin implements IAiSleepService {
         BaseOptions(
           baseUrl: _baseUrls.first,
           headers: {'Authorization': 'Bearer $_apiKey', 'Content-Type': 'application/json'},
-          connectTimeout: const Duration(seconds: 20),
-          receiveTimeout: const Duration(seconds: 40),
+          connectTimeout: const Duration(seconds: 40),
+          receiveTimeout: const Duration(seconds: 60),
         ),
       );
 
@@ -89,8 +89,14 @@ ${sleepHistory.join('\n')}
 
     final buffer = StringBuffer();
 
-    await for (final Uint8List chunk in stream) {
+    var gotFirstChunk = false;
+    await for (final Uint8List chunk
+        in stream.timeout(const Duration(seconds: 25), onTimeout: (sink) => sink.close())) {
       final String raw = utf8.decode(chunk);
+      if (!gotFirstChunk) {
+        gotFirstChunk = true;
+        logger.info('First AI stream chunk: ${raw.substring(0, raw.length.clamp(0, 400))}');
+      }
 
       for (final String line in raw.split('\n')) {
         final String trimmed = line.trim();

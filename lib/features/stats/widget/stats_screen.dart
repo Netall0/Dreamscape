@@ -6,6 +6,7 @@ import 'package:uikit/uikit.dart';
 
 import '../../../core/config/app_config.dart';
 import '../../../core/constants/icons.dart';
+import '../../../core/database/database.dart';
 import '../../../core/service/ai/data/ai_sleep_service.dart';
 import '../../../core/util/extension/app_context_extension.dart';
 import '../../../core/util/logger/logger.dart';
@@ -13,6 +14,7 @@ import '../../initialization/widget/depend_scope.dart';
 import '../controller/bloc/stats_list_bloc.dart';
 import '../controller/notifier/stats_calculate_notifier.dart';
 import '../model/stats_model.dart';
+import '../repository/stats_repository.dart';
 
 class StatsScreen extends StatefulWidget {
   const StatsScreen({super.key});
@@ -26,7 +28,10 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _addStats();
+      final StatsListBloc bloc = DependScope.of(context).dependModel.statsBloc;
+      if (bloc.state is StatsInitial || bloc.state is StatsError) {
+        bloc.add(StatsEventLoadStats());
+      }
     });
 
     logger.debug('init_state');
@@ -49,16 +54,16 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
         child: FloatingActionButton.extended(
           backgroundColor: theme.colors.primary,
           onPressed: () {
-            context.push(
-              '/stats/analyze-stats',
-              extra: bloc.state is StatsLoaded
-                  ? (bloc.state as StatsLoaded).statsModelList
-                  : <StatsModel>[],
-            );
+            final List<StatsModel> list = bloc.state is StatsLoaded
+                ? (bloc.state as StatsLoaded).statsModelList
+                : <StatsModel>[];
+            context.push('/stats/analyze-stats', extra: list);
+            logger.info('$list');
           },
           label: const Row(
             children: [
               Icon(AppIcons.ai, color: Colors.black),
+              SizedBox(width: 12),
               Text('review from AI'),
             ],
           ),
@@ -127,6 +132,18 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
             },
             bloc: bloc,
             builder: (context, state) => switch (state) {
+              StatsLoaded() when state.statsModelList.isEmpty => SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  childCount: 1,
+                  (context, index) => AdaptiveCard(
+                    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: const EdgeInsets.all(16),
+                    backgroundColor: theme.colors.cardBackground,
+                    border: Border.all(color: theme.colors.dividerColor),
+                    child: Text('No stats found', style: theme.typography.h4),
+                  ),
+                ),
+              ),
               StatsLoaded() => SliverList(
                 delegate: SliverChildBuilderDelegate((context, index) {
                   final StatsModel model = state.statsModelList[index];
@@ -172,12 +189,7 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
                           if (model.sleepNotes.isNotEmpty)
                             Padding(
                               padding: const .all(16),
-                              child: Expanded(
-                                child: Text(
-                                  'Notes: ${model.sleepNotes}',
-                                  style: theme.typography.h4,
-                                ),
-                              ),
+                              child: Text('Notes: ${model.sleepNotes}', style: theme.typography.h4),
                             ),
                         ],
                       ),
@@ -186,6 +198,9 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
                 }, childCount: state.statsModelList.length),
               ),
               StatsInitial() => const SliverFillRemaining(
+                child: Center(child: CircularProgressIndicator.adaptive()),
+              ),
+              StatsLoading() => const SliverFillRemaining(
                 child: Center(child: CircularProgressIndicator.adaptive()),
               ),
               StatsEmpty() => SliverList(
