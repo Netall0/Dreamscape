@@ -30,6 +30,7 @@ class _SleepScreenState extends State<SleepScreen>
     with SingleTickerProviderStateMixin, LoggerMixin {
   late final AudioPlayer _player;
 
+  final TextEditingController _controller = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -67,6 +68,7 @@ class _SleepScreenState extends State<SleepScreen>
   @override
   void dispose() {
     _player.pause();
+    _controller.dispose();
     logger.debug('dispose: paused player');
     super.dispose();
   }
@@ -185,6 +187,7 @@ class _SleepScreenState extends State<SleepScreen>
               child: GestureDetector(
                 onTap: () async {
                   await _onTapAdding(
+                    textEditingController: _controller,
                     tempRep: tempRep,
                     bloc: bloc,
                     context: context,
@@ -199,7 +202,7 @@ class _SleepScreenState extends State<SleepScreen>
                     children: [
                       Icon(Icons.play_arrow, color: theme.colors.onPrimary),
                       Text(
-                        'остановить сон',
+                        context.l10n.sleepStopButton,
                         style: theme.typography.h5.copyWith(color: theme.colors.onPrimary),
                       ),
                     ],
@@ -218,16 +221,21 @@ class _SleepScreenState extends State<SleepScreen>
     required StatsCalculateNotifier statsNotifier,
     required StatsListBloc bloc,
     required BuildContext context,
+    required TextEditingController textEditingController,
   }) async {
     final riseTime = TimeOfDay.now(); //TODO
     SleepQuality sleepQuality = SleepQuality.bad;
 
     await context.push(
       '/sleep-dialog',
-      extra: (SleepQuality sleep) {
-        sleepQuality = sleep;
-        context.pop();
-      },
+      extra: SleepDialogExtras(
+        textConrtoller: textEditingController,
+        sleepQualityCallback: (sleep) {
+          sleepQuality = sleep;
+          context.pop();
+          logger.debug('sleep quality $sleepQuality');
+        },
+      ),
     );
 
     logger.debug('time rise ${riseTime.hour}:${riseTime.minute}');
@@ -246,14 +254,14 @@ class _SleepScreenState extends State<SleepScreen>
           riseTime: TimeOfDay(hour: riseTime.hour, minute: riseTime.minute),
           sleepQuality: sleepQuality,
           sleepTime: sleepDuration,
-          sleepNotes: 'хахахахахахахааххах',
+          sleepNotes: _controller.text,
         ),
       ),
     );
     if (context.mounted) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('congratulations!!!, sleep added')));
+      ).showSnackBar(SnackBar(content: Text(context.l10n.sleepAddedSnack)));
     }
     await statsNotifier.setStats();
     await tempRep.clearTempData();

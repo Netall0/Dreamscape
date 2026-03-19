@@ -46,6 +46,11 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
     final AppTheme theme = context.appTheme;
     final StatsListBloc bloc = DependScope.of(context).dependModel.statsBloc;
     final StatsCalculateNotifier statsNotifier = DependScope.of(context).dependModel.statsNotifier;
+    String sleepQualityLabel(SleepQuality quality) => switch (quality) {
+      SleepQuality.bad => context.l10n.sleepQualityBad,
+      SleepQuality.normal => context.l10n.sleepQualityNormal,
+      SleepQuality.good => context.l10n.sleepQualityGood,
+    };
 
     return Scaffold(
       floatingActionButtonLocation: .centerDocked,
@@ -53,18 +58,44 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
         width: 200,
         child: FloatingActionButton.extended(
           backgroundColor: theme.colors.primary,
-          onPressed: () {
-            final List<StatsModel> list = bloc.state is StatsLoaded
-                ? (bloc.state as StatsLoaded).statsModelList
-                : <StatsModel>[];
+          onPressed: () async {
+            List<StatsModel> list = <StatsModel>[];
+
+            final currentState = bloc.state;
+            if (currentState is StatsLoaded) {
+              list = currentState.statsModelList;
+            } else {
+              bloc.add(StatsEventLoadStats());
+              final StatsState nextState = await bloc.stream.firstWhere(
+                (s) => s is StatsLoaded || s is StatsEmpty || s is StatsError,
+              );
+              if (!context.mounted) {
+                return;
+              }
+              if (nextState is StatsLoaded) {
+                list = nextState.statsModelList;
+              } else if (nextState is StatsError) {
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      '${context.l10n.statsErrorLoadingLabel}: ${nextState.message}',
+                    ),
+                  ),
+                );
+                return;
+              }
+            }
+
             context.push('/stats/analyze-stats', extra: list);
-            logger.info('$list');
+            logger.info('${list.length} stats sent to AI');
           },
-          label: const Row(
+          label: Row(
             children: [
               Icon(AppIcons.ai, color: Colors.black),
               SizedBox(width: 12),
-              Text('review from AI'),
+              Text(context.l10n.statsReviewFromAi),
             ],
           ),
         ),
@@ -76,7 +107,7 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
               IconButton(
                 onPressed: _addStats,
                 icon: const Icon(Icons.add),
-                tooltip: 'Add Stats from Health',
+                tooltip: context.l10n.statsAddFromHealthTooltip,
               ),
             ],
             pinned: true,
@@ -84,7 +115,7 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
             expandedHeight: 100,
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
-                'Your Sleep Sessions',
+                context.l10n.statsSleepSessionsTitle,
                 style: theme.typography.h2.copyWith(color: theme.colors.textPrimary),
               ),
               centerTitle: true,
@@ -108,12 +139,16 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Total Sleep: ${totalSleepHours.toStringAsFixed(1)} hrs',
+                          '${context.l10n.statsTotalSleepLabel} '
+                          '${totalSleepHours.toStringAsFixed(1)} '
+                          '${context.l10n.statsHoursShort}',
                           style: theme.typography.h4,
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Average Sleep: ${averageSleepHours.toStringAsFixed(1)} hrs',
+                          '${context.l10n.statsAverageSleepLabel} '
+                          '${averageSleepHours.toStringAsFixed(1)} '
+                          '${context.l10n.statsHoursShort}',
                           style: theme.typography.h4,
                         ),
                       ],
@@ -140,7 +175,7 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
                     padding: const EdgeInsets.all(16),
                     backgroundColor: theme.colors.cardBackground,
                     border: Border.all(color: theme.colors.dividerColor),
-                    child: Text('No stats found', style: theme.typography.h4),
+                    child: Text(context.l10n.statsNoStatsFound, style: theme.typography.h4),
                   ),
                 ),
               ),
@@ -161,7 +196,7 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
                           backgroundColor: theme.colors.error,
                           foregroundColor: theme.colors.onError,
                           icon: Icons.delete,
-                          label: 'Delete',
+                          label: context.l10n.statsDelete,
                         ),
                       ],
                     ),
@@ -175,21 +210,34 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
                       child: ExpansionTile(
                         leading: Column(
                           mainAxisSize: MainAxisSize.min,
-                          children: [model.sleepQuality.icon, Text(model.sleepQuality.name)],
+                          children: [
+                            model.sleepQuality.icon,
+                            Text(sleepQualityLabel(model.sleepQuality)),
+                          ],
                         ),
                         title: Text(
-                          'Slept at ${model.sleepTime.hour.toString().padLeft(2, '0')}:${model.sleepTime.minute.toString().padLeft(2, '0')}',
+                          '${context.l10n.statsSleptAtLabel} '
+                          '${model.sleepTime.hour.toString().padLeft(2, '0')}:'
+                          '${model.sleepTime.minute.toString().padLeft(2, '0')}',
                           style: theme.typography.h4,
                         ),
                         subtitle: Text(
-                          'From ${model.bedTime.hour.toString().padLeft(2, '0')}:${model.bedTime.minute.toString().padLeft(2, '0')} to ${model.riseTime.hour.toString().padLeft(2, '0')}:${model.riseTime.minute.toString().padLeft(2, '0')}',
+                          '${context.l10n.statsFromLabel} '
+                          '${model.bedTime.hour.toString().padLeft(2, '0')}:'
+                          '${model.bedTime.minute.toString().padLeft(2, '0')} '
+                          '${context.l10n.statsToLabel} '
+                          '${model.riseTime.hour.toString().padLeft(2, '0')}:'
+                          '${model.riseTime.minute.toString().padLeft(2, '0')}',
                           style: theme.typography.h6,
                         ),
                         children: [
                           if (model.sleepNotes.isNotEmpty)
                             Padding(
                               padding: const .all(16),
-                              child: Text('Notes: ${model.sleepNotes}', style: theme.typography.h4),
+                              child: Text(
+                                '${context.l10n.statsNotesLabel}: ${model.sleepNotes}',
+                                style: theme.typography.h4,
+                              ),
                             ),
                         ],
                       ),
@@ -211,16 +259,22 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
                     padding: const EdgeInsets.all(16),
                     backgroundColor: theme.colors.cardBackground,
                     border: Border.all(color: theme.colors.dividerColor),
-                    child: Text('No stats found', style: theme.typography.h4),
+                    child: Text(context.l10n.statsNoStatsFound, style: theme.typography.h4),
                   ),
                 ),
               ),
               StatsError(:final message) => SliverFillRemaining(
                 child: Center(
-                  child: Text('Error loading stats: $message', style: theme.typography.h4),
+                  child: Text(
+                    '${context.l10n.statsErrorLoadingLabel}: $message',
+                    style: theme.typography.h4,
+                  ),
                 ),
               ),
-              _ => const SliverFillRemaining(child: Center(child: Text('Unknown state'))),
+              // ignore: unreachable_switch_case
+              _ => SliverFillRemaining(
+                child: Center(child: Text(context.l10n.statsUnknownState)),
+              ),
             },
           ),
         ],

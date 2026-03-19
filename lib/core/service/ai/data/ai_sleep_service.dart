@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 
 import '../../../../features/stats/model/stats_model.dart';
 import '../../../config/app_config.dart';
@@ -25,36 +26,35 @@ final class AiSleepService with LoggerMixin implements IAiSleepService {
 
   static const List<String> _baseUrls = <String>['https://routerai.ru/api/v1'];
 
-  static const String _model = 'meta-llama/llama-3.3-70b-instruct';
+  static const String _model = 'qwen/qwen-2.5-72b-instruct';
 
+  @override
   Stream<String> analyzeSleepHistoryStream(List<StatsModel> sleepHistory) async* {
+    final String formattedHistory = _formatSleepHistory(sleepHistory);
     final prompt =
         '''
-Ты - эксперт по анализу качества сна. Проанализируй историю сна пользователя и дай структурированную оценку на основе всех записей.
+Ты — эксперт по анализу сна. Ниже — структурированная история сна пользователя.
 
-**ОБЩАЯ СТАТИСТИКА:**
+ДАННЫЕ (список сессий):
+$formattedHistory
 
-${sleepHistory.join('\n')}
-(повтори данные в виде списка, не обобщая, но при анализе учти все записи)
+ЗАДАЧА:
+1) Сгруппируй наблюдения по темам: длительность, время отхода ко сну, время подъема, качество.
+2) Рассчитай средние значения: средняя длительность сна, среднее время отхода ко сну, среднее время подъема.
+3) Кратко оцени тренд качества сна по шкале 1–10.
+4) Дай 3–5 рекомендаций, опираясь на конкретные сессии.
+5) Укажи риски, если тренд не улучшится.
 
-
-
-**ИНСТРУКЦИИ:**
-1. Оцени общий тренд качества сна по шкале от 1 до 10
-2. Выдели ключевые закономерности по времени, длительности и качеству
-3. Укажи сильные и слабые стороны режима сна
-4. Дай 3-5 конкретных рекомендаций на основе истории
-5. Назови потенциальные риски, если тренд не улучшится
-6. Ссылайся на конкретные данные из истории, а не на одну сессию
-
-**ФОРМАТ ОТВЕТА:**
-Пиши по-русски, профессионально и кратко.
-Структура ответа:
+ФОРМАТ ОТВЕТА:
+Пиши по-русски, кратко и структурировано.
+Вывод должен иметь блоки:
 1) "Оценка сна: X/10"
-2) "Что вижу по данным:"
-3) "Риски:"
-4) "Что делать дальше:"
-
+2) "Средние значения:" (список)
+3) "Что вижу по данным:" (маркированный список по темам)
+4) "Риски:" (короткий список)
+5) "Что делать дальше:" (3–5 пунктов)
+6) "Список сессий:" (перепиши список сессий в сжатом виде)
+Без эмодзи и нестандартных символов. Используй обычные дефисы и кавычки.
 ''';
     final Map<String, Object> body = {
       'model': _model,
@@ -64,7 +64,7 @@ ${sleepHistory.join('\n')}
         {'role': 'user', 'content': prompt},
       ],
       'max_tokens': 1400,
-      'temperature': 0.7,
+      'temperature': 0.3,
     };
 
     late final Response<ResponseBody> response;
@@ -90,8 +90,10 @@ ${sleepHistory.join('\n')}
     final buffer = StringBuffer();
 
     var gotFirstChunk = false;
-    await for (final Uint8List chunk
-        in stream.timeout(const Duration(seconds: 25), onTimeout: (sink) => sink.close())) {
+    await for (final Uint8List chunk in stream.timeout(
+      const Duration(seconds: 25),
+      onTimeout: (sink) => sink.close(),
+    )) {
       final String raw = utf8.decode(chunk);
       if (!gotFirstChunk) {
         gotFirstChunk = true;
@@ -117,8 +119,11 @@ ${sleepHistory.join('\n')}
           final delta = (json['choices'] as List?)?.firstOrNull?['delta']?['content'] as String?;
 
           if (delta != null && delta.isNotEmpty) {
-            buffer.write(delta);
-            yield delta;
+            final String cleaned = _cleanText(delta);
+            if (cleaned.isNotEmpty) {
+              buffer.write(cleaned);
+              yield cleaned;
+            }
           }
 
           logger.info(buffer.toString());
@@ -136,33 +141,32 @@ ${sleepHistory.join('\n')}
   @override
   Future<String> analyzeSleepHistory(List<StatsModel> sleepHistory) async {
     try {
-      final sleepData = sleepHistory.toString();
+      final String formattedHistory = _formatSleepHistory(sleepHistory);
 
       final prompt =
           '''
-Ты - эксперт по анализу качества сна. Проанализируй историю сна пользователя и дай структурированную оценку на основе всех записей.
+Ты — эксперт по анализу сна. Ниже — структурированная история сна пользователя.
 
-**ОБЩАЯ СТАТИСТИКА:**
-$sleepData
-(повтори данные в виде списка, не обобщая, но при анализе учти все записи)
+ДАННЫЕ (список сессий):
+$formattedHistory
 
+ЗАДАЧА:
+1) Сгруппируй наблюдения по темам: длительность, время отхода ко сну, время подъема, качество.
+2) Рассчитай средние значения: средняя длительность сна, среднее время отхода ко сну, среднее время подъема.
+3) Кратко оцени тренд качества сна по шкале 1–10.
+4) Дай 3–5 рекомендаций, опираясь на конкретные сессии.
+5) Укажи риски, если тренд не улучшится.
 
-
-**ИНСТРУКЦИИ:**
-1. Оцени общий тренд качества сна по шкале от 1 до 10
-2. Выдели ключевые закономерности по времени, длительности и качеству
-3. Укажи сильные и слабые стороны режима сна
-4. Дай 3-5 конкретных рекомендаций на основе истории
-5. Назови потенциальные риски, если тренд не улучшится
-6. Ссылайся на конкретные данные из истории, а не на одну сессию
-
-**ФОРМАТ ОТВЕТА:**
-Пиши по-русски, профессионально и кратко.
-Структура ответа:
+ФОРМАТ ОТВЕТА:
+Пиши по-русски, кратко и структурировано.
+Вывод должен иметь блоки:
 1) "Оценка сна: X/10"
-2) "Что вижу по данным:"
-3) "Риски:"
-4) "Что делать дальше:"
+2) "Средние значения:" (список)
+3) "Что вижу по данным:" (маркированный список по темам)
+4) "Риски:" (короткий список)
+5) "Что делать дальше:" (3–5 пунктов)
+6) "Список сессий:" (перепиши список сессий в сжатом виде)
+Без эмодзи и нестандартных символов. Используй обычные дефисы и кавычки.
 ''';
 
       final Response<Map<String, Object?>> response = await _postChatCompletions(
@@ -173,7 +177,7 @@ $sleepData
             {'role': 'user', 'content': prompt},
           ],
           'max_tokens': 1400,
-          'temperature': 0.7,
+          'temperature': 0.3,
         },
       );
 
@@ -186,8 +190,9 @@ $sleepData
       final firstChoice = choices.first! as Map<String, Object?>;
       final message = firstChoice['message']! as Map<String, Object?>;
       final String? content = (message['content'] as String?)?.trim();
+      final String cleaned = _cleanText(content ?? '');
 
-      return (content?.isNotEmpty ?? false) ? content! : 'Нет данных для анализа.';
+      return cleaned.isNotEmpty ? cleaned : 'Нет данных для анализа.';
     } on Object catch (e) {
       logger.error('Error analyzing sleep history: $e');
       rethrow;
@@ -237,5 +242,41 @@ $sleepData
           e.type == DioExceptionType.connectionError;
     }
     return [429, 500, 502, 503, 504].contains(status);
+  }
+
+  String _formatSleepHistory(List<StatsModel> sleepHistory) {
+    if (sleepHistory.isEmpty) {
+      return '- (нет данных)';
+    }
+    final buffer = StringBuffer();
+    for (int i = 0; i < sleepHistory.length; i++) {
+      final StatsModel s = sleepHistory[i];
+      final String date =
+          s.sleepDate != null ? s.sleepDate!.toIso8601String().split('T').first : 'unknown';
+      final String bed = _formatTimeOfDay(s.bedTime);
+      final String rise = _formatTimeOfDay(s.riseTime);
+      final String duration = _formatTimeOfDay(s.sleepTime);
+      final String notes = s.sleepNotes.trim().isEmpty ? '-' : s.sleepNotes.trim();
+      buffer.writeln(
+        '${i + 1}. date=$date | bed=$bed | rise=$rise | duration=$duration | quality=${s.sleepQuality.name} | notes=$notes',
+      );
+    }
+    return buffer.toString().trimRight();
+  }
+
+  String _formatTimeOfDay(TimeOfDay time) =>
+      '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
+
+  String _cleanText(String input) {
+    if (input.isEmpty) {
+      return input;
+    }
+    // Remove control characters but keep common whitespace.
+    var cleaned = input.replaceAll(RegExp(r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]'), '');
+    cleaned = cleaned.replaceAll('\r', '');
+    cleaned = cleaned.replaceAll('•', '-');
+    cleaned = cleaned.replaceAll('–', '-');
+    cleaned = cleaned.replaceAll('—', '-');
+    return cleaned;
   }
 }

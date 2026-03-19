@@ -30,24 +30,50 @@ class _SettingsScreenState extends State<SettingsScreen> {
             SliverAppBar(
               backgroundColor: Colors.transparent,
               centerTitle: true,
-              title: Text('Settings', style: theme.typography.h1),
+              title: Text(context.l10n.settingsTitle, style: theme.typography.h1),
             ),
             const SliverToBoxAdapter(child: SizedBox(height: 24)),
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverToBoxAdapter(
-                child: AdaptiveThemeCard(
+                child: AdaptiveThemeLocalizationCard(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Theme', style: theme.typography.h3),
+                      Text(context.l10n.settingsTheme, style: theme.typography.h3),
                       const SizedBox(height: 12),
                       ...ThemeModes.values.map(
                         (mode) => ChoiceWidget(
-                          title: mode.name == ThemeModes.dark.name ? 'Dark' : 'Light',
+                          title: mode.name == ThemeModes.dark.name
+                              ? context.l10n.settingsThemeDark
+                              : context.l10n.settingsThemeLight,
                           isSelected: mode == currentMode,
                           onTap: () => controller.setThemeMode(mode.name),
                         ),
+                      ),
+                      const SizedBox(height: 24),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SliverPadding(
+              padding: const .all(16),
+              sliver: SliverToBoxAdapter(
+                child: AdaptiveThemeLocalizationCard(
+                  child: Column(
+                    children: [
+                      Text(context.l10n.settingsLocalization, style: theme.typography.h3),
+                      const SizedBox(height: 12),
+                      ChoiceWidget(
+                        title: context.l10n.settingsLanguageEnglish,
+                        isSelected: controller.localizationMode == 'en',
+                        onTap: () => controller.setLocalization('en'),
+                      ),
+                      ChoiceWidget(
+                        title: context.l10n.settingsLanguageRussian,
+                        isSelected: controller.localizationMode == 'ru',
+                        onTap: () => controller.setLocalization('ru'),
                       ),
                     ],
                   ),
@@ -61,8 +87,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 }
 
-class AdaptiveThemeCard extends StatelessWidget {
-  const AdaptiveThemeCard({super.key, required this.child});
+class AdaptiveThemeLocalizationCard extends StatelessWidget {
+  const AdaptiveThemeLocalizationCard({super.key, required this.child});
 
   final Widget child;
 
@@ -75,21 +101,13 @@ class AdaptiveThemeCard extends StatelessWidget {
         border: Border.all(color: theme.colors.dividerColor),
         color: theme.colors.cardBackground,
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: child,
-      ),
+      child: Padding(padding: const EdgeInsets.all(16), child: child),
     );
   }
 }
 
 class ChoiceWidget extends StatelessWidget {
-  const ChoiceWidget({
-    super.key,
-    required this.title,
-    required this.isSelected,
-    this.onTap,
-  });
+  const ChoiceWidget({super.key, required this.title, required this.isSelected, this.onTap});
 
   final String title;
   final bool isSelected;

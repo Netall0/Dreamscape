@@ -77,7 +77,7 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Text('profile', style: style.typography.h2, textAlign: TextAlign.center),
+                Text(context.l10n.profileTitle, style: style.typography.h2, textAlign: TextAlign.center),
                 Text(
                   _currentUser!.createdAt.split('T').first,
                   style: style.typography.h3,
@@ -104,19 +104,22 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
                             );
                           },
                           child: RowGeneralWidget(
-                            text: userInfoNotifier.userName ?? 'name',
+                            text: userInfoNotifier.userName ?? context.l10n.profileNamePlaceholder,
                             icon: Icons.person,
                           ),
                         ),
                         RowGeneralWidget(text: _currentUser.email ?? '', icon: Icons.email),
-                        const RowGeneralWidget(text: 'password', icon: Icons.password),
+                        RowGeneralWidget(
+                          text: context.l10n.profilePasswordLabel,
+                          icon: Icons.password,
+                        ),
                         RowGeneralWidget(
                           text: (_currentUser.phone == null || _currentUser.phone!.trim().isEmpty)
-                              ? 'undefined'
+                              ? context.l10n.profileUndefined
                               : _currentUser.phone ?? '',
                           icon: Icons.phone,
                         ),
-                        const RowGeneralWidget(text: 'feedback', icon: Icons.help),
+                        RowGeneralWidget(text: context.l10n.profileFeedback, icon: Icons.help),
                       ],
                     ),
                   ),
@@ -126,7 +129,10 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
                   onTap: () => bloc.add(const AuthLogoutRequested()),
 
                   backgroundColor: style.colors.cardBackground,
-                  child: const RowGeneralWidget(text: 'sign out', icon: Icons.logout_outlined),
+                  child: RowGeneralWidget(
+                    text: context.l10n.profileSignOut,
+                    icon: Icons.logout_outlined,
+                  ),
                 ),
               ],
             ),

@@ -38,7 +38,7 @@ class _SignInScreenState extends State<SignInScreen> {
             ? ScaffoldMessenger.of(context).showSnackBar(
                 appFlavor!.contains('dev')
                     ? SnackBar(content: Text(state.errorMessage))
-                    : const SnackBar(content: Text('autg Failed')),
+                    : SnackBar(content: Text(context.l10n.authGenericError)),
               )
             // ignore: unnecessary_statements
             : null;
@@ -61,7 +61,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   child: Column(
                     mainAxisAlignment: .center,
                     children: [
-                      Text('Sign in', style: context.appTheme.typography.h1),
+                      Text(context.l10n.authSignInTitle, style: context.appTheme.typography.h1),
                       const SizedBox(height: 24),
                       TextField(
                         controller: _emailController,
@@ -83,7 +83,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             borderSide: BorderSide(color: theme.colors.onSurface),
                           ),
                           prefixIcon: Icon(Icons.email, color: theme.colors.onSurface),
-                          labelText: 'Email',
+                          labelText: context.l10n.authEmailLabel,
                           labelStyle: theme.typography.h6.copyWith(color: theme.colors.onSurface),
                         ),
                       ),
@@ -108,7 +108,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           hoverColor: theme.colors.onSurface,
                           fillColor: theme.colors.onSurface,
                           prefixIcon: Icon(Icons.password, color: theme.colors.onSurface),
-                          labelText: 'Password',
+                          labelText: context.l10n.authPasswordLabel,
                           labelStyle: theme.typography.h6.copyWith(color: theme.colors.onSurface),
                         ),
                       ),
@@ -128,7 +128,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         },
                         child: Expanded(
                           child: Text(
-                            'Sign in',
+                            context.l10n.authSignInButton,
                             style: theme.typography.h6.copyWith(color: theme.colors.onSurface),
                           ),
                         ),
@@ -143,7 +143,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   context.push('/signin/signup');
                 },
                 child: Text(
-                  "Don't have an account? Sign up",
+                  context.l10n.authNoAccount,
                   style: theme.typography.h6.copyWith(color: theme.colors.onSurface),
                 ),
               ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:uikit/theme/app_theme.dart';
 
+import '../../../core/util/extension/app_context_extension.dart';
+
 import '../controller/clock_stream_controller.dart';
 
 class ClockWidget extends StatelessWidget {
@@ -17,7 +19,8 @@ class ClockWidget extends StatelessWidget {
         '${data.hour.toString().padLeft(2, '0')}:${data.minute.toString().padLeft(2, '0')}',
         style: theme.typography.h1,
       ),
-      AsyncSnapshot(hasError: true) => Text('Error: ${snapshot.error}'),
+      AsyncSnapshot(hasError: true) =>
+          Text('${context.l10n.clockErrorPrefix}: ${snapshot.error}'),
       _ => const CircularProgressIndicator(),
     },
   );

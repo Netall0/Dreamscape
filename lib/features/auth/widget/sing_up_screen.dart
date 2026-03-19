@@ -49,7 +49,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ? ScaffoldMessenger.of(context).showSnackBar(
                 appFlavor!.contains('dev')
                     ? SnackBar(content: Text(state.errorMessage))
-                    : const SnackBar(content: Text('autg Failed')),
+                    : SnackBar(content: Text(context.l10n.authGenericError)),
               )
             : null;
       },
@@ -73,15 +73,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     child: Column(
                       mainAxisAlignment: .center,
                       children: [
-                        Text('Sign up', style: context.appTheme.typography.h1),
+                        Text(context.l10n.authSignUpTitle, style: context.appTheme.typography.h1),
                         const SizedBox(height: 24),
                         TextFormField(
                           validator: (val) {
                             if (val!.isEmpty) {
-                              return 'Please enter email';
+                              return context.l10n.authEnterEmailError;
                             }
                             if (!val.contains('@')) {
-                              return 'Please enter valid email';
+                              return context.l10n.authInvalidEmailError;
                             }
                             return null;
                           },
@@ -104,7 +104,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               borderSide: BorderSide(color: theme.colors.onSurface),
                             ),
                             prefixIcon: Icon(Icons.email, color: theme.colors.onSurface),
-                            labelText: 'Email',
+                            labelText: context.l10n.authEmailLabel,
                             labelStyle: theme.typography.h6.copyWith(color: theme.colors.onSurface),
                           ),
                         ),
@@ -112,10 +112,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         TextFormField(
                           validator: (val) {
                             if (val!.isEmpty) {
-                              return 'Please enter password';
+                              return context.l10n.authEnterPasswordError;
                             }
                             if (val.length < 6) {
-                              return 'Password must be at least 6 characters';
+                              return context.l10n.authPasswordMinError;
                             }
                             return null;
                           },
@@ -138,7 +138,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             hoverColor: theme.colors.onSurface,
                             fillColor: theme.colors.onSurface,
                             prefixIcon: Icon(Icons.password, color: theme.colors.onSurface),
-                            labelText: 'Password',
+                            labelText: context.l10n.authPasswordLabel,
                             labelStyle: theme.typography.h6.copyWith(color: theme.colors.onSurface),
                           ),
                         ),
@@ -146,10 +146,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         TextFormField(
                           validator: (val) {
                             if (val == null || val.isEmpty) {
-                              return 'confirm password';
+                              return context.l10n.authConfirmPasswordError;
                             }
                             if (val != _passwordController.text) {
-                              return 'password not match';
+                              return context.l10n.authPasswordNotMatchError;
                             }
                             return null;
                           },
@@ -183,7 +183,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                             ),
 
-                            labelText: 'Confirm Password',
+                            labelText: context.l10n.authConfirmPasswordLabel,
                             labelStyle: theme.typography.h6.copyWith(color: theme.colors.onSurface),
                           ),
                         ),
@@ -205,10 +205,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             );
                           },
                           child: Expanded(
-                            child: Text(
-                              'Sign Up',
-                              style: theme.typography.h6.copyWith(color: theme.colors.onSurface),
-                            ),
+                          child: Text(
+                            context.l10n.authSignUpButton,
+                            style: theme.typography.h6.copyWith(color: theme.colors.onSurface),
+                          ),
                           ),
                         ),
                       ],
@@ -221,7 +221,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     context.pop();
                   },
                   child: Text(
-                    'Have an account? Sign in',
+                    context.l10n.authHaveAccount,
                     style: theme.typography.h6.copyWith(color: theme.colors.onSurface),
                   ),
                 ),

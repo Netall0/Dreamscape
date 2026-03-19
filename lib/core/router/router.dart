@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uikit/overlay/controller/dimmer_overlay_notifier.dart';
 import 'package:uikit/overlay/utils/dimmer_overlay_observer.dart';
+import 'package:uikit/theme/app_theme.dart';
 import 'package:uikit/widget/card.dart';
 
 import '../../features/app/widget/root_screen.dart';
@@ -15,6 +16,7 @@ import '../../features/auth/widget/sing_up_screen.dart';
 import '../../features/home/widget/home_screen.dart';
 import '../../features/home/widget/sleep_screen.dart';
 import '../../features/initialization/widget/depend_scope.dart';
+import '../../features/news/widget/news_screen.dart';
 import '../../features/settings/widget/settings_screen.dart';
 import '../../features/stats/controller/bloc/stats_list_bloc.dart';
 import '../../features/stats/model/stats_model.dart';
@@ -22,6 +24,7 @@ import '../../features/stats/widget/analyze_stats_screen.dart';
 import '../../features/stats/widget/stats_screen.dart';
 import '../service/ai/data/ai_sleep_service.dart';
 import '../service/ai/scope/ai_scope_wrapper.dart';
+import '../util/extension/app_context_extension.dart';
 import '../util/logger/logger.dart';
 import 'navigator_observer.dart';
 
@@ -97,6 +100,10 @@ class BlocListenable<T> extends ChangeNotifier {
       ],
     ),
 
+    //news
+
+    //TODO maybe
+
     // stats
     TypedStatefulShellBranch<StatsShellBranchData>(
       routes: <TypedRoute<RouteData>>[
@@ -127,7 +134,9 @@ class RootRouteData extends StatefulShellRouteData {
   ) => RootScreen(navigationShell);
 }
 
-//notificaiotions branch
+//news shell
+
+class NewsShellBranchData extends StatefulShellBranchData {}
 
 //settings branch
 
@@ -222,10 +231,10 @@ class AddFromWatchRoute extends GoRouteData with $AddFromWatchRoute, LoggerMixin
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) => DialogPage(
     child: AlertDialog.adaptive(
-      title: const Text('Add Stats'),
-      content: const Text('Do you want to add stats from Health?'),
+      title: Text(context.l10n.addStatsTitle),
+      content: Text(context.l10n.addStatsPrompt),
       actions: [
-        TextButton(onPressed: () => context.pop(), child: const Text('No')),
+        TextButton(onPressed: () => context.pop(), child: Text(context.l10n.addStatsNo)),
         ElevatedButton(
           onPressed: () {
             try {
@@ -233,7 +242,7 @@ class AddFromWatchRoute extends GoRouteData with $AddFromWatchRoute, LoggerMixin
               logger.debug('StatsEventAddFromHealth added to bloc');
               ScaffoldMessenger.of(
                 context,
-              ).showSnackBar(const SnackBar(content: Text('Stats added from Health')));
+              ).showSnackBar(SnackBar(content: Text(context.l10n.addStatsAdded)));
             } on Object catch (e, stackTrace) {
               logger.error(
                 'Failed to add StatsEventAddFromHealth',
@@ -242,14 +251,14 @@ class AddFromWatchRoute extends GoRouteData with $AddFromWatchRoute, LoggerMixin
               );
               ScaffoldMessenger.of(
                 context,
-              ).showSnackBar(SnackBar(content: Text('error adding stats: $e')));
+              ).showSnackBar(SnackBar(content: Text('${context.l10n.addStatsErrorPrefix}: $e')));
             } finally {
               if (context.mounted) {
                 context.pop();
               }
             }
           },
-          child: const Text('Yes'),
+          child: Text(context.l10n.addStatsYes),
         ),
       ],
     ),
@@ -277,13 +286,13 @@ class EditNameRoute extends GoRouteData with $EditNameRoute {
 
     return DialogPage(
       child: AlertDialog.adaptive(
-        title: const Text('change name'),
+        title: Text(context.l10n.editNameTitle),
         content: TextField(controller: args.emailController),
 
         actions: [
-          TextButton(child: const Text('cancel'), onPressed: () => context.pop()),
+          TextButton(child: Text(context.l10n.cancel), onPressed: () => context.pop()),
           TextButton(
-            child: const Text('save'),
+            child: Text(context.l10n.save),
             onPressed: () async {
               if (context.mounted) {
                 context.pop();
@@ -299,36 +308,68 @@ class EditNameRoute extends GoRouteData with $EditNameRoute {
 
 // sleep dialog
 
+final class SleepDialogExtras {
+  SleepDialogExtras({required this.textConrtoller, required this.sleepQualityCallback});
+  final TextEditingController textConrtoller;
+  final SleepQualityCallback sleepQualityCallback;
+}
+
 @TypedGoRoute<SleepDialogRoute>(path: '/sleep-dialog')
 class SleepDialogRoute extends GoRouteData with $SleepDialogRoute {
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
-    final args = state.extra! as SleepQualityCallback;
+    final AppTheme theme = context.appTheme;
+    final args = state.extra! as SleepDialogExtras;
     return DialogPage(
       child: AlertDialog.adaptive(
-        title: const Text('chose your sleep quality'),
-        content: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: SleepQuality.values
-              .map(
-                (e) => AdaptiveCard(
-                  onTap: () {
-                    args(e);
-                  },
-                  padding: const .all(16),
-                  margin: const .all(4),
-                  child: SizedBox(
-                    height: MediaQuery.sizeOf(context).height * 0.1,
-                    child: Column(mainAxisSize: MainAxisSize.min, children: [e.icon, Text(e.name)]),
+        title: Text(context.l10n.chooseSleepQualityTitle),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: .min,
+            children: [
+              TextField(
+                maxLines: 10,
+                maxLength: 200,
+                controller: args.textConrtoller,
+                decoration: InputDecoration(
+                  hintText: context.l10n.sleepDialogNotesHint,
+                  hintStyle: theme.typography.h5,
+                  border: const OutlineInputBorder(),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: theme.colors.dividerColor),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: theme.colors.primary),
                   ),
                 ),
-              )
-              .toList(),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: SleepQuality.values
+                    .map(
+                      (e) => AdaptiveCard(
+                        onTap: () {
+                          args.sleepQualityCallback(e);
+                        },
+                        padding: const .all(16),
+                        margin: const .all(4),
+                        child: SizedBox(
+                          height: MediaQuery.sizeOf(context).height * 0.1,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [e.icon, Text(e.name)],
+                          ),
+                        ),
+                      ),
+                    )
+                    .toList(),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
-
 
 //TODO navigation bug

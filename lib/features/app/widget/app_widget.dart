@@ -1,12 +1,14 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uikit/overlay/controller/dimmer_overlay_notifier.dart';
 import 'package:uikit/overlay/widget/dimmed_overlay.dart';
 import 'package:uikit/uikit.dart';
 import 'package:uikit/widget/gradient_background.dart';
 
+import '../../../core/l10n/app_localizations.g.dart';
 import '../../../core/router/router.dart';
 import '../../auth/controller/bloc/auth_bloc.dart';
 import '../../initialization/model/depend_container.dart';
@@ -26,7 +28,6 @@ class _AppMaterialState extends State<AppMaterial> {
   late final GoRouter _router;
   final DimmerOverlayNotifier _dimmedOverlayNotifier = DimmerOverlayNotifier();
   late final AuthBloc _authBloc;
-  
 
   @override
   void initState() {
@@ -52,6 +53,10 @@ class _AppMaterialState extends State<AppMaterial> {
   Widget build(BuildContext context) => ListenableBuilder(
     listenable: widget.dependContainer.settingsController,
     builder: (context, child) => MaterialApp.router(
+      locale: Locale(widget.dependContainer.settingsController.localizationMode),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+
       routerConfig: _router,
       theme: ThemeData(
         useMaterial3: true,

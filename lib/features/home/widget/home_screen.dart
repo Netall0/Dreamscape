@@ -39,9 +39,9 @@ class _ScreenState extends State<HomeScreen> with LoggerMixin {
             child: Column(
               children: [
                 SizedBox(height: size.height * .02),
-                Text('Good night', style: theme.typography.h1),
+                Text(context.l10n.homeGreeting, style: theme.typography.h1),
                 const SizedBox(height: 8),
-                Text('Keep your sleep rhythm stable', style: theme.typography.bodyMedium),
+                Text(context.l10n.homeSubtitle, style: theme.typography.bodyMedium),
                 const SizedBox(height: 20),
                 ClockWidget(clockStream: clockStream, theme: theme),
                 const SizedBox(height: 20),
@@ -63,7 +63,7 @@ class _ScreenState extends State<HomeScreen> with LoggerMixin {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
-                              'Bedtime: ${time.hour}:${time.minute.toString().padLeft(2, '0')}',
+                              '${context.l10n.startSleeping}: ${time.hour}:${time.minute.toString().padLeft(2, '0')}',
                             ),
                           ),
                         );
@@ -78,7 +78,7 @@ class _ScreenState extends State<HomeScreen> with LoggerMixin {
                           Icon(Icons.play_arrow, color: theme.colors.onPrimary),
                           const SizedBox(width: 8),
                           Text(
-                            'Start sleep',
+                            context.l10n.startSleeping,
                             style: theme.typography.h5.copyWith(color: theme.colors.onPrimary),
                           ),
                         ],

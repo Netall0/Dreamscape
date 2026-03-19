@@ -75,8 +75,8 @@ class _AlarmTimePickerWidgetState extends State<AlarmTimePickerWidget>
       });
 
       await widget.alarmService.setAlarm(
-        title: 'title',
-        body: 'body',
+        title: context.l10n.alarmNotificationTitle,
+        body: context.l10n.alarmNotificationBody,
         hour: time.hour,
         minute: time.minute,
       );
@@ -87,7 +87,9 @@ class _AlarmTimePickerWidgetState extends State<AlarmTimePickerWidget>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Будильник установлен на ${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}',
+              '${context.l10n.alarmSetForPrefix} '
+              '${time.hour.toString().padLeft(2, '0')}:'
+              '${time.minute.toString().padLeft(2, '0')}',
             ),
           ),
         );
@@ -111,7 +113,7 @@ class _AlarmTimePickerWidgetState extends State<AlarmTimePickerWidget>
               onPressed: () => _setTime(),
               child: Text(
                 _selectedTime == null
-                    ? 'set your time'
+                    ? context.l10n.alarmSetButton
                     : '${_selectedTime!.hour}:${_selectedTime!.minute}',
                 style: theme.typography.h6.copyWith(color: theme.colors.onPrimary),
               ),

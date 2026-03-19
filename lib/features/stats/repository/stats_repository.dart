@@ -262,6 +262,7 @@ final class StatsRepository with LoggerMixin implements IStatsRepository {
       logger.info('Data added from Health successfully');
     } on Object catch (e, st) {
       logger.error('Error adding data from health: $e', stackTrace: st);
+      rethrow;
     }
   }
 
@@ -277,6 +278,7 @@ final class StatsRepository with LoggerMixin implements IStatsRepository {
       }
     } on Object catch (e, st) {
       logger.error('Error requesting health permissions: $e', stackTrace: st);
+      rethrow;
     }
   }
 }

@@ -19,7 +19,8 @@ class AnalyzeStatsScreen extends StatefulWidget {
 }
 
 class _AnalyzeStatsScreenState extends State<AnalyzeStatsScreen> {
-  late final AiSleepController _controller;
+  late AiSleepController
+  _controller; //delete "final" becose it will be initialized in didChangeDependencies
   bool _analysisStarted = false;
 
   @override
@@ -36,12 +37,31 @@ class _AnalyzeStatsScreenState extends State<AnalyzeStatsScreen> {
     _controller.analyzeSleepHistoryStream(widget.sleepHistory).drain<void>();
   }
 
+  Map<String, String> _parseSections(String buffer) {
+    final sections = <String, String>{};
+
+    final pattern = {
+      'score': RegExp(r'Оценка сна[:\s]+(.+?)(?=Что вижу|$)', dotAll: true),
+      'data': RegExp(r'Что вижу по данным[:\s]*\n(.+?)(?=Риски|$)', dotAll: true),
+      'risks': RegExp(r'Риски[:\s]*\n(.+?)(?=Что делать|$)', dotAll: true),
+      'actions': RegExp(r'Что делать дальше[:\s]*\n(.+?)$', dotAll: true),
+    };
+
+    for (final MapEntry<String, RegExp> e in pattern.entries) {
+      final Match? match = e.value.firstMatch(buffer);
+      if (match != null) {
+        sections[e.key] = match.group(1) ?? '';
+      }
+    }
+    return sections;
+  }
+
   @override
   Widget build(BuildContext context) {
     final AppTheme theme = context.appTheme;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Анализ сна')),
+      appBar: AppBar(title: Text(context.l10n.analyzeTitle)),
       body: ListenableBuilder(
         listenable: _controller,
         builder: (context, _) => SingleChildScrollView(
@@ -57,14 +77,15 @@ class _AnalyzeStatsScreenState extends State<AnalyzeStatsScreen> {
                   child: CircularProgressIndicator(),
                 ),
 
-                final AiSleepController c when c.buffer.isNotEmpty => AdaptiveCard.outlined(
+                final AiSleepController c when c.buffer.isNotEmpty => AdaptiveCard(
+                  backgroundColor: Colors.transparent.withOpacity(0.1),
                   child: Padding(
                     padding: const .all(16),
                     child: Text(c.buffer + (c.isDone ? '' : ' ▍'), style: theme.typography.h3),
                   ),
                 ),
 
-                _ => const Center(child: Text('Подготовка анализа...')),
+                _ => Center(child: Text(context.l10n.analyzePreparing)),
               },
             ],
           ),
