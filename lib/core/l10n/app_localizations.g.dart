@@ -129,6 +129,12 @@ abstract class AppLocalizations {
   /// **'Log In'**
   String get loginButton;
 
+  /// No description provided for @goodNight.
+  ///
+  /// In en, this message translates to:
+  /// **'Good night'**
+  String get goodNight;
+
   /// No description provided for @welcomeMessage.
   ///
   /// In en, this message translates to:
@@ -408,7 +414,7 @@ abstract class AppLocalizations {
   /// No description provided for @authNoAccount.
   ///
   /// In en, this message translates to:
-  /// **'Don't have an account? Sign up'**
+  /// **'Don\'t have an account? Sign up'**
   String get authNoAccount;
 
   /// No description provided for @authHaveAccount.

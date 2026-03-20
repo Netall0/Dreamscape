@@ -27,6 +27,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginButton => 'Log In';
 
   @override
+  String get goodNight => 'Good night';
+
+  @override
   String get welcomeMessage => 'Welcome back!';
 
   @override
@@ -165,7 +168,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authSignUpButton => 'Sign up';
 
   @override
-  String get authNoAccount => "Don't have an account? Sign up";
+  String get authNoAccount => 'Don\'t have an account? Sign up';
 
   @override
   String get authHaveAccount => 'Have an account? Sign in';

@@ -1,5 +1,3 @@
-
-
 {
     "@@locale": "en",
     "hello": "hello friend",
@@ -8,7 +6,7 @@
     "save": "Save",
     "cancel": "Cancel",
     "loginButton": "Log In",
-    "good night"
+    "goodNight": "Good night",
     "welcomeMessage": "Welcome back!",
     "startSleeping": "Start Sleeping",
     "settingsTitle": "Settings",
@@ -44,8 +42,7 @@
     "addStatsAdded": "Stats added from Health",
     "addStatsErrorPrefix": "Error adding stats",
     "editNameTitle": "Change name",
-    "chooseSleepQualityTitle": "Choose your sleep quality"
-    ,
+    "chooseSleepQualityTitle": "Choose your sleep quality",
     "homeGreeting": "Good night",
     "homeSubtitle": "Keep your sleep rhythm stable",
     "authGenericError": "Auth failed",
@@ -63,8 +60,7 @@
     "authEnterPasswordError": "Please enter password",
     "authPasswordMinError": "Password must be at least 6 characters",
     "authConfirmPasswordError": "Confirm password",
-    "authPasswordNotMatchError": "Passwords do not match"
-    ,
+    "authPasswordNotMatchError": "Passwords do not match",
     "profileTitle": "Profile",
     "profileNamePlaceholder": "name",
     "profilePasswordLabel": "password",

@@ -27,6 +27,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get loginButton => 'Войти';
 
   @override
+  String get goodNight => 'Good night';
+
+  @override
   String get welcomeMessage => 'С возвращением!';
 
   @override

@@ -4,17 +4,13 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uikit/uikit.dart';
 
-import '../../../core/config/app_config.dart';
 import '../../../core/constants/icons.dart';
-import '../../../core/database/database.dart';
-import '../../../core/service/ai/data/ai_sleep_service.dart';
 import '../../../core/util/extension/app_context_extension.dart';
 import '../../../core/util/logger/logger.dart';
 import '../../initialization/widget/depend_scope.dart';
 import '../controller/bloc/stats_list_bloc.dart';
 import '../controller/notifier/stats_calculate_notifier.dart';
 import '../model/stats_model.dart';
-import '../repository/stats_repository.dart';
 
 class StatsScreen extends StatefulWidget {
   const StatsScreen({super.key});
@@ -59,9 +55,9 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
         child: FloatingActionButton.extended(
           backgroundColor: theme.colors.primary,
           onPressed: () async {
-            List<StatsModel> list = <StatsModel>[];
+            var list = <StatsModel>[];
 
-            final currentState = bloc.state;
+            final StatsState currentState = bloc.state;
             if (currentState is StatsLoaded) {
               list = currentState.statsModelList;
             } else {
@@ -75,13 +71,9 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
               if (nextState is StatsLoaded) {
                 list = nextState.statsModelList;
               } else if (nextState is StatsError) {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(
+                ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(
-                      '${context.l10n.statsErrorLoadingLabel}: ${nextState.message}',
-                    ),
+                    content: Text('${context.l10n.statsErrorLoadingLabel}: ${nextState.message}'),
                   ),
                 );
                 return;
@@ -93,9 +85,12 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
           },
           label: Row(
             children: [
-              Icon(AppIcons.ai, color: Colors.black),
-              SizedBox(width: 12),
-              Text(context.l10n.statsReviewFromAi),
+              Icon(AppIcons.ai, color: theme.colors.onPrimary),
+              const SizedBox(width: 12),
+              Text(
+                context.l10n.statsReviewFromAi,
+                style: theme.typography.h5.copyWith(color: theme.colors.onPrimary),
+              ),
             ],
           ),
         ),
@@ -272,9 +267,7 @@ class _StatsScreenState extends State<StatsScreen> with LoggerMixin {
                 ),
               ),
               // ignore: unreachable_switch_case
-              _ => SliverFillRemaining(
-                child: Center(child: Text(context.l10n.statsUnknownState)),
-              ),
+              _ => SliverFillRemaining(child: Center(child: Text(context.l10n.statsUnknownState))),
             },
           ),
         ],
