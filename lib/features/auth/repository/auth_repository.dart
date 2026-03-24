@@ -8,15 +8,11 @@ import '../../../core/util/logger/logger.dart';
 import 'i_auth_repository.dart';
 
 final class AuthRepository with LoggerMixin implements IAuthRepository {
-
   AuthRepository() {
     _supabase = Supabase.instance.client;
-    _userId =
-        _supabase.auth.currentUser?.id ??
-        'eb2debd7-bbdc-429d-978b-64a2b0b99906'; //TODO: remove
   }
   late final SupabaseClient _supabase;
-  late final String _userId;
+  String? get _currentUserId => _supabase.auth.currentUser?.id;
 
   @override
   Stream<User?> getAuthStateChanges() {
@@ -41,23 +37,24 @@ final class AuthRepository with LoggerMixin implements IAuthRepository {
   @override
   Future<String?> getAvatarUrl() async {
     try {
-      final path = 'upload/$_userId';
+      final String? userId = _currentUserId;
+      if (userId == null) {
+        return null;
+      }
+
+      final path = 'upload/$userId';
 
       try {
         await _supabase.storage.from('avatars').download(path);
-      } catch (e) {
-        logger.info('avatar file does not exist: $e');
+      } on Object catch (e,st) {
+        logger.info('avatar file does not exist: $e $st');
         return null;
       }
 
       final String url = _supabase.storage.from('avatars').getPublicUrl(path);
       logger.info('avatar url: $url');
       final imageUrl = Uri.parse(url)
-          .replace(
-            queryParameters: {
-              't': DateTime.now().millisecondsSinceEpoch.toString(),
-            },
-          )
+          .replace(queryParameters: {'t': DateTime.now().millisecondsSinceEpoch.toString()})
           .toString();
       return imageUrl;
     } on Object catch (e, st) {
@@ -69,6 +66,11 @@ final class AuthRepository with LoggerMixin implements IAuthRepository {
   @override
   Future<void> setAvatarUrl(File file) async {
     try {
+      final String? userId = _currentUserId;
+      if (userId == null) {
+        throw Exception('User is not authenticated');
+      }
+
       final Uint8List imageBytes = await file.readAsBytes();
       final ui.Codec codec = await ui.instantiateImageCodec(
         imageBytes,
@@ -85,17 +87,14 @@ final class AuthRepository with LoggerMixin implements IAuthRepository {
       }
 
       final Uint8List compressedBytes = byteData.buffer.asUint8List();
-      final path = 'upload/$_userId';
+      final path = 'upload/$userId';
 
       await _supabase.storage
           .from('avatars')
           .uploadBinary(
             path,
             compressedBytes,
-            fileOptions: const FileOptions(
-              upsert: true,
-              contentType: 'image/png',
-            ),
+            fileOptions: const FileOptions(upsert: true, contentType: 'image/png'),
           );
 
       try {
@@ -140,16 +139,12 @@ final class AuthRepository with LoggerMixin implements IAuthRepository {
   }
 
   @override
-  Future<String?> getUserName() async {
-    return _supabase.auth.currentUser?.userMetadata?['name'].toString();
-  }
+  Future<String?> getUserName() async => _supabase.auth.currentUser?.userMetadata?['name'].toString();
 
   @override
   Future<void> setUserName(String newUserName) async {
     try {
-      await _supabase.auth.updateUser(
-        UserAttributes(data: {'name': newUserName}),
-      );
+      await _supabase.auth.updateUser(UserAttributes(data: {'name': newUserName}));
     } on Object catch (e, st) {
       logger.error('error in setting user name', error: e, stackTrace: st);
       rethrow;

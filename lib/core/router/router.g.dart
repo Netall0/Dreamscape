@@ -11,6 +11,7 @@ List<RouteBase> get $appRoutes => [
   $signInRoute,
   $addFromWatchRoute,
   $editNameRoute,
+  $feedbackDialogRoute,
   $sleepDialogRoute,
 ];
 
@@ -273,6 +274,32 @@ mixin $EditNameRoute on GoRouteData {
 
   @override
   String get location => GoRouteData.$location('/edit-name');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $feedbackDialogRoute => GoRouteData.$route(
+  path: '/feedback-dialog',
+  factory: $FeedbackDialogRoute._fromState,
+);
+
+mixin $FeedbackDialogRoute on GoRouteData {
+  static FeedbackDialogRoute _fromState(GoRouterState state) =>
+      FeedbackDialogRoute();
+
+  @override
+  String get location => GoRouteData.$location('/feedback-dialog');
 
   @override
   void go(BuildContext context) => context.go(location);

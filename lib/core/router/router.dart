@@ -5,7 +5,9 @@ import 'package:go_router/go_router.dart';
 import 'package:uikit/overlay/controller/dimmer_overlay_notifier.dart';
 import 'package:uikit/overlay/utils/dimmer_overlay_observer.dart';
 import 'package:uikit/theme/app_theme.dart';
+import 'package:uikit/widget/button.dart';
 import 'package:uikit/widget/card.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../features/app/widget/root_screen.dart';
 import '../../features/auth/controller/bloc/auth_bloc.dart';
@@ -24,6 +26,8 @@ import '../../features/stats/widget/analyze_stats_screen.dart';
 import '../../features/stats/widget/stats_screen.dart';
 import '../service/ai/data/ai_sleep_service.dart';
 import '../service/ai/scope/ai_scope_wrapper.dart';
+import '../service/feedback/data/feeedback_repository.dart';
+import '../service/feedback/feedback_model.dart';
 import '../util/extension/app_context_extension.dart';
 import '../util/logger/logger.dart';
 import 'navigator_observer.dart';
@@ -306,6 +310,29 @@ class EditNameRoute extends GoRouteData with $EditNameRoute {
   }
 }
 
+// feedback dialog
+
+final class FeedbackDialogExtras {
+  FeedbackDialogExtras({this.initialName, this.initialEmail});
+
+  final String? initialName;
+  final String? initialEmail;
+}
+
+@TypedGoRoute<FeedbackDialogRoute>(path: '/feedback-dialog')
+class FeedbackDialogRoute extends GoRouteData with $FeedbackDialogRoute {
+  @override
+  Page<void> buildPage(BuildContext context, GoRouterState state) {
+    final args = state.extra as FeedbackDialogExtras?;
+    return DialogPage(
+      child: _FeedbackDialog(
+        initialName: args?.initialName,
+        initialEmail: args?.initialEmail,
+      ),
+    );
+  }
+}
+
 // sleep dialog
 
 final class SleepDialogExtras {
@@ -368,6 +395,192 @@ class SleepDialogRoute extends GoRouteData with $SleepDialogRoute {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _FeedbackDialog extends StatefulWidget {
+  const _FeedbackDialog({this.initialName, this.initialEmail});
+
+  final String? initialName;
+  final String? initialEmail;
+
+  @override
+  State<_FeedbackDialog> createState() => _FeedbackDialogState();
+}
+
+class _FeedbackDialogState extends State<_FeedbackDialog> {
+  late final TextEditingController _nameController = TextEditingController(
+    text: widget.initialName ?? '',
+  );
+  late final TextEditingController _emailController = TextEditingController(
+    text: widget.initialEmail ?? '',
+  );
+  final TextEditingController _messageController = TextEditingController();
+
+  bool _isSending = false;
+  String? _nameError;
+  String? _emailError;
+  String? _messageError;
+  String? _sendError;
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _messageController.dispose();
+    super.dispose();
+  }
+
+  InputDecoration _inputDecoration(AppTheme theme, String label, IconData icon, String? error) =>
+      InputDecoration(
+        labelText: label,
+        labelStyle: theme.typography.h6.copyWith(color: theme.colors.textSecondary),
+        prefixIcon: Icon(icon, color: theme.colors.textSecondary),
+        errorText: error,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: theme.colors.dividerColor),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: theme.colors.textPrimary),
+        ),
+      );
+
+  bool _validate(AppTheme theme) {
+    final String name = _nameController.text.trim();
+    final String email = _emailController.text.trim();
+    final String message = _messageController.text.trim();
+    final bool isEmailValid = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email);
+
+    setState(() {
+      _nameError = name.isEmpty ? 'Введите имя' : null;
+      _emailError = isEmailValid ? null : context.l10n.authInvalidEmailError;
+      _messageError = message.length < 3 ? 'Введите сообщение' : null;
+    });
+
+    return _nameError == null && _emailError == null && _messageError == null;
+  }
+
+  Future<void> _sendFeedback() async {
+    if (!_validate(context.appTheme)) {
+      return;
+    }
+
+    setState(() {
+      _isSending = true;
+      _sendError = null;
+    });
+
+    try {
+      await FeeedbackRepository().sendFeedback(
+        FeedbackModel(
+          id: const Uuid().v4(),
+          name: _nameController.text.trim(),
+          email: _emailController.text.trim(),
+          message: _messageController.text.trim(),
+        ),
+      );
+      if (mounted) {
+        context.pop(true);
+      }
+    } on Object {
+      if (mounted) {
+        setState(() => _sendError = 'Не удалось отправить. Попробуйте позже.');
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isSending = false);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final AppTheme theme = context.appTheme;
+
+    return AlertDialog.adaptive(
+      backgroundColor: theme.colors.cardBackground,
+      title: Row(
+        children: [
+          Icon(Icons.feedback_outlined, color: theme.colors.textPrimary),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              context.l10n.profileFeedback,
+              style: theme.typography.h2,
+            ),
+          ),
+        ],
+      ),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: _nameController,
+              enabled: !_isSending,
+              decoration: _inputDecoration(
+                theme,
+                context.l10n.profileNamePlaceholder,
+                Icons.person_outline,
+                _nameError,
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _emailController,
+              enabled: !_isSending,
+              keyboardType: TextInputType.emailAddress,
+              decoration: _inputDecoration(
+                theme,
+                context.l10n.authEmailLabel,
+                Icons.email_outlined,
+                _emailError,
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _messageController,
+              enabled: !_isSending,
+              maxLines: 4,
+              decoration: _inputDecoration(
+                theme,
+                'Сообщение',
+                Icons.message_outlined,
+                _messageError,
+              ),
+            ),
+            if (_sendError != null) ...[
+              const SizedBox(height: 8),
+              Text(
+                _sendError!,
+                style: theme.typography.bodyMedium.copyWith(color: theme.colors.error),
+              ),
+            ],
+          ],
+        ),
+      ),
+      actions: [
+        AdaptiveButton.text(
+          onPressed: _isSending ? null : () => context.pop(false),
+          child: Text(
+            context.l10n.cancel,
+            style: theme.typography.h6.copyWith(color: theme.colors.textSecondary),
+          ),
+        ),
+        AdaptiveButton.primary(
+          onPressed: _isSending ? null : _sendFeedback,
+          child: _isSending
+              ? const SizedBox(
+                  height: 18,
+                  width: 18,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : Text(context.l10n.save, style: theme.typography.h6),
+        ),
+      ],
     );
   }
 }

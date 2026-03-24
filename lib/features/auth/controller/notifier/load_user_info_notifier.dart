@@ -15,11 +15,9 @@ final class LoadInfoNotifier extends ChangeNotifier with LoggerMixin {
   String? _userName;
   String? get userName => _userName;
 
-  File? _localAvatar;
   String? _remoteAvatarUrl;
   bool _isLoading = false;
 
-  File? get localAvatar => _localAvatar;
   String? get remoteAvatarUrl => _remoteAvatarUrl;
   bool get isLoading => _isLoading;
 
@@ -56,7 +54,6 @@ final class LoadInfoNotifier extends ChangeNotifier with LoggerMixin {
 
       final file = File(image.path);
 
-      _localAvatar = file;
       _isLoading = true;
       notifyListeners();
 
@@ -74,12 +71,10 @@ final class LoadInfoNotifier extends ChangeNotifier with LoggerMixin {
       }
 
       _remoteAvatarUrl = url;
-      _localAvatar = null;
       _isLoading = false;
       notifyListeners();
     } on Object catch (e, st) {
       _isLoading = false;
-      _localAvatar = null;
       notifyListeners();
       logger.error('error picking avatar', error: e, stackTrace: st);
     }

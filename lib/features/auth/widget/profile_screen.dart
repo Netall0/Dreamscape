@@ -1,15 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uikit/uikit.dart';
-import 'package:uuid/uuid.dart';
-import 'package:uuid/v4.dart';
-
 import '../../../core/router/router.dart';
-import '../../../core/service/feedback/data/feeedback_repository.dart';
-import '../../../core/service/feedback/feedback_model.dart';
 import '../../../core/util/extension/app_context_extension.dart';
 import '../../../core/util/logger/logger.dart';
 import '../../initialization/widget/depend_scope.dart';
@@ -30,15 +23,16 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
     super.initState();
   }
 
-  ImageProvider? _avatarProvider(File? localAvatar, String? remoteAvatarUrl) {
-    if (localAvatar != null) {
-      return ResizeImage(FileImage(localAvatar), width: 200, height: 200);
-    }
-
+  //local avatar =>
+  //remoteAvatarUrl =>
+  ImageProvider? _avatarProvider(String? remoteAvatarUrl) {
     if (remoteAvatarUrl != null) {
-      return ResizeImage(NetworkImage(remoteAvatarUrl), width: 200, height: 200);
+      return NetworkImage(
+        remoteAvatarUrl,
+        headers: {'t': DateTime.now().millisecondsSinceEpoch.toString()},
+      );
     }
-
+    //TODO handling avatar flow
     return null;
   }
 
@@ -70,10 +64,7 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
                         CircleAvatar(
                           radius: 50,
                           backgroundColor: style.colors.surface,
-                          backgroundImage: _avatarProvider(
-                            userInfoNotifier.localAvatar,
-                            userInfoNotifier.remoteAvatarUrl,
-                          ),
+                          backgroundImage: _avatarProvider(userInfoNotifier.remoteAvatarUrl),
                         ),
                         if (userInfoNotifier.isLoading) const CircularProgressIndicator(),
                       ],
@@ -128,15 +119,18 @@ class _ProfileScreenState extends State<ProfileScreen> with LoggerMixin {
                         ),
                         InkWell(
                           onTap: () async {
-                            // await showDialog(context: context, builder: builder)
-                            FeeedbackRepository().sendFeedback(
-                              FeedbackModel(
-                                id: const Uuid().v4(),
-                                name: 'alex',
-                                email: 'gromovd139@gmail.com,',
-                                message: 'не работает это позор братуха полный ахахахахахах',
+                            final bool? sent = await context.push<bool>(
+                              '/feedback-dialog',
+                              extra: FeedbackDialogExtras(
+                                initialName: userInfoNotifier.userName,
+                                initialEmail: _currentUser?.email,
                               ),
                             );
+                            if (sent == true && context.mounted) {
+                              ScaffoldMessenger.of(
+                                context,
+                              ).showSnackBar(SnackBar(content: Text(context.l10n.save)));
+                            }
                           },
                           child: RowGeneralWidget(
                             text: context.l10n.profileFeedback,

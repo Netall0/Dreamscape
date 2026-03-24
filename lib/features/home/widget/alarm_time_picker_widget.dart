@@ -17,8 +17,7 @@ class AlarmTimePickerWidget extends StatefulWidget {
   State<AlarmTimePickerWidget> createState() => _AlarmTimePickerWidgetState();
 }
 
-class _AlarmTimePickerWidgetState extends State<AlarmTimePickerWidget>
-    with LoggerMixin {
+class _AlarmTimePickerWidgetState extends State<AlarmTimePickerWidget> with LoggerMixin {
   TZDateTime? _tzDateTime;
   TimeOfDay? _selectedTime;
 
@@ -26,15 +25,11 @@ class _AlarmTimePickerWidgetState extends State<AlarmTimePickerWidget>
 
   @override
   void initState() {
-    _streamSubscription = widget.alarmService.alarmStreamController.listen((
-      data,
-    ) {
+    _streamSubscription = widget.alarmService.alarmStreamController.listen((data) {
       if (mounted) {
         setState(() {
           _tzDateTime = data;
-          _selectedTime = data != null
-              ? TimeOfDay(hour: data.hour, minute: data.minute)
-              : null;
+          _selectedTime = data != null ? TimeOfDay(hour: data.hour, minute: data.minute) : null;
         });
 
         logger.debug('update UI ');
@@ -50,10 +45,7 @@ class _AlarmTimePickerWidgetState extends State<AlarmTimePickerWidget>
     _tzDateTime = widget.alarmService.getAlarmTime();
 
     if (_tzDateTime != null) {
-      _selectedTime = TimeOfDay(
-        hour: _tzDateTime!.hour,
-        minute: _tzDateTime!.minute,
-      );
+      _selectedTime = TimeOfDay(hour: _tzDateTime!.hour, minute: _tzDateTime!.minute);
     }
   }
 
@@ -74,12 +66,14 @@ class _AlarmTimePickerWidgetState extends State<AlarmTimePickerWidget>
         _selectedTime = time;
       });
 
-      await widget.alarmService.setAlarm(
-        title: context.l10n.alarmNotificationTitle,
-        body: context.l10n.alarmNotificationBody,
-        hour: time.hour,
-        minute: time.minute,
-      );
+      if (mounted) {
+        await widget.alarmService.setAlarm(
+          title: context.l10n.alarmNotificationTitle,
+          body: context.l10n.alarmNotificationBody,
+          hour: time.hour,
+          minute: time.minute,
+        );
+      }
 
       logger.debug('setalarm');
 
