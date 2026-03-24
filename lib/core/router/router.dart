@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:uikit/overlay/controller/dimmer_overlay_notifier.dart';
 import 'package:uikit/overlay/utils/dimmer_overlay_observer.dart';
 import 'package:uikit/theme/app_theme.dart';
+import 'package:uikit/widget/adaptive_action.dart';
+import 'package:uikit/widget/adaptive_text_field.dart';
 import 'package:uikit/widget/button.dart';
 import 'package:uikit/widget/card.dart';
 import 'package:uuid/uuid.dart';
@@ -238,8 +240,8 @@ class AddFromWatchRoute extends GoRouteData with $AddFromWatchRoute, LoggerMixin
       title: Text(context.l10n.addStatsTitle),
       content: Text(context.l10n.addStatsPrompt),
       actions: [
-        TextButton(onPressed: () => context.pop(), child: Text(context.l10n.addStatsNo)),
-        ElevatedButton(
+        AdaptiveAction(onPressed: () => context.pop(), child: Text(context.l10n.addStatsNo)),
+        AdaptiveAction(
           onPressed: () {
             try {
               DependScope.of(context).dependModel.statsBloc.add(StatsEventAddFromHealth());
@@ -291,11 +293,14 @@ class EditNameRoute extends GoRouteData with $EditNameRoute {
     return DialogPage(
       child: AlertDialog.adaptive(
         title: Text(context.l10n.editNameTitle),
-        content: TextField(controller: args.emailController),
+        content: Material(
+          color: Colors.transparent,
+          child: TextField(controller: args.emailController),
+        ),
 
         actions: [
-          TextButton(child: Text(context.l10n.cancel), onPressed: () => context.pop()),
-          TextButton(
+          AdaptiveAction(child: Text(context.l10n.cancel), onPressed: () => context.pop()),
+          AdaptiveAction(
             child: Text(context.l10n.save),
             onPressed: () async {
               if (context.mounted) {
@@ -325,10 +330,7 @@ class FeedbackDialogRoute extends GoRouteData with $FeedbackDialogRoute {
   Page<void> buildPage(BuildContext context, GoRouterState state) {
     final args = state.extra as FeedbackDialogExtras?;
     return DialogPage(
-      child: _FeedbackDialog(
-        initialName: args?.initialName,
-        initialEmail: args?.initialEmail,
-      ),
+      child: _FeedbackDialog(initialName: args?.initialName, initialEmail: args?.initialEmail),
     );
   }
 }
@@ -350,48 +352,40 @@ class SleepDialogRoute extends GoRouteData with $SleepDialogRoute {
     return DialogPage(
       child: AlertDialog.adaptive(
         title: Text(context.l10n.chooseSleepQualityTitle),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: .min,
-            children: [
-              TextField(
-                maxLines: 10,
-                maxLength: 200,
-                controller: args.textConrtoller,
-                decoration: InputDecoration(
+        content: Material(
+          color: Colors.transparent,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: .min,
+              children: [
+                AdaptiveTextField(
+                  maxLines: 10,
+                  controller: args.textConrtoller,
                   hintText: context.l10n.sleepDialogNotesHint,
-                  hintStyle: theme.typography.h5,
-                  border: const OutlineInputBorder(),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: theme.colors.dividerColor),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: theme.colors.primary),
-                  ),
                 ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: SleepQuality.values
-                    .map(
-                      (e) => AdaptiveCard(
-                        onTap: () {
-                          args.sleepQualityCallback(e);
-                        },
-                        padding: const .all(16),
-                        margin: const .all(4),
-                        child: SizedBox(
-                          height: MediaQuery.sizeOf(context).height * 0.1,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [e.icon, Text(e.name)],
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: SleepQuality.values
+                      .map(
+                        (e) => AdaptiveCard(
+                          onTap: () {
+                            args.sleepQualityCallback(e);
+                          },
+                          padding: const .all(16),
+                          margin: const .all(4),
+                          child: SizedBox(
+                            height: MediaQuery.sizeOf(context).height * 0.1,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [e.icon, Text(e.name)],
+                            ),
                           ),
                         ),
-                      ),
-                    )
-                    .toList(),
-              ),
-            ],
+                      )
+                      .toList(),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -506,12 +500,7 @@ class _FeedbackDialogState extends State<_FeedbackDialog> {
         children: [
           Icon(Icons.feedback_outlined, color: theme.colors.textPrimary),
           const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              context.l10n.profileFeedback,
-              style: theme.typography.h2,
-            ),
-          ),
+          Expanded(child: Text(context.l10n.profileFeedback, style: theme.typography.h2)),
         ],
       ),
       content: SingleChildScrollView(
