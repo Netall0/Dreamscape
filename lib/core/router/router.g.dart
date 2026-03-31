@@ -242,6 +242,7 @@ mixin $SignUpRoute on GoRouteData {
 
 RouteBase get $addFromWatchRoute => GoRouteData.$route(
   path: '/add-from-health-device',
+  parentNavigatorKey: AddFromWatchRoute.$parentNavigatorKey,
   factory: $AddFromWatchRoute._fromState,
 );
 
@@ -266,8 +267,11 @@ mixin $AddFromWatchRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-RouteBase get $editNameRoute =>
-    GoRouteData.$route(path: '/edit-name', factory: $EditNameRoute._fromState);
+RouteBase get $editNameRoute => GoRouteData.$route(
+  path: '/edit-name',
+  parentNavigatorKey: EditNameRoute.$parentNavigatorKey,
+  factory: $EditNameRoute._fromState,
+);
 
 mixin $EditNameRoute on GoRouteData {
   static EditNameRoute _fromState(GoRouterState state) => EditNameRoute();
@@ -291,6 +295,7 @@ mixin $EditNameRoute on GoRouteData {
 
 RouteBase get $feedbackDialogRoute => GoRouteData.$route(
   path: '/feedback-dialog',
+  parentNavigatorKey: FeedbackDialogRoute.$parentNavigatorKey,
   factory: $FeedbackDialogRoute._fromState,
 );
 
@@ -317,6 +322,7 @@ mixin $FeedbackDialogRoute on GoRouteData {
 
 RouteBase get $sleepDialogRoute => GoRouteData.$route(
   path: '/sleep-dialog',
+  parentNavigatorKey: SleepDialogRoute.$parentNavigatorKey,
   factory: $SleepDialogRoute._fromState,
 );
 

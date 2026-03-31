@@ -38,9 +38,14 @@ part 'router.g.dart';
 
 typedef SleepQualityCallback = void Function(SleepQuality quality);
 
+final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
+
+
+
 final class AppRouter {
   static GoRouter router(AuthBloc authBloc, DimmerOverlayNotifier dimmedOverlayNotifier) =>
       GoRouter(
+        navigatorKey: _rootNavigatorKey,
         debugLogDiagnostics: true,
         initialLocation: '/signin',
         routes: $appRoutes,
@@ -234,6 +239,8 @@ final class AddFromHealthDeviceExtras {}
 
 @TypedGoRoute<AddFromWatchRoute>(path: '/add-from-health-device')
 class AddFromWatchRoute extends GoRouteData with $AddFromWatchRoute, LoggerMixin {
+  static GlobalKey<NavigatorState> get $parentNavigatorKey => _rootNavigatorKey;
+
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) => DialogPage(
     child: AlertDialog.adaptive(
@@ -286,6 +293,8 @@ final class EditNameExtras {
 
 @TypedGoRoute<EditNameRoute>(path: '/edit-name')
 class EditNameRoute extends GoRouteData with $EditNameRoute {
+  static GlobalKey<NavigatorState> get $parentNavigatorKey => _rootNavigatorKey;
+
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
     final args = state.extra! as EditNameExtras;
@@ -326,6 +335,8 @@ final class FeedbackDialogExtras {
 
 @TypedGoRoute<FeedbackDialogRoute>(path: '/feedback-dialog')
 class FeedbackDialogRoute extends GoRouteData with $FeedbackDialogRoute {
+  static GlobalKey<NavigatorState> get $parentNavigatorKey => _rootNavigatorKey;
+
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
     final args = state.extra as FeedbackDialogExtras?;
@@ -345,6 +356,8 @@ final class SleepDialogExtras {
 
 @TypedGoRoute<SleepDialogRoute>(path: '/sleep-dialog')
 class SleepDialogRoute extends GoRouteData with $SleepDialogRoute {
+  static GlobalKey<NavigatorState> get $parentNavigatorKey => _rootNavigatorKey;
+
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
     final AppTheme theme = context.appTheme;

@@ -1,5 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:timezone/standalone.dart';
 import 'package:uikit/theme/app_theme.dart';
@@ -56,37 +59,70 @@ class _AlarmTimePickerWidgetState extends State<AlarmTimePickerWidget> with Logg
   }
 
   Future<void> _setTime() async {
-    final TimeOfDay? time = await showTimePicker(
-      context: context,
-      initialTime: _selectedTime ?? TimeOfDay.now(),
-    );
+    if (context.mounted) {
+      const bool forceIOS = bool.fromEnvironment('FORCE_IOS', defaultValue: false);
+      final bool isIOS = forceIOS || Theme.of(context).platform == TargetPlatform.iOS;
+      final TimeOfDay? time = isIOS
+          ? await showCupertinoModalPopup<TimeOfDay>(
+              context: context,
+              builder: (context) {
+                TimeOfDay tempTime = _selectedTime ?? TimeOfDay.now();
+                return Container(
+                  height: 300,
+                  color: CupertinoColors.systemBackground.resolveFrom(context),
+                  child: Column(
+                    children: [
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: CupertinoButton(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          onPressed: () => Navigator.of(context).pop(tempTime),
+                          child: Text(context.l10n.save),
+                        ),
+                      ),
+                      Expanded(
+                        child: CupertinoDatePicker(
+                          mode: CupertinoDatePickerMode.time,
+                          initialDateTime: DateTime(2000, 1, 1, tempTime.hour, tempTime.minute),
+                          onDateTimeChanged: (dateTime) {
+                            tempTime = TimeOfDay.fromDateTime(dateTime);
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            )
+          : await showTimePicker(context: context, initialTime: _selectedTime ?? TimeOfDay.now());
 
-    if (time != null) {
-      setState(() {
-        _selectedTime = time;
-      });
+      if (time != null) {
+        setState(() {
+          _selectedTime = time;
+        });
 
-      if (mounted) {
-        await widget.alarmService.setAlarm(
-          title: context.l10n.alarmNotificationTitle,
-          body: context.l10n.alarmNotificationBody,
-          hour: time.hour,
-          minute: time.minute,
-        );
-      }
+        if (mounted) {
+          await widget.alarmService.setAlarm(
+            title: context.l10n.alarmNotificationTitle,
+            body: context.l10n.alarmNotificationBody,
+            hour: time.hour,
+            minute: time.minute,
+          );
+        }
 
-      logger.debug('setalarm');
+        logger.debug('setalarm');
 
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              '${context.l10n.alarmSetForPrefix} '
-              '${time.hour.toString().padLeft(2, '0')}:'
-              '${time.minute.toString().padLeft(2, '0')}',
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                '${context.l10n.alarmSetForPrefix} '
+                '${time.hour.toString().padLeft(2, '0')}:'
+                '${time.minute.toString().padLeft(2, '0')}',
+              ),
             ),
-          ),
-        );
+          );
+        }
       }
     }
   }

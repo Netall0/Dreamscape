@@ -19,6 +19,7 @@ SUPABASE_URL ?=
 SUPABASE_ANON_KEY ?= 
 OPENAI_API_KEY ?= 
 USE_FAKE_REPOS ?= false
+FORCE_IOS ?= false
 # ========================
 
 
@@ -58,14 +59,16 @@ run-dev:
 		--dart-define=SUPABASE_URL=$(SUPABASE_URL) \
 		--dart-define=SUPABASE_ANON_KEY=$(SUPABASE_ANON_KEY) \
 		--dart-define=OPENAI_API_KEY=$(OPENAI_API_KEY) \
-		--dart-define=USE_FAKE_REPOS=$(USE_FAKE_REPOS)
+		--dart-define=USE_FAKE_REPOS=$(USE_FAKE_REPOS) \
+		--dart-define=FORCE_IOS=$(FORCE_IOS)
 
 run-prod:
 	$(FLUTTER) run --release --flavor prod lib/targets/prod.dart \
 		--dart-define=SUPABASE_URL=$(SUPABASE_URL) \
 		--dart-define=SUPABASE_ANON_KEY=$(SUPABASE_ANON_KEY) \
 		--dart-define=OPENAI_API_KEY=$(OPENAI_API_KEY) \
-		--dart-define=USE_FAKE_REPOS=false
+		--dart-define=USE_FAKE_REPOS=false \
+		--dart-define=FORCE_IOS=$(FORCE_IOS)
 # ========================
 # Builds
 # ========================
